@@ -52,7 +52,7 @@ export default function HomeScreen() {
             </View>
             <View style={styles.divider} />
             <Text style={styles.subtitle}>
-              2 x London Bake Off Champion{'\n'}& Best Mum In The World
+              2 x London Bake Off Champion & Best Mum In The World
             </Text>
           </View>
         </View>
@@ -179,14 +179,16 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.calligraphy,
     fontSize: 58,
     color: Colors.primaryDark,
-    marginBottom: -20,
+    marginBottom: -16,
     zIndex: 1,
+    textAlign: 'center',
   },
   brandBakeBook: {
     fontFamily: Fonts.serif,
     fontSize: 20,
     color: Colors.text,
     letterSpacing: 8,
+    textAlign: 'center',
   },
   divider: {
     width: 60,
@@ -196,11 +198,12 @@ const styles = StyleSheet.create({
     borderRadius: 1,
   },
   subtitle: {
-    fontFamily: Fonts.sans,
-    fontSize: 13,
+    fontFamily: Fonts.serif,
+    fontSize: 12,
     color: Colors.textSecondary,
     textAlign: 'center',
-    lineHeight: 20,
+    lineHeight: 16,
+    letterSpacing: -0.3,
   },
   gridContainer: {
     flexDirection: 'row',
