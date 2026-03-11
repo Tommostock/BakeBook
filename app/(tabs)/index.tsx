@@ -48,7 +48,7 @@ export default function HomeScreen() {
         <View style={styles.hero}>
           <Ionicons
             name="heart"
-            size={200}
+            size={260}
             color="rgba(232, 160, 184, 0.2)"
             style={styles.heroHeart}
           />
@@ -178,8 +178,9 @@ const styles = StyleSheet.create({
   },
   heroHeart: {
     position: 'absolute',
-    top: -40,
-    right: -20,
+    top: 10,
+    left: '50%',
+    marginLeft: -75,
     zIndex: 0,
   },
   heroContent: {
