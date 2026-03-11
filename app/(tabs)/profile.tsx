@@ -48,37 +48,12 @@ export default function ProfileScreen() {
           ))}
         </View>
 
-        {/* Menu Items */}
-        <View style={styles.menuSection}>
-          <Text style={styles.menuSectionTitle}>App</Text>
-          <MenuItem icon="information-circle-outline" label="About BakeBook" />
-          <MenuItem icon="star-outline" label="Rate the App" />
-          <MenuItem icon="share-social-outline" label="Share with Friends" />
-        </View>
-
-        <View style={styles.menuSection}>
-          <Text style={styles.menuSectionTitle}>Support</Text>
-          <MenuItem icon="help-circle-outline" label="Help & FAQ" />
-          <MenuItem icon="mail-outline" label="Contact Us" />
-          <MenuItem icon="shield-checkmark-outline" label="Privacy Policy" />
-        </View>
-
         <Text style={styles.version}>
           Suzie's BakeBook v1.0.0{'\n'}
           Made with ❤️
         </Text>
       </ScrollView>
     </SafeAreaView>
-  );
-}
-
-function MenuItem({ icon, label }: { icon: React.ComponentProps<typeof Ionicons>['name']; label: string }) {
-  return (
-    <Pressable style={styles.menuItem}>
-      <Ionicons name={icon} size={22} color={Colors.textSecondary} />
-      <Text style={styles.menuItemLabel}>{label}</Text>
-      <Ionicons name="chevron-forward" size={18} color={Colors.textLight} />
-    </Pressable>
   );
 }
 
@@ -147,32 +122,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.textSecondary,
     marginTop: 2,
-  },
-  menuSection: {
-    paddingHorizontal: Spacing.lg,
-    marginTop: Spacing.lg,
-  },
-  menuSectionTitle: {
-    fontFamily: Fonts.sansSemiBold,
-    fontSize: 13,
-    color: Colors.textLight,
-    textTransform: 'uppercase',
-    letterSpacing: 1,
-    marginBottom: Spacing.sm,
-  },
-  menuItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: Spacing.md,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.borderLight,
-  },
-  menuItemLabel: {
-    fontFamily: Fonts.sans,
-    fontSize: 15,
-    color: Colors.text,
-    flex: 1,
-    marginLeft: Spacing.md,
   },
   version: {
     fontFamily: Fonts.sans,
