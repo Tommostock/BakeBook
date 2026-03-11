@@ -51,12 +51,12 @@ export default function RecipeDetailScreen() {
       Animated.timing(scaleAnim, {
         toValue: 1.3,
         duration: 150,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
       Animated.timing(scaleAnim, {
         toValue: 1,
         duration: 150,
-        useNativeDriver: true,
+        useNativeDriver: false,
       }),
     ]).start();
   };
