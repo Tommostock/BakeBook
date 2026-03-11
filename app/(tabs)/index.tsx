@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { RecipeCard } from '../../components/RecipeCard';
 import { CategoryPill } from '../../components/CategoryPill';
@@ -45,6 +46,12 @@ export default function HomeScreen() {
       >
         {/* Header / Hero */}
         <View style={styles.hero}>
+          <Ionicons
+            name="heart"
+            size={200}
+            color="rgba(232, 160, 184, 0.2)"
+            style={styles.heroHeart}
+          />
           <View style={styles.heroContent}>
             <View style={styles.brandContainer}>
               <Text style={styles.brandSuzie}>Suzie's</Text>
@@ -166,9 +173,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderBottomLeftRadius: Radius.xl,
     borderBottomRightRadius: Radius.xl,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  heroHeart: {
+    position: 'absolute',
+    top: -40,
+    right: -20,
+    zIndex: 0,
   },
   heroContent: {
     alignItems: 'center',
+    zIndex: 1,
   },
   brandContainer: {
     alignItems: 'center',
