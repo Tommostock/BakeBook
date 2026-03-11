@@ -26,7 +26,7 @@ export default function RecipeDetailScreen() {
   const router = useRouter();
   const addRecentlyViewed = useAppStore((s) => s.addRecentlyViewed);
   const toggleFavorite = useAppStore((s) => s.toggleFavorite);
-  const isFavorite = useAppStore((s) => s.isFavorite);
+  const fav = useAppStore((s) => s.favorites.includes(id ?? ''));
   const recipeNotes = useAppStore((s) => s.recipeNotes);
   const addRecipeNote = useAppStore((s) => s.addRecipeNote);
   const deleteRecipeNote = useAppStore((s) => s.deleteRecipeNote);
@@ -73,8 +73,6 @@ export default function RecipeDetailScreen() {
       </SafeAreaView>
     );
   }
-
-  const fav = isFavorite(recipe.id);
 
   const toggleIngredient = (index: number) => {
     setCheckedIngredients((prev) => {
