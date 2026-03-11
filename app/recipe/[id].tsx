@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   TextInput,
   Alert,
   Share,
+  Animated,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -39,9 +40,31 @@ export default function RecipeDetailScreen() {
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(new Set());
   const [showTimer, setShowTimer] = useState(false);
 
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
   useEffect(() => {
     if (id) addRecentlyViewed(id);
   }, [id]);
+
+  const playFavoriteAnimation = () => {
+    Animated.sequence([
+      Animated.timing(scaleAnim, {
+        toValue: 1.3,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnim, {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleToggleFavorite = (recipeId: string) => {
+    toggleFavorite(recipeId);
+    playFavoriteAnimation();
+  };
 
   if (!recipe) {
     return (
@@ -102,13 +125,15 @@ export default function RecipeDetailScreen() {
               <Pressable style={styles.iconBtn} onPress={handleShare}>
                 <Ionicons name="share-outline" size={22} color={Colors.white} />
               </Pressable>
-              <Pressable style={styles.iconBtn} onPress={() => toggleFavorite(recipe.id)}>
-                <Ionicons
-                  name={fav ? 'heart' : 'heart-outline'}
-                  size={22}
-                  color={fav ? Colors.primary : Colors.white}
-                />
-              </Pressable>
+              <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+                <Pressable style={styles.iconBtn} onPress={() => handleToggleFavorite(recipe.id)}>
+                  <Ionicons
+                    name={fav ? 'heart' : 'heart-outline'}
+                    size={22}
+                    color={fav ? Colors.primary : Colors.white}
+                  />
+                </Pressable>
+              </Animated.View>
             </View>
           </View>
         </View>
