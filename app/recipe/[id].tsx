@@ -118,7 +118,7 @@ export default function RecipeDetailScreen() {
           />
           <View style={styles.heroOverlay} />
           <View style={styles.heroButtons}>
-            <Pressable style={styles.iconBtn} onPress={() => router.back()}>
+            <Pressable style={styles.iconBtn} onPress={() => router.canGoBack() ? router.back() : router.replace('/')}>
               <Ionicons name="arrow-back" size={22} color={Colors.white} />
             </Pressable>
             <View style={styles.heroRight}>
