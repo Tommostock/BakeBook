@@ -31,10 +31,10 @@ export default function ProfileScreen() {
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>S</Text>
+            <Text style={styles.avatarText}>❤️</Text>
           </View>
-          <Text style={styles.name}>Suzie</Text>
-          <Text style={styles.tagline}>2 x London Bake Off Champion</Text>
+          <Text style={styles.name}>For my beautiful wife Suzie,</Text>
+          <Text style={styles.tagline}>Love Tom</Text>
         </View>
 
         {/* Stats */}
