@@ -46,8 +46,10 @@ export default function HomeScreen() {
         {/* Header / Hero */}
         <View style={styles.hero}>
           <View style={styles.heroContent}>
-            <Text style={styles.brandSuzie}>Suzie's</Text>
-            <Text style={styles.brandBakeBook}>BAKEBOOK</Text>
+            <View style={styles.brandContainer}>
+              <Text style={styles.brandSuzie}>Suzie's</Text>
+              <Text style={styles.brandBakeBook}>BAKEBOOK</Text>
+            </View>
             <View style={styles.divider} />
             <Text style={styles.subtitle}>
               2 x London Bake Off Champion{'\n'}& Best Mum In The World
@@ -168,18 +170,23 @@ const styles = StyleSheet.create({
   heroContent: {
     alignItems: 'center',
   },
+  brandContainer: {
+    alignItems: 'center',
+    position: 'relative',
+    marginBottom: -4,
+  },
   brandSuzie: {
-    fontFamily: Fonts.serifRegular,
-    fontSize: 42,
+    fontFamily: Fonts.calligraphy,
+    fontSize: 58,
     color: Colors.primaryDark,
-    letterSpacing: 1,
+    marginBottom: -20,
+    zIndex: 1,
   },
   brandBakeBook: {
     fontFamily: Fonts.serif,
-    fontSize: 18,
+    fontSize: 20,
     color: Colors.text,
-    letterSpacing: 6,
-    marginTop: -4,
+    letterSpacing: 8,
   },
   divider: {
     width: 60,

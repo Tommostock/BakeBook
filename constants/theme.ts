@@ -18,6 +18,7 @@ export const Colors = {
 };
 
 export const Fonts = {
+  calligraphy: 'GreatVibes_400Regular',
   serif: 'PlayfairDisplay_700Bold',
   serifRegular: 'PlayfairDisplay_400Regular',
   sans: 'OpenSans_400Regular',

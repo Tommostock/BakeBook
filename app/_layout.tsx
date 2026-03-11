@@ -12,6 +12,9 @@ import {
   OpenSans_600SemiBold,
   OpenSans_700Bold,
 } from '@expo-google-fonts/open-sans';
+import {
+  GreatVibes_400Regular,
+} from '@expo-google-fonts/great-vibes';
 import * as SplashScreen from 'expo-splash-screen';
 import { useAppStore } from '../lib/store';
 
@@ -27,6 +30,7 @@ export default function RootLayout() {
     OpenSans_500Medium,
     OpenSans_600SemiBold,
     OpenSans_700Bold,
+    GreatVibes_400Regular,
   });
 
   useEffect(() => {
