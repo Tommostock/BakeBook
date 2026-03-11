@@ -50,6 +50,5 @@ const styles = StyleSheet.create({
   },
   labelSelected: {
     color: Colors.black,
-    fontFamily: Fonts.sansSemiBold,
   },
 });
