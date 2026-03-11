@@ -130,7 +130,7 @@ export default function RecipeDetailScreen() {
                   <Ionicons
                     name={fav ? 'heart' : 'heart-outline'}
                     size={22}
-                    color={fav ? Colors.primary : Colors.white}
+                    color={fav ? Colors.primary : Colors.primaryDark}
                   />
                 </Pressable>
               </Animated.View>
