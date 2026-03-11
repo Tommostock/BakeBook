@@ -46,12 +46,6 @@ export default function HomeScreen() {
       >
         {/* Header / Hero */}
         <View style={styles.hero}>
-          <Ionicons
-            name="heart"
-            size={220}
-            color="rgba(232, 160, 184, 0.2)"
-            style={styles.heroHeart}
-          />
           <View style={styles.heroContent}>
             <View style={styles.brandContainer}>
               <Text style={styles.brandSuzie}>Suzie's</Text>
@@ -175,13 +169,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: Radius.xl,
     position: 'relative',
     overflow: 'hidden',
-  },
-  heroHeart: {
-    position: 'absolute',
-    top: 35,
-    left: '50%',
-    marginLeft: -110,
-    zIndex: 0,
   },
   heroContent: {
     alignItems: 'center',

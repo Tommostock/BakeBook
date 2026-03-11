@@ -21,19 +21,16 @@ export default function TabLayout() {
         headerShown: false,
         tabBarActiveTintColor: Colors.primaryDark,
         tabBarInactiveTintColor: Colors.textLight,
+        tabBarShowLabel: false,
         tabBarStyle: {
           backgroundColor: Colors.white,
           borderTopColor: Colors.borderLight,
           borderTopWidth: 1,
-          height: Platform.OS === 'ios' ? 88 : 64,
-          paddingBottom: Platform.OS === 'ios' ? 28 : 8,
+          height: Platform.OS === 'ios' ? 60 : 56,
+          paddingBottom: Platform.OS === 'ios' ? 8 : 4,
           paddingTop: 8,
           elevation: 0,
           shadowOpacity: 0,
-        },
-        tabBarLabelStyle: {
-          fontFamily: Fonts.sansMedium,
-          fontSize: 11,
         },
       }}
     >
