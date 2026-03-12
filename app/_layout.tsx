@@ -18,6 +18,7 @@ import {
 import * as SplashScreen from 'expo-splash-screen';
 import { useAppStore } from '../lib/store';
 import { ErrorBoundary } from '../components/ErrorBoundary';
+import { FloatingTimerBadge } from '../components/FloatingTimerBadge';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -49,6 +50,7 @@ export default function RootLayout() {
   return (
     <ErrorBoundary>
       <StatusBar style="dark" />
+      <FloatingTimerBadge />
       <Stack
         screenOptions={{
           headerShown: false,

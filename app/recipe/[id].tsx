@@ -351,7 +351,14 @@ export default function RecipeDetailScreen() {
               {showTimer ? 'Hide Timer' : 'Show Baking Timer'}
             </Text>
           </Pressable>
-          {showTimer && <Timer defaultMinutes={recipe.bakeTime} />}
+          {showTimer && (
+            <Timer
+              defaultMinutes={recipe.bakeTime}
+              prepTime={recipe.prepTime}
+              bakeTime={recipe.bakeTime}
+              recipeTitle={recipe.title}
+            />
+          )}
 
           {/* Personal Notes */}
           <Text style={styles.sectionTitle}>My Notes</Text>
