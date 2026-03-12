@@ -46,6 +46,9 @@ export default function JournalScreen() {
   const [viewingEntry, setViewingEntry] = useState<JournalEntry | null>(null);
   const [galleryIndex, setGalleryIndex] = useState(0);
 
+  // Web file input ref (mobile browsers don't support expo-image-picker reliably)
+  const fileInputRef = useRef<any>(null);
+
   // Auto-open modal when navigated here from a recipe page
   const handledRecipeId = useRef('');
   useEffect(() => {
@@ -61,12 +64,15 @@ export default function JournalScreen() {
     : recipes;
 
   const pickPhoto = async () => {
-    if (Platform.OS !== 'web') {
-      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== 'granted') {
-        Alert.alert('Permission needed', 'Please allow access to your photo library to add photos.');
-        return;
-      }
+    if (Platform.OS === 'web') {
+      // On web (esp. mobile browsers), use a native file input for reliable access
+      fileInputRef.current?.click();
+      return;
+    }
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission needed', 'Please allow access to your photo library to add photos.');
+      return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ['images'],
@@ -78,6 +84,14 @@ export default function JournalScreen() {
       const newUris = result.assets.map((a) => a.uri);
       setPhotos((prev) => [...prev, ...newUris].slice(0, MAX_PHOTOS));
     }
+  };
+
+  const handleWebFileChange = (e: any) => {
+    const files: File[] = Array.from(e.target.files || []);
+    const remaining = MAX_PHOTOS - photos.length;
+    const uris = files.slice(0, remaining).map((f) => URL.createObjectURL(f));
+    setPhotos((prev) => [...prev, ...uris].slice(0, MAX_PHOTOS));
+    e.target.value = '';
   };
 
   const removePhoto = (index: number) => {
@@ -101,6 +115,10 @@ export default function JournalScreen() {
   const handleSave = () => {
     if (!selectedRecipeId) {
       Alert.alert('Select a recipe', 'Please choose which recipe you baked.');
+      return;
+    }
+    if (rating === 0) {
+      Alert.alert('Add a rating', 'Please give your bake a star rating before saving.');
       return;
     }
     const recipe = recipes.find((r) => r.id === selectedRecipeId);
@@ -140,39 +158,33 @@ export default function JournalScreen() {
         style={styles.entryCard}
         onPress={() => { setGalleryIndex(0); setViewingEntry(item); }}
       >
-        {headerPhoto && (
-          <View>
+        <View style={styles.entryImageWrap}>
+          {headerPhoto ? (
             <Image
               source={{ uri: headerPhoto }}
               style={styles.entryImage}
               contentFit="cover"
             />
-            {photoCount > 1 && (
-              <View style={styles.photoCountBadge}>
-                <Ionicons name="images-outline" size={12} color={Colors.white} />
-                <Text style={styles.photoCountText}>{photoCount}</Text>
-              </View>
-            )}
-          </View>
-        )}
+          ) : (
+            <View style={[styles.entryImage, styles.entryImagePlaceholder]}>
+              <Ionicons name="camera-outline" size={28} color={Colors.textLight} />
+            </View>
+          )}
+          {photoCount > 1 && (
+            <View style={styles.photoCountBadge}>
+              <Ionicons name="images-outline" size={11} color={Colors.white} />
+              <Text style={styles.photoCountText}>{photoCount}</Text>
+            </View>
+          )}
+        </View>
         <View style={styles.entryContent}>
-          <View style={styles.entryHeader}>
-            <Text style={styles.entryTitle}>{item.recipeTitle}</Text>
-            <Pressable onPress={() => confirmDelete(item.id)} hitSlop={10}>
-              <Ionicons name="trash-outline" size={18} color={Colors.textLight} />
-            </Pressable>
-          </View>
+          <Text style={styles.entryTitle} numberOfLines={2}>{item.recipeTitle}</Text>
           <Text style={styles.entryDate}>
             {new Date(item.dateBaked).toLocaleDateString('en-GB', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric',
+              day: 'numeric', month: 'short', year: 'numeric',
             })}
           </Text>
-          <StarRating rating={item.rating} size={16} />
-          {item.notes ? (
-            <Text style={styles.entryNotes} numberOfLines={2}>{item.notes}</Text>
-          ) : null}
+          <StarRating rating={item.rating} size={13} />
         </View>
       </Pressable>
     );
@@ -191,7 +203,9 @@ export default function JournalScreen() {
         data={journalEntries}
         keyExtractor={(item) => item.id}
         renderItem={renderEntry}
-        contentContainerStyle={{ paddingHorizontal: Spacing.lg, paddingBottom: 32 }}
+        numColumns={2}
+        columnWrapperStyle={{ gap: Spacing.md }}
+        contentContainerStyle={{ paddingHorizontal: Spacing.lg, paddingBottom: 32, gap: Spacing.md }}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -428,6 +442,17 @@ export default function JournalScreen() {
               textAlignVertical="top"
             />
           </ScrollView>
+          {/* Hidden file input for web (mobile browsers) */}
+          {Platform.OS === 'web' && (
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              style={{ display: 'none' }}
+              onChange={handleWebFileChange}
+            />
+          )}
         </SafeAreaView>
       </Modal>
     </SafeAreaView>
@@ -458,59 +483,63 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   entryCard: {
+    flex: 1,
     backgroundColor: Colors.white,
     borderRadius: Radius.lg,
     overflow: 'hidden',
-    marginBottom: Spacing.md,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
     elevation: 2,
+  },
+  entryImageWrap: {
+    position: 'relative',
+    aspectRatio: 1,
+    width: '100%',
   },
   entryImage: {
     width: '100%',
-    height: 180,
+    height: '100%',
+    backgroundColor: Colors.surfaceAlt,
+  },
+  entryImagePlaceholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: Colors.surfaceAlt,
   },
   photoCountBadge: {
     position: 'absolute',
-    bottom: 8,
-    right: 8,
+    bottom: 6,
+    right: 6,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 3,
     backgroundColor: 'rgba(0,0,0,0.55)',
     borderRadius: Radius.full,
-    paddingHorizontal: 8,
-    paddingVertical: 3,
+    paddingHorizontal: 6,
+    paddingVertical: 2,
   },
   photoCountText: {
     fontFamily: Fonts.sansSemiBold,
-    fontSize: 12,
+    fontSize: 11,
     color: Colors.white,
   },
   entryContent: {
-    padding: Spacing.md,
-  },
-  entryHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 4,
+    padding: Spacing.sm,
   },
   entryTitle: {
-    fontFamily: Fonts.serif,
-    fontSize: 18,
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 13,
     color: Colors.text,
-    flex: 1,
-    marginRight: Spacing.sm,
+    marginBottom: 2,
+    lineHeight: 18,
   },
   entryDate: {
     fontFamily: Fonts.sans,
-    fontSize: 12,
+    fontSize: 11,
     color: Colors.textSecondary,
-    marginBottom: 8,
+    marginBottom: 4,
   },
   entryNotes: {
     fontFamily: Fonts.sans,
