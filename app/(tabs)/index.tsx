@@ -52,8 +52,11 @@ export default function HomeScreen() {
               <Text style={styles.brandBakeBook}>BAKEBOOK</Text>
             </View>
             <View style={styles.divider} />
-            <Text style={styles.subtitle}>
-              2 x London Bake Off Champion & Best Mum In The World
+            <Text style={styles.dedicationText}>
+              For our beautiful mum,
+            </Text>
+            <Text style={styles.dedicationFrom}>
+              Love Harry & Oliver
             </Text>
           </View>
         </View>
@@ -201,13 +204,18 @@ const styles = StyleSheet.create({
     marginVertical: Spacing.md,
     borderRadius: 1,
   },
-  subtitle: {
-    fontFamily: Fonts.serif,
-    fontSize: 12,
-    color: Colors.textSecondary,
+  dedicationText: {
+    fontFamily: Fonts.calligraphy,
+    fontSize: 20,
+    color: Colors.primaryDark,
     textAlign: 'center',
-    lineHeight: 16,
-    letterSpacing: -0.3,
+  },
+  dedicationFrom: {
+    fontFamily: Fonts.calligraphy,
+    fontSize: 18,
+    color: Colors.primaryDark,
+    textAlign: 'center',
+    marginTop: 2,
   },
   gridContainer: {
     flexDirection: 'row',

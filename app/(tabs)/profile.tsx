@@ -30,11 +30,9 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         {/* Profile Header */}
         <View style={styles.profileHeader}>
-          <View style={styles.avatar}>
-            <Text style={styles.avatarText}>❤️</Text>
-          </View>
-          <Text style={styles.name}>For my beautiful wife Suzie,</Text>
-          <Text style={styles.tagline}>Love Tom</Text>
+          <Ionicons name="heart" size={52} color={Colors.primaryDark} style={{ marginBottom: Spacing.md }} />
+          <Text style={styles.name}>For our beautiful mum,</Text>
+          <Text style={styles.tagline}>Love Harry & Oliver</Text>
         </View>
 
         {/* Stats */}
@@ -65,20 +63,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surfaceAlt,
     borderBottomLeftRadius: Radius.xl,
     borderBottomRightRadius: Radius.xl,
-  },
-  avatar: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    backgroundColor: Colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: Spacing.md,
-  },
-  avatarText: {
-    fontFamily: Fonts.serif,
-    fontSize: 36,
-    color: Colors.white,
   },
   name: {
     fontFamily: Fonts.serif,

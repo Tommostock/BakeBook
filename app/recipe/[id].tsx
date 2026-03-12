@@ -38,6 +38,7 @@ export default function RecipeDetailScreen() {
   );
   const [newNote, setNewNote] = useState('');
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(new Set());
+  const [checkedSteps, setCheckedSteps] = useState<Set<number>>(new Set());
   const [showTimer, setShowTimer] = useState(false);
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -76,6 +77,15 @@ export default function RecipeDetailScreen() {
 
   const toggleIngredient = (index: number) => {
     setCheckedIngredients((prev) => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  };
+
+  const toggleStep = (index: number) => {
+    setCheckedSteps((prev) => {
       const next = new Set(prev);
       if (next.has(index)) next.delete(index);
       else next.add(index);
@@ -219,12 +229,16 @@ export default function RecipeDetailScreen() {
           {/* Steps */}
           <Text style={styles.sectionTitle}>Instructions</Text>
           {recipe.steps.map((step, i) => (
-            <View key={i} style={styles.stepRow}>
-              <View style={styles.stepNumber}>
-                <Text style={styles.stepNumberText}>{i + 1}</Text>
+            <Pressable key={i} style={styles.stepRow} onPress={() => toggleStep(i)}>
+              <View style={[styles.stepNumber, checkedSteps.has(i) && styles.stepNumberDone]}>
+                {checkedSteps.has(i) ? (
+                  <Ionicons name="checkmark" size={14} color={Colors.white} />
+                ) : (
+                  <Text style={styles.stepNumberText}>{i + 1}</Text>
+                )}
               </View>
-              <Text style={styles.stepText}>{step}</Text>
-            </View>
+              <Text style={[styles.stepText, checkedSteps.has(i) && styles.stepTextDone]}>{step}</Text>
+            </Pressable>
           ))}
 
           {/* Tips */}
@@ -449,6 +463,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginTop: 2,
   },
+  stepNumberDone: {
+    backgroundColor: Colors.primaryDark,
+  },
   stepNumberText: {
     fontFamily: Fonts.sansBold,
     fontSize: 13,
@@ -460,6 +477,10 @@ const styles = StyleSheet.create({
     color: Colors.text,
     lineHeight: 22,
     flex: 1,
+  },
+  stepTextDone: {
+    textDecorationLine: 'line-through',
+    color: Colors.textLight,
   },
   tipsBox: {
     backgroundColor: Colors.surfaceAlt,

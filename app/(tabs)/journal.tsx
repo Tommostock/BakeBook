@@ -41,10 +41,14 @@ export default function JournalScreen() {
   const [notes, setNotes] = useState('');
   const [rating, setRating] = useState(0);
   const [photos, setPhotos] = useState<string[]>([]);
+  const [ratingWarning, setRatingWarning] = useState(false);
 
   // Detail view state
   const [viewingEntry, setViewingEntry] = useState<JournalEntry | null>(null);
   const [galleryIndex, setGalleryIndex] = useState(0);
+
+  // Delete confirmation state
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
   // Web file input ref (mobile browsers don't support expo-image-picker reliably)
   const fileInputRef = useRef<any>(null);
@@ -63,6 +67,15 @@ export default function JournalScreen() {
     ? recipes.filter((r) => r.title.toLowerCase().includes(recipeSearch.toLowerCase()))
     : recipes;
 
+  // Convert a File/Blob to a base64 data URI so photos persist in storage
+  const fileToBase64 = (file: Blob): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+
   const pickPhoto = async () => {
     if (Platform.OS === 'web') {
       // On web (esp. mobile browsers), use a native file input for reliable access
@@ -78,19 +91,23 @@ export default function JournalScreen() {
       mediaTypes: ['images'],
       allowsMultipleSelection: true,
       selectionLimit: MAX_PHOTOS - photos.length,
-      quality: 0.8,
+      quality: 0.6,
+      base64: true,
     });
     if (!result.canceled) {
-      const newUris = result.assets.map((a) => a.uri);
-      setPhotos((prev) => [...prev, ...newUris].slice(0, MAX_PHOTOS));
+      const base64Uris = result.assets
+        .filter((a) => a.base64)
+        .map((a) => `data:image/jpeg;base64,${a.base64}`);
+      setPhotos((prev) => [...prev, ...base64Uris].slice(0, MAX_PHOTOS));
     }
   };
 
-  const handleWebFileChange = (e: any) => {
+  const handleWebFileChange = async (e: any) => {
     const files: File[] = Array.from(e.target.files || []);
     const remaining = MAX_PHOTOS - photos.length;
-    const uris = files.slice(0, remaining).map((f) => URL.createObjectURL(f));
-    setPhotos((prev) => [...prev, ...uris].slice(0, MAX_PHOTOS));
+    const selected = files.slice(0, remaining);
+    const base64Uris = await Promise.all(selected.map((f) => fileToBase64(f)));
+    setPhotos((prev) => [...prev, ...base64Uris].slice(0, MAX_PHOTOS));
     e.target.value = '';
   };
 
@@ -105,6 +122,7 @@ export default function JournalScreen() {
     setNotes('');
     setRating(0);
     setPhotos([]);
+    setRatingWarning(false);
     handledRecipeId.current = '';
     // Clear the recipeId param so re-visiting the tab doesn't re-open the modal
     if (params.recipeId) {
@@ -118,7 +136,7 @@ export default function JournalScreen() {
       return;
     }
     if (rating === 0) {
-      Alert.alert('Add a rating', 'Please give your bake a star rating before saving.');
+      setRatingWarning(true);
       return;
     }
     const recipe = recipes.find((r) => r.id === selectedRecipeId);
@@ -141,10 +159,14 @@ export default function JournalScreen() {
   };
 
   const confirmDelete = (id: string) => {
-    Alert.alert('Delete Entry', 'Are you sure you want to remove this journal entry?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Delete', style: 'destructive', onPress: () => deleteJournalEntry(id) },
-    ]);
+    setDeleteConfirmId(id);
+  };
+
+  const handleConfirmDelete = () => {
+    if (deleteConfirmId) {
+      deleteJournalEntry(deleteConfirmId);
+      setDeleteConfirmId(null);
+    }
   };
 
   const renderEntry = ({ item }: { item: JournalEntry }) => {
@@ -402,7 +424,10 @@ export default function JournalScreen() {
             </ScrollView>
 
             <Text style={styles.fieldLabel}>How did it turn out?</Text>
-            <StarRating rating={rating} onRate={setRating} size={32} />
+            <StarRating rating={rating} onRate={(r) => { setRating(r); setRatingWarning(false); }} size={32} />
+            {ratingWarning && (
+              <Text style={styles.ratingWarning}>⭐ Please choose a rating before saving</Text>
+            )}
 
             {/* Photos */}
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: Spacing.lg, marginBottom: Spacing.md }}>
@@ -454,6 +479,38 @@ export default function JournalScreen() {
             />
           )}
         </SafeAreaView>
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        visible={!!deleteConfirmId}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setDeleteConfirmId(null)}
+      >
+        <Pressable style={styles.confirmOverlay} onPress={() => setDeleteConfirmId(null)}>
+          <View style={styles.confirmBox}>
+            <Ionicons name="warning-outline" size={36} color={Colors.primaryDark} />
+            <Text style={styles.confirmTitle}>Delete Entry?</Text>
+            <Text style={styles.confirmText}>
+              Are you sure you want to delete this journal entry? This cannot be undone.
+            </Text>
+            <View style={styles.confirmButtons}>
+              <Pressable
+                style={styles.confirmCancelBtn}
+                onPress={() => setDeleteConfirmId(null)}
+              >
+                <Text style={styles.confirmCancelText}>Cancel</Text>
+              </Pressable>
+              <Pressable
+                style={styles.confirmDeleteBtn}
+                onPress={handleConfirmDelete}
+              >
+                <Text style={styles.confirmDeleteText}>Delete</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Pressable>
       </Modal>
     </SafeAreaView>
   );
@@ -803,5 +860,79 @@ const styles = StyleSheet.create({
   dotActive: {
     width: 18,
     backgroundColor: Colors.primaryDark,
+  },
+  // Rating warning
+  ratingWarning: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 13,
+    color: '#E53E3E',
+    marginTop: Spacing.sm,
+  },
+  // Delete confirmation modal
+  confirmOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.xl,
+  },
+  confirmBox: {
+    backgroundColor: Colors.white,
+    borderRadius: Radius.lg,
+    padding: Spacing.xl,
+    alignItems: 'center',
+    maxWidth: 340,
+    width: '100%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+    elevation: 8,
+  },
+  confirmTitle: {
+    fontFamily: Fonts.serif,
+    fontSize: 20,
+    color: Colors.text,
+    marginTop: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  confirmText: {
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    color: Colors.textSecondary,
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: Spacing.lg,
+  },
+  confirmButtons: {
+    flexDirection: 'row',
+    gap: Spacing.md,
+    width: '100%',
+  },
+  confirmCancelBtn: {
+    flex: 1,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.full,
+    backgroundColor: Colors.surface,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    alignItems: 'center',
+  },
+  confirmCancelText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 15,
+    color: Colors.text,
+  },
+  confirmDeleteBtn: {
+    flex: 1,
+    paddingVertical: Spacing.md,
+    borderRadius: Radius.full,
+    backgroundColor: '#E53E3E',
+    alignItems: 'center',
+  },
+  confirmDeleteText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 15,
+    color: Colors.white,
   },
 });

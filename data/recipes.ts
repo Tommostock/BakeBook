@@ -27,7 +27,7 @@ export const recipes: Recipe[] = [
     bakeTime: 45,
     totalTime: 1440,
     difficulty: 'Hard',
-    servings: 1,
+    servings: 10,
     imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=80',
     tips: 'The key to great sourdough is a healthy, active starter. Feed it 8-12 hours before mixing. If your kitchen is cold, the bulk ferment will take longer — look for a 50% rise, not a set time.',
     dietaryTags: ['Vegetarian', 'Vegan'],
@@ -780,7 +780,7 @@ export const recipes: Recipe[] = [
     difficulty: 'Easy',
     servings: 16,
     imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=80',
-    tips: 'The key is cold butter — not melted, just soft enough to mix. Under-baking slightly gives you a more melt-in-the-mouth texture. Use the best butter you can find; you\'ll taste it.',
+    tips: 'Use softened butter — not melted, just soft enough to mix. Under-baking slightly gives you a more melt-in-the-mouth texture. Use the best butter you can find; you\'ll taste it.',
     dietaryTags: ['Vegetarian'],
   },
   {
@@ -1018,7 +1018,7 @@ export const recipes: Recipe[] = [
     servings: 20,
     imageUrl: 'https://images.unsplash.com/photo-1632374501587-a1c0ad95e6f3?w=800&q=80',
     tips: 'The sugar caramelises on the hot tray, so don\'t use silicone mats — parchment works best. Watch them closely near the end; they go from golden to burnt quickly.',
-    dietaryTags: ['Vegetarian', 'Vegan'],
+    dietaryTags: ['Vegetarian'],
   },
   {
     id: 'pastry-006',
@@ -1207,6 +1207,7 @@ export const recipes: Recipe[] = [
       { name: 'chicken stock', amount: '300', unit: 'ml' },
       { name: 'double cream', amount: '100', unit: 'ml' },
       { name: 'fresh thyme leaves', amount: '1', unit: 'tsp' },
+      { name: 'salt and black pepper', amount: 'to taste' },
       { name: 'puff pastry', amount: '320', unit: 'g' },
       { name: 'egg (for wash)', amount: '1' },
     ],
@@ -1227,6 +1228,7 @@ export const recipes: Recipe[] = [
     servings: 4,
     imageUrl: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=800&q=80',
     tips: 'Let the filling cool before adding the pastry lid — hot filling makes soggy pastry. For extra flavour, add a splash of white wine to the sauce.',
+    dietaryTags: [],
   },
   // ── BREAKFAST BAKES ────────────────────────────────
   {
@@ -1394,7 +1396,7 @@ export const recipes: Recipe[] = [
     ],
     prepTime: 15,
     bakeTime: 45,
-    totalTime: 60,
+    totalTime: 540,
     difficulty: 'Easy',
     servings: 8,
     imageUrl: 'https://images.unsplash.com/photo-1484723091739-30a097e8f929?w=800&q=80',
@@ -1435,6 +1437,7 @@ export const recipes: Recipe[] = [
     servings: 12,
     imageUrl: 'https://images.unsplash.com/photo-1584568694244-14fbdf83bd30?w=800&q=80',
     tips: 'Squeeze excess moisture from the grated onion before mixing. The mustard and sage lift these far above ordinary sausage rolls.',
+    dietaryTags: [],
   },
   {
     id: 'savory-003',
@@ -1482,11 +1485,12 @@ export const recipes: Recipe[] = [
       { name: 'filo pastry sheets', amount: '8' },
       { name: 'olive oil', amount: '60', unit: 'ml' },
       { name: 'nutmeg', amount: 'pinch' },
+      { name: 'salt and black pepper', amount: 'to taste' },
     ],
     steps: [
       'Preheat oven to 180°C (fan).',
       'Wilt spinach in a pan, then squeeze out all excess water. Chop roughly.',
-      'Mix spinach with feta, spring onions, eggs, dill, and nutmeg.',
+      'Mix spinach with feta, spring onions, eggs, dill, nutmeg, and season with salt and pepper.',
       'Brush a 23cm round baking dish with olive oil.',
       'Layer 4 filo sheets in the dish, brushing each with oil and letting them overhang the edges.',
       'Spoon in the filling and spread evenly.',
@@ -1568,6 +1572,7 @@ export const recipes: Recipe[] = [
     servings: 4,
     imageUrl: 'https://images.unsplash.com/photo-1600628421060-939639517883?w=800&q=80',
     tips: 'Season the filling more than you think — the potato absorbs a lot. Dice everything small and evenly so it cooks through in the oven.',
+    dietaryTags: [],
   },
   // ── DESSERTS ───────────────────────────────────────
   {
@@ -1963,7 +1968,7 @@ export const recipes: Recipe[] = [
     ],
     prepTime: 30,
     bakeTime: 300,
-    totalTime: 420,
+    totalTime: 570,
     difficulty: 'Medium',
     servings: 10,
     imageUrl: 'https://images.unsplash.com/photo-1512909006721-3d6018887383?w=800&q=80',
