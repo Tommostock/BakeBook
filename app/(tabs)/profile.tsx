@@ -48,7 +48,7 @@ export default function ProfileScreen() {
   const stats = [
     { label: 'Total Recipes', value: allRecipes.length, icon: 'book-outline' as const },
     { label: 'My Recipes', value: userRecipes.length, icon: 'create-outline' as const },
-    { label: 'Favorites', value: favorites.length, icon: 'heart-outline' as const },
+    { label: 'Favourites', value: favorites.length, icon: 'heart-outline' as const },
     { label: 'Journal Entries', value: journalEntries.length, icon: 'pencil-outline' as const },
   ];
 

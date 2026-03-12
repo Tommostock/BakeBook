@@ -82,7 +82,7 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
           onPress={() => resetTimer(timer.id)}
           hitSlop={6}
         >
-          <Ionicons name="refresh" size={14} color={Colors.white} />
+          <Ionicons name="refresh" size={14} color={Colors.text} />
           <Text style={styles.timerActionText}>Reset</Text>
         </Pressable>
         <Pressable
@@ -90,7 +90,7 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
           onPress={() => removeTimer(timer.id)}
           hitSlop={6}
         >
-          <Ionicons name="close" size={14} color={Colors.white} />
+          <Ionicons name="close" size={14} color={Colors.text} />
           <Text style={styles.timerActionText}>Remove</Text>
         </Pressable>
       </View>
@@ -311,13 +311,13 @@ const styles = StyleSheet.create({
   timerLabel: {
     fontFamily: Fonts.sans,
     fontSize: 16,
-    color: Colors.white,
+    color: Colors.text,
     flex: 1,
   },
   timerTime: {
     fontFamily: Fonts.sansBold,
     fontSize: 18,
-    color: Colors.white,
+    color: Colors.text,
     letterSpacing: 1,
   },
   timerPlayBtn: {
@@ -346,6 +346,6 @@ const styles = StyleSheet.create({
   timerActionText: {
     fontFamily: Fonts.sans,
     fontSize: 11,
-    color: Colors.white,
+    color: Colors.text,
   },
 });

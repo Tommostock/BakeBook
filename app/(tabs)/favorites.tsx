@@ -57,7 +57,7 @@ export default function FavoritesScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Favorites</Text>
+        <Text style={styles.headerTitle}>My Favourites</Text>
         <Text style={styles.count}>{favoriteRecipes.length} saved</Text>
       </View>
 
@@ -70,7 +70,7 @@ export default function FavoritesScreen() {
         ListEmptyComponent={
           <View style={styles.empty}>
             <Ionicons name="heart-outline" size={64} color={Colors.textLight} />
-            <Text style={styles.emptyTitle}>No favorites yet</Text>
+            <Text style={styles.emptyTitle}>No favourites yet</Text>
             <Text style={styles.emptyText}>
               Tap the heart icon on any recipe to save it here
             </Text>
