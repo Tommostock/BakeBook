@@ -143,7 +143,7 @@ export const recipes: Recipe[] = [
     totalTime: 720,
     difficulty: 'Hard',
     servings: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1530610476181-d83430b64dcd?w=800&q=80',
+    imageUrl: '/assets/recipes/butter-croissants.jpg',
     tips: 'Keep everything cold — if the butter starts to soften during lamination, put the dough back in the fridge immediately. The layers come from keeping butter and dough distinct, not from mixing them.',
     dietaryTags: ['Vegetarian'],
     isFeatured: true,
