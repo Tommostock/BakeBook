@@ -374,7 +374,7 @@ export const recipes: Recipe[] = [
     totalTime: 75,
     difficulty: 'Easy',
     servings: 30,
-    imageUrl: 'https://images.unsplash.com/photo-1481391319762-47dff72954d9?w=800&q=80',
+    imageUrl: '/assets/recipes/gingerbread-biscuits.jpg',
     tips: 'For softer gingerbread, bake for 8-9 minutes. For snappier biscuits, go the full 12. The dough freezes brilliantly — make a batch ahead of the Christmas rush.',
     dietaryTags: ['Vegetarian'],
     isFeatured: true,
