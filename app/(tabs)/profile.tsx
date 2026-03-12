@@ -14,7 +14,6 @@ import { CATEGORY_EMOJIS, DIFFICULTY_COLORS } from '../../lib/helpers';
 import { computeSkillStats, computeAchievements } from '../../lib/skills';
 import { SkillProgressCard } from '../../components/SkillProgressCard';
 import { BadgeGrid } from '../../components/BadgeGrid';
-import { BakeryFrame } from '../../components/BakeryFrame';
 import { BakeryCollage } from '../../components/BakeryCollage';
 import type { RecipeCategory } from '../../types/recipe';
 
@@ -58,20 +57,17 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        {/* Profile Header — matches home page hero style */}
+        {/* Profile Header */}
         <View style={styles.hero}>
           <BakeryCollage />
-          <BakeryFrame width={340} height={152} contentPaddingVertical={10}>
-            <View style={styles.brandContainer}>
-              <Text style={styles.name}>Suzie Stock</Text>
-            </View>
-            <View style={styles.divider} />
-            <Text style={styles.tagline}>2 x London Bake Off Champion</Text>
-            <View style={styles.trophyRow}>
-              <Ionicons name="trophy" size={22} color={Colors.primaryDark} />
-              <Ionicons name="trophy" size={22} color={Colors.primaryDark} />
-            </View>
-          </BakeryFrame>
+          <Text style={styles.brandName}>Suzie's</Text>
+          <Text style={styles.subtitle}>SUZIE STOCK</Text>
+          <View style={styles.divider} />
+          <Text style={styles.tagline}>2 x London Bake Off Champion</Text>
+          <View style={styles.trophyRow}>
+            <Ionicons name="trophy" size={20} color={Colors.primaryDark} />
+            <Ionicons name="trophy" size={20} color={Colors.primaryDark} />
+          </View>
         </View>
 
         {/* Stats */}
@@ -173,7 +169,8 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
   hero: {
     backgroundColor: Colors.surfaceAlt,
-    paddingVertical: 8,
+    paddingTop: 20,
+    paddingBottom: 22,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
     borderBottomLeftRadius: Radius.xl,
@@ -181,34 +178,38 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
   },
-  brandContainer: {
-    alignItems: 'center',
-    position: 'relative',
-    marginBottom: -4,
-  },
-  name: {
+  brandName: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 44,
+    fontSize: 50,
     color: Colors.primaryDark,
+    marginBottom: -8,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 11,
+    color: Colors.textSecondary,
+    letterSpacing: 4,
     textAlign: 'center',
   },
   divider: {
-    width: 48,
-    height: 2,
-    backgroundColor: Colors.primary,
-    marginVertical: 5,
+    width: 36,
+    height: 1.5,
+    backgroundColor: Colors.primaryDark,
+    marginVertical: 8,
+    opacity: 0.35,
     borderRadius: 1,
   },
   tagline: {
-    fontFamily: Fonts.calligraphy,
-    fontSize: 17,
-    color: Colors.primaryDark,
+    fontFamily: Fonts.serifRegular,
+    fontSize: 14,
+    color: Colors.text,
     textAlign: 'center',
   },
   trophyRow: {
     flexDirection: 'row',
-    gap: 8,
-    marginTop: 5,
+    gap: 6,
+    marginTop: 6,
   },
   statsGrid: {
     flexDirection: 'row',

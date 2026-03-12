@@ -15,7 +15,6 @@ import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { RecipeCard } from '../../components/RecipeCard';
 import { CategoryPill } from '../../components/CategoryPill';
 import { SectionHeader } from '../../components/SectionHeader';
-import { BakeryFrame } from '../../components/BakeryFrame';
 import { BakeryCollage } from '../../components/BakeryCollage';
 import { CATEGORIES, CATEGORY_EMOJIS } from '../../lib/helpers';
 import { useAppStore } from '../../lib/store';
@@ -58,19 +57,15 @@ export default function HomeScreen() {
         {/* Header / Hero */}
         <View style={styles.hero}>
           <BakeryCollage />
-          <BakeryFrame width={340} height={160} contentPaddingVertical={10}>
-            <View style={styles.brandContainer}>
-              <Text style={styles.brandSuzie}>Suzie's</Text>
-              <Text style={styles.brandBakeBook}>BAKEBOOK</Text>
-            </View>
-            <View style={styles.divider} />
-            <Text style={styles.dedicationText}>
-              For our beautiful mum,
-            </Text>
-            <Text style={styles.dedicationFrom}>
-              Love Harry & Oliver
-            </Text>
-          </BakeryFrame>
+          <Text style={styles.brandSuzie}>Suzie's</Text>
+          <Text style={styles.brandBakeBook}>BakeBook</Text>
+          <View style={styles.divider} />
+          <Text style={styles.dedicationText}>
+            For our beautiful mum,
+          </Text>
+          <Text style={styles.dedicationFrom}>
+            Love Harry & Oliver
+          </Text>
         </View>
 
         {/* Categories */}
@@ -192,7 +187,8 @@ const styles = StyleSheet.create({
   },
   hero: {
     backgroundColor: Colors.surfaceAlt,
-    paddingVertical: 8,
+    paddingTop: 20,
+    paddingBottom: 22,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
     borderBottomLeftRadius: Radius.xl,
@@ -200,32 +196,26 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
   },
-  brandContainer: {
-    alignItems: 'center',
-    position: 'relative',
-    marginBottom: -4,
-  },
   brandSuzie: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 48,
+    fontSize: 54,
     color: Colors.primaryDark,
-    marginBottom: -12,
-    zIndex: 1,
+    marginBottom: -14,
     textAlign: 'center',
-    transform: [{ translateX: -4 }],
   },
   brandBakeBook: {
-    fontFamily: Fonts.serif,
-    fontSize: 15,
+    fontFamily: Fonts.serifRegular,
+    fontSize: 17,
     color: Colors.text,
-    letterSpacing: 7,
+    letterSpacing: 3,
     textAlign: 'center',
   },
   divider: {
-    width: 48,
-    height: 2,
-    backgroundColor: Colors.primary,
-    marginVertical: 5,
+    width: 36,
+    height: 1.5,
+    backgroundColor: Colors.primaryDark,
+    marginVertical: 8,
+    opacity: 0.35,
     borderRadius: 1,
   },
   dedicationText: {
@@ -233,12 +223,14 @@ const styles = StyleSheet.create({
     fontSize: 17,
     color: Colors.primaryDark,
     textAlign: 'center',
+    opacity: 0.6,
   },
   dedicationFrom: {
     fontFamily: Fonts.calligraphy,
     fontSize: 16,
     color: Colors.primaryDark,
     textAlign: 'center',
+    opacity: 0.5,
     marginTop: 1,
   },
   gridContainer: {
