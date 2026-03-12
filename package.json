@@ -6,7 +6,8 @@
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
-    "web": "expo start --web"
+    "web": "expo start --web",
+    "build:pwa": "npx expo export --platform web && node scripts/inject-pwa.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/dancing-script": "^0.4.2",

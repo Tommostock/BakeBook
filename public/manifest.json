@@ -1,0 +1,18 @@
+{
+  "name": "Suzie's BakeBook",
+  "short_name": "BakeBook",
+  "description": "Your personal collection of baking recipes",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#F8C8DC",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/assets/images/icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
