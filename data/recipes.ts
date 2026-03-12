@@ -263,7 +263,7 @@ export const recipes: Recipe[] = [
     totalTime: 120,
     difficulty: 'Medium',
     servings: 6,
-    imageUrl: 'https://images.unsplash.com/photo-1604908177453-7462950a6a3b?w=800&q=80',
+    imageUrl: '/assets/recipes/cheese-onion-quiche.jpg',
     tips: 'Blind baking the pastry prevents a soggy bottom. Don\'t rush the onions — low and slow caramelisation brings out their natural sweetness which makes this quiche special.',
     dietaryTags: ['Vegetarian'],
   },
