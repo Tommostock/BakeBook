@@ -157,11 +157,12 @@ interface Props {
 interface Props {
   children?: React.ReactNode;
   width?: number;
+  height?: number;
   contentPaddingVertical?: number;
 }
 
-export function BakeryFrame({ children, width = 320, contentPaddingVertical = 28 }: Props) {
-  const height = width / ASPECT;
+export function BakeryFrame({ children, width = 320, height: heightProp, contentPaddingVertical = 28 }: Props) {
+  const height = heightProp ?? width / ASPECT;
   return (
     <View style={[styles.wrapper, { width, height }]}>
       <Image

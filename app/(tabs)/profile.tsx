@@ -61,7 +61,7 @@ export default function ProfileScreen() {
         {/* Profile Header — matches home page hero style */}
         <View style={styles.hero}>
           <BakeryCollage />
-          <BakeryFrame width={260} contentPaddingVertical={12}>
+          <BakeryFrame width={310} height={152} contentPaddingVertical={10}>
             <View style={styles.brandContainer}>
               <Text style={styles.name}>Suzie Stock</Text>
             </View>
@@ -188,27 +188,27 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 34,
+    fontSize: 44,
     color: Colors.primaryDark,
     textAlign: 'center',
   },
   divider: {
-    width: 44,
+    width: 48,
     height: 2,
     backgroundColor: Colors.primary,
-    marginVertical: 6,
+    marginVertical: 5,
     borderRadius: 1,
   },
   tagline: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 14,
+    fontSize: 17,
     color: Colors.primaryDark,
     textAlign: 'center',
   },
   trophyRow: {
     flexDirection: 'row',
     gap: 8,
-    marginTop: 6,
+    marginTop: 5,
   },
   statsGrid: {
     flexDirection: 'row',

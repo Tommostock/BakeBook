@@ -58,7 +58,7 @@ export default function HomeScreen() {
         {/* Header / Hero */}
         <View style={styles.hero}>
           <BakeryCollage />
-          <BakeryFrame width={260} contentPaddingVertical={12}>
+          <BakeryFrame width={310} height={160} contentPaddingVertical={10}>
             <View style={styles.brandContainer}>
               <Text style={styles.brandSuzie}>Suzie's</Text>
               <Text style={styles.brandBakeBook}>BAKEBOOK</Text>
@@ -207,36 +207,36 @@ const styles = StyleSheet.create({
   },
   brandSuzie: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 40,
+    fontSize: 48,
     color: Colors.primaryDark,
-    marginBottom: -10,
+    marginBottom: -12,
     zIndex: 1,
     textAlign: 'center',
     transform: [{ translateX: -4 }],
   },
   brandBakeBook: {
     fontFamily: Fonts.serif,
-    fontSize: 14,
+    fontSize: 15,
     color: Colors.text,
-    letterSpacing: 6,
+    letterSpacing: 7,
     textAlign: 'center',
   },
   divider: {
-    width: 44,
+    width: 48,
     height: 2,
     backgroundColor: Colors.primary,
-    marginVertical: 6,
+    marginVertical: 5,
     borderRadius: 1,
   },
   dedicationText: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 15,
+    fontSize: 17,
     color: Colors.primaryDark,
     textAlign: 'center',
   },
   dedicationFrom: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 14,
+    fontSize: 16,
     color: Colors.primaryDark,
     textAlign: 'center',
     marginTop: 1,
