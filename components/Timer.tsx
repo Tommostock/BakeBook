@@ -28,49 +28,71 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
   const resetTimer = useTimerStore((s) => s.resetTimer);
   const removeTimer = useTimerStore((s) => s.removeTimer);
 
-  const progress = timer.totalSeconds > 0 ? timer.remainingSeconds / timer.totalSeconds : 0;
+  // elapsed goes 0→1 (left to right fill)
+  const elapsed =
+    timer.totalSeconds > 0
+      ? (timer.totalSeconds - timer.remainingSeconds) / timer.totalSeconds
+      : 0;
   const isDone = timer.remainingSeconds === 0 && timer.totalSeconds > 0;
 
   return (
     <View style={styles.timerCard}>
-      {/* Horizontal bar timer */}
-      <View style={styles.timerBarContainer}>
-        <View style={styles.timerBarHeader}>
-          <Text style={styles.timerBarLabel}>{timer.label}</Text>
-          <Text style={styles.timerTime}>{formatDisplay(timer.remainingSeconds)}</Text>
+      {/* Coloured fill that grows left → right */}
+      <View
+        style={[
+          styles.timerFill,
+          {
+            width: `${elapsed * 100}%`,
+            backgroundColor: isDone ? Colors.success : Colors.primaryDark,
+          },
+        ]}
+      />
+
+      {/* Content overlaid on top */}
+      <View style={styles.timerContent}>
+        <View style={styles.timerTextArea}>
+          <Text style={styles.timerLabel} numberOfLines={1}>
+            {timer.label}
+          </Text>
+          <Text style={styles.timerTime}>
+            {formatDisplay(timer.remainingSeconds)}
+          </Text>
         </View>
 
-        {/* Progress bar background */}
-        <View style={styles.progressBarBackground}>
-          {/* Progress bar fill */}
-          <View
-            style={[
-              styles.progressBarFill,
-              {
-                width: `${progress * 100}%`,
-                backgroundColor: isDone ? Colors.success : Colors.primaryDark,
-              },
-            ]}
+        {/* Play / Pause button */}
+        <Pressable
+          style={styles.timerPlayBtn}
+          onPress={() =>
+            timer.isRunning ? pauseTimer(timer.id) : startTimer(timer.id)
+          }
+          disabled={isDone}
+        >
+          <Ionicons
+            name={isDone ? 'checkmark' : timer.isRunning ? 'pause' : 'play'}
+            size={22}
+            color={isDone ? Colors.success : Colors.primaryDark}
           />
-        </View>
+        </Pressable>
+      </View>
 
-        {/* Controls */}
-        <View style={styles.timerBarControls}>
-          <Pressable
-            style={[styles.timerBarBtn, timer.isRunning ? styles.pauseBtn : styles.startBtn]}
-            onPress={() => timer.isRunning ? pauseTimer(timer.id) : startTimer(timer.id)}
-            disabled={isDone}
-          >
-            <Ionicons
-              name={timer.isRunning ? 'pause' : 'play'}
-              size={20}
-              color={Colors.white}
-            />
-          </Pressable>
-          <Pressable onPress={() => removeTimer(timer.id)} hitSlop={8}>
-            <Ionicons name="close" size={18} color={Colors.textLight} />
-          </Pressable>
-        </View>
+      {/* Thin reset / close row below */}
+      <View style={styles.timerActions}>
+        <Pressable
+          style={styles.timerActionBtn}
+          onPress={() => resetTimer(timer.id)}
+          hitSlop={6}
+        >
+          <Ionicons name="refresh" size={14} color={Colors.white} />
+          <Text style={styles.timerActionText}>Reset</Text>
+        </Pressable>
+        <Pressable
+          style={styles.timerActionBtn}
+          onPress={() => removeTimer(timer.id)}
+          hitSlop={6}
+        >
+          <Ionicons name="close" size={14} color={Colors.white} />
+          <Text style={styles.timerActionText}>Remove</Text>
+        </Pressable>
       </View>
     </View>
   );
@@ -256,26 +278,41 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     paddingVertical: Spacing.md,
   },
+
+  /* ── Timer card: the fill IS the background ── */
   timerCard: {
-    backgroundColor: Colors.primaryDark,
+    backgroundColor: Colors.primary,
     borderRadius: Radius.md,
     marginBottom: Spacing.md,
     overflow: 'hidden',
+    position: 'relative',
   },
-  timerBarContainer: {
-    paddingHorizontal: Spacing.lg,
-    paddingVertical: Spacing.md,
+  timerFill: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    bottom: 0,
+    borderRadius: Radius.md,
   },
-  timerBarHeader: {
+  timerContent: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: Spacing.sm,
+    paddingLeft: Spacing.lg,
+    paddingRight: Spacing.sm,
+    paddingTop: Spacing.md,
+    paddingBottom: 4,
   },
-  timerBarLabel: {
-    fontFamily: Fonts.sansSemiBold,
+  timerTextArea: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+  },
+  timerLabel: {
+    fontFamily: Fonts.sans,
     fontSize: 16,
     color: Colors.white,
+    flex: 1,
   },
   timerTime: {
     fontFamily: Fonts.sansBold,
@@ -283,34 +320,32 @@ const styles = StyleSheet.create({
     color: Colors.white,
     letterSpacing: 1,
   },
-  progressBarBackground: {
-    height: 6,
-    backgroundColor: Colors.white + '30',
-    borderRadius: 3,
-    overflow: 'hidden',
-    marginBottom: Spacing.md,
-  },
-  progressBarFill: {
-    height: '100%',
-    borderRadius: 3,
-  },
-  timerBarControls: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: Spacing.sm,
-  },
-  timerBarBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 8,
+  timerPlayBtn: {
+    width: 42,
+    height: 42,
+    borderRadius: 21,
+    backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    marginLeft: Spacing.sm,
   },
-  startBtn: {
-    backgroundColor: Colors.white,
+  timerActions: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: Spacing.md,
+    paddingHorizontal: Spacing.lg,
+    paddingBottom: Spacing.sm,
+    paddingTop: 2,
   },
-  pauseBtn: {
-    backgroundColor: Colors.white,
+  timerActionBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 3,
+    opacity: 0.7,
+  },
+  timerActionText: {
+    fontFamily: Fonts.sans,
+    fontSize: 11,
+    color: Colors.white,
   },
 });
