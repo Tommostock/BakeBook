@@ -14,7 +14,6 @@ import { CATEGORY_EMOJIS, DIFFICULTY_COLORS } from '../../lib/helpers';
 import { computeSkillStats, computeAchievements } from '../../lib/skills';
 import { SkillProgressCard } from '../../components/SkillProgressCard';
 import { BadgeGrid } from '../../components/BadgeGrid';
-// BakeryCollage removed — clean background matches rest of app
 import type { RecipeCategory } from '../../types/recipe';
 
 const DIFFICULTY_EMOJIS: Record<string, string> = {
@@ -41,7 +40,6 @@ export default function ProfileScreen() {
 
   const hasBakes = journalEntries.length > 0;
 
-  // Sort categories by bake count (descending)
   const sortedCategories = useMemo(() => {
     return Object.entries(skills.byCategory)
       .sort(([, a], [, b]) => b.count - a.count);
@@ -57,15 +55,23 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        {/* Profile Header */}
-        <View style={styles.hero}>
-          <Text style={styles.heroTitle}>Suzie Stock</Text>
-          <View style={styles.divider} />
-          <Text style={styles.tagline}>2 x London Bake Off Champion</Text>
-          <View style={styles.trophyRow}>
-            <Ionicons name="trophy" size={20} color={Colors.primaryDark} />
-            <Ionicons name="trophy" size={20} color={Colors.primaryDark} />
+        {/* Page Title — same style as Baking Journal, My Favorites */}
+        <View style={styles.header}>
+          <Text style={styles.headerTitle}>Profile</Text>
+        </View>
+
+        {/* About Card */}
+        <View style={styles.aboutCard}>
+          <Text style={styles.aboutName}>Suzie Stock</Text>
+          <View style={styles.aboutChampRow}>
+            <Ionicons name="trophy" size={16} color={Colors.primaryDark} />
+            <Text style={styles.aboutChamp}>2 x London Bake Off Champion</Text>
+            <Ionicons name="trophy" size={16} color={Colors.primaryDark} />
           </View>
+          <View style={styles.aboutDivider} />
+          <Text style={styles.aboutDedication}>
+            For our beautiful mum,{'\n'}Love Harry & Oliver
+          </Text>
         </View>
 
         {/* Stats */}
@@ -165,39 +171,61 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
-  hero: {
-    backgroundColor: Colors.surfaceAlt,
-    paddingTop: 24,
-    paddingBottom: 24,
+
+  /* ── Page header — matches Journal / Favorites ── */
+  header: {
     paddingHorizontal: Spacing.lg,
-    alignItems: 'center',
-    borderBottomLeftRadius: Radius.xl,
-    borderBottomRightRadius: Radius.xl,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.md,
   },
-  heroTitle: {
+  headerTitle: {
     fontFamily: Fonts.serif,
     fontSize: 28,
     color: Colors.text,
-    textAlign: 'center',
   },
-  divider: {
-    width: 50,
-    height: 2,
-    backgroundColor: Colors.primaryDark,
-    marginVertical: 10,
-    borderRadius: 1,
+
+  /* ── About card ── */
+  aboutCard: {
+    marginHorizontal: Spacing.lg,
+    backgroundColor: Colors.surfaceAlt,
+    borderRadius: Radius.md,
+    padding: Spacing.lg,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
   },
-  tagline: {
+  aboutName: {
+    fontFamily: Fonts.serif,
+    fontSize: 22,
+    color: Colors.text,
+  },
+  aboutChampRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    marginTop: 6,
+  },
+  aboutChamp: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 13,
+    color: Colors.primaryDark,
+  },
+  aboutDivider: {
+    width: 40,
+    height: 1,
+    backgroundColor: Colors.border,
+    marginVertical: 12,
+  },
+  aboutDedication: {
     fontFamily: Fonts.serifRegular,
-    fontSize: 16,
+    fontSize: 14,
     color: Colors.textSecondary,
     textAlign: 'center',
+    lineHeight: 22,
+    fontStyle: 'italic',
   },
-  trophyRow: {
-    flexDirection: 'row',
-    gap: 8,
-    marginTop: 8,
-  },
+
+  /* ── Stats ── */
   statsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',

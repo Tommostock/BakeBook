@@ -15,7 +15,6 @@ import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { RecipeCard } from '../../components/RecipeCard';
 import { CategoryPill } from '../../components/CategoryPill';
 import { SectionHeader } from '../../components/SectionHeader';
-// BakeryCollage removed — clean background matches rest of app
 import { CATEGORIES, CATEGORY_EMOJIS } from '../../lib/helpers';
 import { useAppStore } from '../../lib/store';
 import { useAllRecipes } from '../../lib/recipes';
@@ -54,17 +53,18 @@ export default function HomeScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 32 }}
       >
-        {/* Header / Hero */}
-        <View style={styles.hero}>
-          <Text style={styles.brandSuzie}>Suzie's</Text>
-          <Text style={styles.brandBakeBook}>BakeBook</Text>
-          <View style={styles.divider} />
-          <Text style={styles.dedicationText}>
-            For our beautiful mum,
-          </Text>
-          <Text style={styles.dedicationFrom}>
-            Love Harry & Oliver
-          </Text>
+        {/* Top Logo Bar */}
+        <View style={styles.logoBar}>
+          <View>
+            <Text style={styles.logoSuzie}>Suzie's</Text>
+            <Text style={styles.logoBakeBook}>BakeBook</Text>
+          </View>
+          <Pressable
+            style={styles.searchIcon}
+            onPress={() => router.push('/(tabs)/search')}
+          >
+            <Ionicons name="search" size={22} color={Colors.text} />
+          </Pressable>
         </View>
 
         {/* Categories */}
@@ -184,49 +184,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  hero: {
-    backgroundColor: Colors.surfaceAlt,
-    paddingTop: 24,
-    paddingBottom: 24,
-    paddingHorizontal: Spacing.lg,
+
+  /* ── Compact logo bar (top-left like modern apps) ── */
+  logoBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottomLeftRadius: Radius.xl,
-    borderBottomRightRadius: Radius.xl,
+    paddingHorizontal: Spacing.lg,
+    paddingTop: Spacing.md,
+    paddingBottom: Spacing.sm,
   },
-  brandSuzie: {
+  logoSuzie: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 58,
-    color: Colors.text,
-    marginBottom: -16,
-    textAlign: 'center',
+    fontSize: 36,
+    color: Colors.primaryDark,
+    lineHeight: 40,
   },
-  brandBakeBook: {
+  logoBakeBook: {
     fontFamily: Fonts.serif,
-    fontSize: 20,
+    fontSize: 13,
     color: Colors.text,
-    letterSpacing: 4,
-    textAlign: 'center',
+    letterSpacing: 3,
+    marginTop: -6,
   },
-  divider: {
-    width: 50,
-    height: 2,
-    backgroundColor: Colors.primaryDark,
-    marginVertical: 10,
-    borderRadius: 1,
+  searchIcon: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: Colors.surfaceAlt,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  dedicationText: {
-    fontFamily: Fonts.serifRegular,
-    fontSize: 16,
-    color: Colors.textSecondary,
-    textAlign: 'center',
-  },
-  dedicationFrom: {
-    fontFamily: Fonts.serifRegular,
-    fontSize: 15,
-    color: Colors.textSecondary,
-    textAlign: 'center',
-    marginTop: 2,
-  },
+
   gridContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
