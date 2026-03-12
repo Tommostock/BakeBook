@@ -1,12 +1,13 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { JournalEntry, RecipeNote } from '../types/recipe';
+import type { Recipe, JournalEntry, RecipeNote } from '../types/recipe';
 
 interface AppState {
   favorites: string[];
   journalEntries: JournalEntry[];
   recipeNotes: RecipeNote[];
   recentlyViewed: string[];
+  userRecipes: Recipe[];
   searchQuery: string;
   selectedCategory: string | null;
   selectedDifficulty: string | null;
@@ -17,6 +18,9 @@ interface AppState {
   addRecipeNote: (note: RecipeNote) => void;
   deleteRecipeNote: (id: string) => void;
   addRecentlyViewed: (recipeId: string) => void;
+  addUserRecipe: (recipe: Recipe) => void;
+  updateUserRecipe: (recipe: Recipe) => void;
+  deleteUserRecipe: (id: string) => void;
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: string | null) => void;
   setSelectedDifficulty: (difficulty: string | null) => void;
@@ -28,6 +32,7 @@ const STORAGE_KEYS = {
   journal: '@bakebook_journal',
   notes: '@bakebook_notes',
   recent: '@bakebook_recent',
+  userRecipes: '@bakebook_user_recipes',
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -35,6 +40,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   journalEntries: [],
   recipeNotes: [],
   recentlyViewed: [],
+  userRecipes: [],
   searchQuery: '',
   selectedCategory: null,
   selectedDifficulty: null,
@@ -91,23 +97,62 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
   },
 
+  addUserRecipe: (recipe) => {
+    set((state) => {
+      const newRecipes = [recipe, ...state.userRecipes];
+      AsyncStorage.setItem(STORAGE_KEYS.userRecipes, JSON.stringify(newRecipes));
+      return { userRecipes: newRecipes };
+    });
+  },
+
+  updateUserRecipe: (recipe) => {
+    set((state) => {
+      const newRecipes = state.userRecipes.map((r) =>
+        r.id === recipe.id ? recipe : r
+      );
+      AsyncStorage.setItem(STORAGE_KEYS.userRecipes, JSON.stringify(newRecipes));
+      return { userRecipes: newRecipes };
+    });
+  },
+
+  deleteUserRecipe: (id) => {
+    set((state) => {
+      const newRecipes = state.userRecipes.filter((r) => r.id !== id);
+      const newFavorites = state.favorites.filter((fId) => fId !== id);
+      const newNotes = state.recipeNotes.filter((n) => n.recipeId !== id);
+      const newRecent = state.recentlyViewed.filter((rId) => rId !== id);
+      AsyncStorage.setItem(STORAGE_KEYS.userRecipes, JSON.stringify(newRecipes));
+      AsyncStorage.setItem(STORAGE_KEYS.favorites, JSON.stringify(newFavorites));
+      AsyncStorage.setItem(STORAGE_KEYS.notes, JSON.stringify(newNotes));
+      AsyncStorage.setItem(STORAGE_KEYS.recent, JSON.stringify(newRecent));
+      return {
+        userRecipes: newRecipes,
+        favorites: newFavorites,
+        recipeNotes: newNotes,
+        recentlyViewed: newRecent,
+      };
+    });
+  },
+
   setSearchQuery: (query) => set({ searchQuery: query }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
   setSelectedDifficulty: (difficulty) => set({ selectedDifficulty: difficulty }),
 
   loadPersistedState: async () => {
     try {
-      const [favs, journal, notes, recent] = await Promise.all([
+      const [favs, journal, notes, recent, userRecipes] = await Promise.all([
         AsyncStorage.getItem(STORAGE_KEYS.favorites),
         AsyncStorage.getItem(STORAGE_KEYS.journal),
         AsyncStorage.getItem(STORAGE_KEYS.notes),
         AsyncStorage.getItem(STORAGE_KEYS.recent),
+        AsyncStorage.getItem(STORAGE_KEYS.userRecipes),
       ]);
       set({
         favorites: favs ? JSON.parse(favs) : [],
         journalEntries: journal ? JSON.parse(journal) : [],
         recipeNotes: notes ? JSON.parse(notes) : [],
         recentlyViewed: recent ? JSON.parse(recent) : [],
+        userRecipes: userRecipes ? JSON.parse(userRecipes) : [],
       });
     } catch (e) {
       console.warn('Failed to load persisted state:', e);

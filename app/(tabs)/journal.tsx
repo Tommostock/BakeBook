@@ -20,7 +20,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { StarRating } from '../../components/StarRating';
 import { useAppStore } from '../../lib/store';
-import { recipes } from '../../data/recipes';
+import { useAllRecipes } from '../../lib/recipes';
 import { generateId } from '../../lib/helpers';
 import type { JournalEntry } from '../../types/recipe';
 
@@ -32,6 +32,7 @@ export default function JournalScreen() {
   const journalEntries = useAppStore((s) => s.journalEntries);
   const addJournalEntry = useAppStore((s) => s.addJournalEntry);
   const deleteJournalEntry = useAppStore((s) => s.deleteJournalEntry);
+  const allRecipes = useAllRecipes();
 
   const { width: screenWidth } = useWindowDimensions();
 
@@ -67,8 +68,8 @@ export default function JournalScreen() {
   }, [params.recipeId]);
 
   const filteredRecipes = recipeSearch.trim()
-    ? recipes.filter((r) => r.title.toLowerCase().includes(recipeSearch.toLowerCase()))
-    : recipes;
+    ? allRecipes.filter((r) => r.title.toLowerCase().includes(recipeSearch.toLowerCase()))
+    : allRecipes;
 
   // Convert a File/Blob to a base64 data URI so photos persist in storage
   const fileToBase64 = (file: Blob): Promise<string> =>
@@ -142,7 +143,7 @@ export default function JournalScreen() {
       setRatingWarning(true);
       return;
     }
-    const recipe = recipes.find((r) => r.id === selectedRecipeId);
+    const recipe = allRecipes.find((r) => r.id === selectedRecipeId);
     const entry: JournalEntry = {
       id: generateId(),
       recipeId: selectedRecipeId,
@@ -173,7 +174,7 @@ export default function JournalScreen() {
   };
 
   const renderEntry = ({ item }: { item: JournalEntry }) => {
-    const recipe = recipes.find((r) => r.id === item.recipeId);
+    const recipe = allRecipes.find((r) => r.id === item.recipeId);
     const displayPhotos = item.photos?.length ? item.photos : item.photoUri ? [item.photoUri] : [];
     const headerPhoto = displayPhotos[0] || recipe?.imageUrl;
     const photoCount = displayPhotos.length;
@@ -258,7 +259,7 @@ export default function JournalScreen() {
         onRequestClose={() => setViewingEntry(null)}
       >
         {viewingEntry && (() => {
-          const recipe = recipes.find((r) => r.id === viewingEntry.recipeId);
+          const recipe = allRecipes.find((r) => r.id === viewingEntry.recipeId);
           const displayPhotos = viewingEntry.photos?.length
             ? viewingEntry.photos
             : viewingEntry.photoUri

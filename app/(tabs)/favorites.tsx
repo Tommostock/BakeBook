@@ -12,20 +12,21 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { useAppStore } from '../../lib/store';
-import { recipes } from '../../data/recipes';
+import { useAllRecipes } from '../../lib/recipes';
 import { formatTime, DIFFICULTY_COLORS } from '../../lib/helpers';
 import type { Recipe } from '../../types/recipe';
 
 export default function FavoritesScreen() {
   const router = useRouter();
   const favorites = useAppStore((s) => s.favorites);
+  const allRecipes = useAllRecipes();
 
   const favoriteRecipes = useMemo(
     () =>
       favorites
-        .map((id) => recipes.find((r) => r.id === id))
+        .map((id) => allRecipes.find((r) => r.id === id))
         .filter(Boolean) as Recipe[],
-    [favorites]
+    [favorites, allRecipes]
   );
 
   const renderItem = ({ item }: { item: Recipe }) => (

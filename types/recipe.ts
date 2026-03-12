@@ -14,6 +14,7 @@ export interface Recipe {
   tips?: string;
   dietaryTags?: string[];
   isFeatured?: boolean;
+  isUserRecipe?: boolean;
 }
 
 export interface Ingredient {

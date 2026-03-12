@@ -16,8 +16,9 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { Timer } from '../../components/Timer';
+import { RecipeFormModal } from '../../components/RecipeFormModal';
 import { useAppStore } from '../../lib/store';
-import { recipes } from '../../data/recipes';
+import { useAllRecipes, isUserRecipe } from '../../lib/recipes';
 import { formatTime, DIFFICULTY_COLORS, generateId } from '../../lib/helpers';
 import type { RecipeNote } from '../../types/recipe';
 
@@ -30,8 +31,14 @@ export default function RecipeDetailScreen() {
   const recipeNotes = useAppStore((s) => s.recipeNotes);
   const addRecipeNote = useAppStore((s) => s.addRecipeNote);
   const deleteRecipeNote = useAppStore((s) => s.deleteRecipeNote);
+  const deleteUserRecipe = useAppStore((s) => s.deleteUserRecipe);
 
-  const recipe = useMemo(() => recipes.find((r) => r.id === id), [id]);
+  const allRecipes = useAllRecipes();
+  const recipe = useMemo(() => allRecipes.find((r) => r.id === id), [allRecipes, id]);
+  const isOwn = id ? isUserRecipe(id) : false;
+
+  const [showEditForm, setShowEditForm] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const notes = useMemo(
     () => recipeNotes.filter((n) => n.recipeId === id),
     [recipeNotes, id]
@@ -134,6 +141,16 @@ export default function RecipeDetailScreen() {
               <Ionicons name="arrow-back" size={22} color={Colors.white} />
             </Pressable>
             <View style={styles.heroRight}>
+              {isOwn && (
+                <>
+                  <Pressable style={styles.iconBtn} onPress={() => setShowEditForm(true)}>
+                    <Ionicons name="create-outline" size={22} color={Colors.white} />
+                  </Pressable>
+                  <Pressable style={styles.iconBtn} onPress={() => setShowDeleteConfirm(true)}>
+                    <Ionicons name="trash-outline" size={22} color={Colors.white} />
+                  </Pressable>
+                </>
+              )}
               <Pressable style={styles.iconBtn} onPress={handleShare}>
                 <Ionicons name="share-outline" size={22} color={Colors.white} />
               </Pressable>
@@ -152,7 +169,14 @@ export default function RecipeDetailScreen() {
 
         <View style={styles.content}>
           {/* Title & Category */}
-          <Text style={styles.category}>{recipe.category}</Text>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <Text style={styles.category}>{recipe.category}</Text>
+            {isOwn && (
+              <View style={{ backgroundColor: Colors.primaryDark + '20', paddingHorizontal: 6, paddingVertical: 1, borderRadius: 4 }}>
+                <Text style={{ fontFamily: Fonts.sansSemiBold, fontSize: 9, color: Colors.primaryDark, letterSpacing: 0.5 }}>MY RECIPE</Text>
+              </View>
+            )}
+          </View>
           <Text style={styles.title}>{recipe.title}</Text>
           <Text style={styles.description}>{recipe.description}</Text>
 
@@ -298,6 +322,44 @@ export default function RecipeDetailScreen() {
           <Text style={styles.logBakeBtnText}>Log This Bake</Text>
         </Pressable>
       </View>
+      {/* Edit Form Modal */}
+      {isOwn && (
+        <RecipeFormModal
+          visible={showEditForm}
+          onClose={() => setShowEditForm(false)}
+          editingRecipe={recipe}
+        />
+      )}
+
+      {/* Delete Confirmation */}
+      {showDeleteConfirm && (
+        <View style={styles.confirmOverlay}>
+          <View style={styles.confirmBox}>
+            <Text style={styles.confirmTitle}>Delete Recipe</Text>
+            <Text style={styles.confirmText}>
+              Are you sure you want to delete "{recipe.title}"? This cannot be undone.
+            </Text>
+            <View style={styles.confirmButtons}>
+              <Pressable
+                style={[styles.confirmBtn, styles.confirmBtnCancel]}
+                onPress={() => setShowDeleteConfirm(false)}
+              >
+                <Text style={styles.confirmBtnCancelText}>Cancel</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.confirmBtn, styles.confirmBtnDelete]}
+                onPress={() => {
+                  deleteUserRecipe(id!);
+                  setShowDeleteConfirm(false);
+                  router.canGoBack() ? router.back() : router.replace('/');
+                }}
+              >
+                <Text style={styles.confirmBtnDeleteText}>Delete</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
@@ -584,5 +646,58 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sansSemiBold,
     fontSize: 15,
     color: Colors.text,
+  },
+  confirmOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 100,
+  },
+  confirmBox: {
+    backgroundColor: Colors.white,
+    borderRadius: Radius.lg,
+    padding: Spacing.xl,
+    width: '80%',
+    maxWidth: 320,
+  },
+  confirmTitle: {
+    fontFamily: Fonts.sansBold,
+    fontSize: 17,
+    color: Colors.text,
+    marginBottom: Spacing.sm,
+  },
+  confirmText: {
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    color: Colors.textSecondary,
+    lineHeight: 20,
+    marginBottom: Spacing.lg,
+  },
+  confirmButtons: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+  },
+  confirmBtn: {
+    flex: 1,
+    paddingVertical: Spacing.sm + 2,
+    borderRadius: Radius.sm,
+    alignItems: 'center',
+  },
+  confirmBtnCancel: {
+    backgroundColor: Colors.surfaceAlt,
+  },
+  confirmBtnCancelText: {
+    fontFamily: Fonts.sansMedium,
+    fontSize: 14,
+    color: Colors.textSecondary,
+  },
+  confirmBtnDelete: {
+    backgroundColor: Colors.error,
+  },
+  confirmBtnDeleteText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 14,
+    color: Colors.white,
   },
 });

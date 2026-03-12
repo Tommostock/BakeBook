@@ -43,6 +43,11 @@ export function RecipeCard({ recipe, variant = 'medium' }: RecipeCardProps) {
         transition={300}
         placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
       />
+      {recipe.isUserRecipe && (
+        <View style={styles.myRecipeBadge}>
+          <Text style={styles.myRecipeBadgeText}>MY RECIPE</Text>
+        </View>
+      )}
       <View style={styles.content}>
         <Text style={styles.category}>{recipe.category}</Text>
         <Text style={styles.title} numberOfLines={2}>
@@ -108,6 +113,22 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sansSemiBold,
     fontSize: 11,
     textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  myRecipeBadge: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: 'rgba(232, 160, 184, 0.9)',
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: Radius.sm,
+    zIndex: 1,
+  },
+  myRecipeBadgeText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 9,
+    color: Colors.white,
     letterSpacing: 0.5,
   },
 });

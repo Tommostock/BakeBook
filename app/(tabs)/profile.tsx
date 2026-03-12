@@ -11,18 +11,20 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { useAppStore } from '../../lib/store';
-import { recipes } from '../../data/recipes';
+import { useAllRecipes } from '../../lib/recipes';
 
 export default function ProfileScreen() {
   const favorites = useAppStore((s) => s.favorites);
   const journalEntries = useAppStore((s) => s.journalEntries);
   const recipeNotes = useAppStore((s) => s.recipeNotes);
+  const allRecipes = useAllRecipes();
+  const userRecipes = useAppStore((s) => s.userRecipes);
 
   const stats = [
-    { label: 'Total Recipes', value: recipes.length, icon: 'book-outline' as const },
+    { label: 'Total Recipes', value: allRecipes.length, icon: 'book-outline' as const },
+    { label: 'My Recipes', value: userRecipes.length, icon: 'create-outline' as const },
     { label: 'Favorites', value: favorites.length, icon: 'heart-outline' as const },
     { label: 'Journal Entries', value: journalEntries.length, icon: 'pencil-outline' as const },
-    { label: 'Recipe Notes', value: recipeNotes.length, icon: 'chatbubble-outline' as const },
   ];
 
   return (

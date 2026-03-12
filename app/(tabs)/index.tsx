@@ -19,24 +19,25 @@ import { BakeryFrame } from '../../components/BakeryFrame';
 import { BakeryCollage } from '../../components/BakeryCollage';
 import { CATEGORIES, CATEGORY_EMOJIS } from '../../lib/helpers';
 import { useAppStore } from '../../lib/store';
-import { recipes } from '../../data/recipes';
+import { useAllRecipes } from '../../lib/recipes';
 
 export default function HomeScreen() {
   const router = useRouter();
   const recentlyViewed = useAppStore((s) => s.recentlyViewed);
+  const allRecipes = useAllRecipes();
 
   const featuredRecipes = useMemo(
-    () => recipes.filter((r) => r.isFeatured).slice(0, 8),
-    []
+    () => allRecipes.filter((r) => r.isFeatured).slice(0, 8),
+    [allRecipes]
   );
 
   const recentRecipes = useMemo(
     () =>
       recentlyViewed
-        .map((id) => recipes.find((r) => r.id === id))
+        .map((id) => allRecipes.find((r) => r.id === id))
         .filter(Boolean)
-        .slice(0, 8) as typeof recipes,
-    [recentlyViewed]
+        .slice(0, 8) as typeof allRecipes,
+    [recentlyViewed, allRecipes]
   );
 
   return (
@@ -104,7 +105,7 @@ export default function HomeScreen() {
         <SectionHeader title="Quick & Easy" />
         <FlatList
           horizontal
-          data={recipes.filter((r) => r.difficulty === 'Easy').slice(0, 8)}
+          data={allRecipes.filter((r) => r.difficulty === 'Easy').slice(0, 8)}
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={{ paddingHorizontal: Spacing.lg }}
@@ -134,7 +135,7 @@ export default function HomeScreen() {
           onSeeAll={() => router.push('/(tabs)/search')}
         />
         <View style={styles.gridContainer}>
-          {recipes.slice(0, 6).map((recipe) => (
+          {allRecipes.slice(0, 6).map((recipe) => (
             <Pressable
               key={recipe.id}
               style={styles.gridCard}

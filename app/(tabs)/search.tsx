@@ -14,18 +14,21 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { CategoryPill } from '../../components/CategoryPill';
+import { RecipeFormModal } from '../../components/RecipeFormModal';
 import { CATEGORIES, CATEGORY_EMOJIS, searchRecipes, formatTime, DIFFICULTY_COLORS } from '../../lib/helpers';
-import { recipes } from '../../data/recipes';
+import { useAllRecipes } from '../../lib/recipes';
 import type { Recipe } from '../../types/recipe';
 
 export default function SearchScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ category?: string }>();
+  const allRecipes = useAllRecipes();
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     params.category || null
   );
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
+  const [showRecipeForm, setShowRecipeForm] = useState(false);
 
   useEffect(() => {
     if (params.category) {
@@ -34,8 +37,8 @@ export default function SearchScreen() {
   }, [params.category]);
 
   const results = useMemo(
-    () => searchRecipes(recipes, query, selectedCategory, selectedDifficulty),
-    [query, selectedCategory, selectedDifficulty]
+    () => searchRecipes(allRecipes, query, selectedCategory, selectedDifficulty),
+    [allRecipes, query, selectedCategory, selectedDifficulty]
   );
 
   const renderRecipeRow = ({ item }: { item: Recipe }) => (
@@ -50,7 +53,14 @@ export default function SearchScreen() {
         transition={200}
       />
       <View style={styles.recipeInfo}>
-        <Text style={styles.recipeCategory}>{item.category}</Text>
+        <View style={styles.categoryRow2}>
+          <Text style={styles.recipeCategory}>{item.category}</Text>
+          {item.isUserRecipe && (
+            <View style={styles.myRecipeBadge}>
+              <Text style={styles.myRecipeBadgeText}>MY RECIPE</Text>
+            </View>
+          )}
+        </View>
         <Text style={styles.recipeTitle} numberOfLines={2}>
           {item.title}
         </Text>
@@ -159,6 +169,20 @@ export default function SearchScreen() {
           </View>
         }
       />
+
+      {/* FAB — Add Recipe */}
+      <Pressable
+        style={styles.fab}
+        onPress={() => setShowRecipeForm(true)}
+      >
+        <Ionicons name="add" size={28} color={Colors.white} />
+      </Pressable>
+
+      {/* Recipe Form Modal */}
+      <RecipeFormModal
+        visible={showRecipeForm}
+        onClose={() => setShowRecipeForm(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -197,6 +221,12 @@ const styles = StyleSheet.create({
   categoryRow: {
     height: 52,
     marginVertical: Spacing.xs,
+  },
+  categoryRow2: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.sm,
+    marginBottom: 4,
   },
   difficultyRow: {
     flexDirection: 'row',
@@ -255,7 +285,18 @@ const styles = StyleSheet.create({
     color: Colors.primaryDark,
     textTransform: 'uppercase',
     letterSpacing: 1,
-    marginBottom: 4,
+  },
+  myRecipeBadge: {
+    backgroundColor: Colors.primaryDark + '20',
+    paddingHorizontal: 6,
+    paddingVertical: 1,
+    borderRadius: 4,
+  },
+  myRecipeBadgeText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 8,
+    color: Colors.primaryDark,
+    letterSpacing: 0.5,
   },
   recipeTitle: {
     fontFamily: Fonts.sansSemiBold,
@@ -297,5 +338,21 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.textSecondary,
     marginTop: 4,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 24,
+    right: 24,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: Colors.primaryDark,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
   },
 });
