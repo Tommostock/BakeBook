@@ -48,7 +48,7 @@ export default function HomeScreen() {
         {/* Header / Hero */}
         <View style={styles.hero}>
           <View style={styles.heroInner}>
-            <WheatDecoration side="left" height={165} />
+            <WheatDecoration side="left" height={175} />
             <View style={styles.heroContent}>
               <View style={styles.brandContainer}>
                 <Text style={styles.brandSuzie}>Suzie's</Text>
@@ -62,7 +62,7 @@ export default function HomeScreen() {
                 Love Harry & Oliver
               </Text>
             </View>
-            <WheatDecoration side="right" height={165} />
+            <WheatDecoration side="right" height={175} />
           </View>
         </View>
 
