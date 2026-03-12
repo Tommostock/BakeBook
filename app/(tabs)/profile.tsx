@@ -30,7 +30,7 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         {/* Profile Header */}
         <View style={styles.profileHeader}>
-          <Ionicons name="heart" size={52} color={Colors.primaryDark} style={{ marginBottom: Spacing.md }} />
+          <Ionicons name="trophy" size={52} color={Colors.primaryDark} style={{ marginBottom: Spacing.md }} />
           <Text style={styles.name}>Suzie Stock</Text>
           <Text style={styles.tagline}>2 x London Bake Off Champion</Text>
         </View>
@@ -65,9 +65,9 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: Radius.xl,
   },
   name: {
-    fontFamily: Fonts.serif,
-    fontSize: 26,
-    color: Colors.text,
+    fontFamily: Fonts.calligraphy,
+    fontSize: 46,
+    color: Colors.primaryDark,
   },
   tagline: {
     fontFamily: Fonts.sans,

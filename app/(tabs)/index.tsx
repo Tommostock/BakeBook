@@ -15,6 +15,7 @@ import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { RecipeCard } from '../../components/RecipeCard';
 import { CategoryPill } from '../../components/CategoryPill';
 import { SectionHeader } from '../../components/SectionHeader';
+import { WheatDecoration } from '../../components/WheatDecoration';
 import { CATEGORIES, CATEGORY_EMOJIS } from '../../lib/helpers';
 import { useAppStore } from '../../lib/store';
 import { recipes } from '../../data/recipes';
@@ -46,18 +47,22 @@ export default function HomeScreen() {
       >
         {/* Header / Hero */}
         <View style={styles.hero}>
-          <View style={styles.heroContent}>
-            <View style={styles.brandContainer}>
-              <Text style={styles.brandSuzie}>Suzie's</Text>
-              <Text style={styles.brandBakeBook}>BAKEBOOK</Text>
+          <View style={styles.heroInner}>
+            <WheatDecoration side="left" height={165} />
+            <View style={styles.heroContent}>
+              <View style={styles.brandContainer}>
+                <Text style={styles.brandSuzie}>Suzie's</Text>
+                <Text style={styles.brandBakeBook}>BAKEBOOK</Text>
+              </View>
+              <View style={styles.divider} />
+              <Text style={styles.dedicationText}>
+                For our beautiful mum,
+              </Text>
+              <Text style={styles.dedicationFrom}>
+                Love Harry & Oliver
+              </Text>
             </View>
-            <View style={styles.divider} />
-            <Text style={styles.dedicationText}>
-              For our beautiful mum,
-            </Text>
-            <Text style={styles.dedicationFrom}>
-              Love Harry & Oliver
-            </Text>
+            <WheatDecoration side="right" height={165} />
           </View>
         </View>
 
@@ -173,9 +178,15 @@ const styles = StyleSheet.create({
     position: 'relative',
     overflow: 'hidden',
   },
+  heroInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   heroContent: {
     alignItems: 'center',
     zIndex: 1,
+    paddingHorizontal: Spacing.sm,
   },
   brandContainer: {
     alignItems: 'center',
