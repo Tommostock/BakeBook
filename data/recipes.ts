@@ -28,7 +28,7 @@ export const recipes: Recipe[] = [
     totalTime: 1440,
     difficulty: 'Hard',
     servings: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&q=80',
+    imageUrl: '/assets/recipes/sourdough-bread.jpg',
     tips: 'The key to great sourdough is a healthy, active starter. Feed it 8-12 hours before mixing. If your kitchen is cold, the bulk ferment will take longer — look for a 50% rise, not a set time.',
     dietaryTags: ['Vegetarian', 'Vegan'],
     isFeatured: true,
