@@ -2097,7 +2097,7 @@ export const recipes: Recipe[] = [
   // ── NEW BATCH: Bread (5) ──────────────────────────────────────────────
 
   {
-    id: 'bread-006',
+    id: 'bread-007',
     title: 'Challah',
     category: 'Bread',
     description: 'A beautifully braided enriched bread with a golden, glossy crust and pillowy soft interior. Traditional Jewish bread perfect for special occasions.',
@@ -2134,7 +2134,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'bread-007',
+    id: 'bread-008',
     title: 'Dark Rye Bread',
     category: 'Bread',
     description: 'A dense, earthy Scandinavian-style rye loaf with a deep flavour and moist crumb. Wonderful with smoked salmon or strong cheese.',
@@ -2169,7 +2169,7 @@ export const recipes: Recipe[] = [
     tips: 'Rye bread improves in flavour if wrapped in a tea towel and left overnight before slicing.',
   },
   {
-    id: 'bread-008',
+    id: 'bread-009',
     title: 'Homemade Naan Bread',
     category: 'Bread',
     description: 'Soft, pillowy flatbreads with charred bubbles, brushed with garlic butter. Better than any takeaway.',
@@ -2205,7 +2205,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'bread-009',
+    id: 'bread-010',
     title: 'Homemade Bagels',
     category: 'Bread',
     description: 'Chewy, dense, and beautifully golden New York-style bagels. The secret is boiling them before baking.',
@@ -2240,7 +2240,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'bread-010',
+    id: 'bread-011',
     title: 'Olive & Rosemary Focaccia',
     category: 'Bread',
     description: 'A golden, dimpled Italian flatbread loaded with briny olives and fragrant rosemary, drizzled generously with olive oil.',
@@ -3372,7 +3372,7 @@ export const recipes: Recipe[] = [
   // ── NEW BATCH: Desserts (5) ───────────────────────────────────────────
 
   {
-    id: 'dessert-006',
+    id: 'dessert-007',
     title: 'Classic Rice Pudding',
     category: 'Desserts',
     description: 'Slow-baked creamy rice pudding with a golden skin on top. Pure comfort food, best served with a spoonful of jam.',
@@ -3405,7 +3405,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian', 'Gluten-Free'],
   },
   {
-    id: 'dessert-007',
+    id: 'dessert-008',
     title: 'Classic English Trifle',
     category: 'Desserts',
     description: 'Layers of sherry-soaked sponge, fruit, custard, and cream. A grand British dessert that\'s been gracing dinner tables for centuries.',
@@ -3442,7 +3442,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'dessert-008',
+    id: 'dessert-009',
     title: 'Apple Crumble',
     category: 'Desserts',
     description: 'Tender, spiced Bramley apples beneath a crispy, buttery crumble topping. The definitive British pudding, best with custard.',
@@ -3474,7 +3474,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'dessert-009',
+    id: 'dessert-010',
     title: 'Lemon Posset',
     category: 'Desserts',
     description: 'A magical three-ingredient dessert — cream, sugar, and lemon juice set into a silky, tangy pot. Medieval simplicity at its finest.',
@@ -3503,7 +3503,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian', 'Gluten-Free'],
   },
   {
-    id: 'dessert-010',
+    id: 'dessert-011',
     title: 'Chocolate Fondant',
     category: 'Desserts',
     description: 'Individual chocolate puddings with a molten centre that oozes when you cut in. A restaurant-quality dessert you can make at home.',
@@ -3540,7 +3540,7 @@ export const recipes: Recipe[] = [
   // ── NEW BATCH: Quick Breads (5) ───────────────────────────────────────
 
   {
-    id: 'quick-006',
+    id: 'quick-007',
     title: 'Bara Brith',
     category: 'Quick Breads',
     description: 'A traditional Welsh tea bread where dried fruit is soaked in tea overnight, giving an incredibly moist, flavourful loaf that needs no butter.',
@@ -3573,7 +3573,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'quick-007',
+    id: 'quick-008',
     title: 'Yorkshire Parkin',
     category: 'Quick Breads',
     description: 'A dark, sticky oatmeal and treacle cake from Yorkshire. Traditionally baked for Bonfire Night and improves with keeping.',
@@ -3609,7 +3609,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'quick-008',
+    id: 'quick-009',
     title: 'Golden Flapjacks',
     category: 'Quick Breads',
     description: 'Chewy, buttery oat bars with a gorgeous golden colour from golden syrup. Simple, satisfying, and endlessly customisable.',
@@ -3638,7 +3638,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'quick-009',
+    id: 'quick-010',
     title: 'Triple Chocolate Brownies',
     category: 'Quick Breads',
     description: 'Intensely fudgy brownies with a crackly top, loaded with dark, milk, and white chocolate chunks. The brownie to end all brownies.',
@@ -3675,7 +3675,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'quick-010',
+    id: 'quick-011',
     title: 'Raspberry & White Chocolate Blondies',
     category: 'Quick Breads',
     description: 'Golden, fudgy blondies swirled with tart raspberries and melting white chocolate. A stunning contrast of flavours and colours.',
@@ -3712,7 +3712,7 @@ export const recipes: Recipe[] = [
   // ── NEW BATCH: Holiday Bakes (5) ──────────────────────────────────────
 
   {
-    id: 'holiday-006',
+    id: 'holiday-007',
     title: 'Simnel Cake',
     category: 'Holiday Bakes',
     description: 'A traditional Easter fruit cake with a layer of marzipan baked in the middle and 11 marzipan balls on top representing the apostles.',
@@ -3751,7 +3751,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'holiday-007',
+    id: 'holiday-008',
     title: 'Panettone',
     category: 'Holiday Bakes',
     description: 'A tall, dome-shaped Italian Christmas bread enriched with butter and eggs, studded with candied fruit and raisins.',
@@ -3792,7 +3792,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'holiday-008',
+    id: 'holiday-009',
     title: 'Lebkuchen',
     category: 'Holiday Bakes',
     description: 'Soft German Christmas spice cookies with a thin sugar glaze. Warmly spiced with cinnamon, cloves, and nutmeg.',
@@ -3832,7 +3832,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'holiday-009',
+    id: 'holiday-010',
     title: 'Easter Biscuits',
     category: 'Holiday Bakes',
     description: 'Lightly spiced, buttery biscuits with currants — a traditional West Country treat served at Easter. Crisp outside, slightly chewy within.',
@@ -3867,7 +3867,7 @@ export const recipes: Recipe[] = [
     dietaryTags: ['Vegetarian'],
   },
   {
-    id: 'holiday-010',
+    id: 'holiday-011',
     title: 'Lamingtons',
     category: 'Holiday Bakes',
     description: 'Cubes of light sponge cake dipped in chocolate icing and rolled in desiccated coconut. Australia\'s beloved national cake.',
