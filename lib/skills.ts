@@ -141,7 +141,7 @@ export function computeAchievements(
       id: 'first-bake',
       name: 'First Bake',
       emoji: '🎯',
-      description: 'Complete your first bake',
+      description: 'Log your first bake',
       earned: journalEntries.length >= 1,
     },
     {
@@ -155,14 +155,14 @@ export function computeAchievements(
       id: 'perfectionist',
       name: 'Perfectionist',
       emoji: '🌟',
-      description: 'Rate 3 bakes with 5 stars',
+      description: 'Give 3 five-star ratings',
       earned: fiveStarBakes >= 3,
     },
     {
       id: 'explorer',
       name: 'Explorer',
       emoji: '🗂',
-      description: 'Bake from 5 different categories',
+      description: 'Try 5 categories',
       earned: categoriesUsed.size >= 5,
     },
     {

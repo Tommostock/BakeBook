@@ -13,29 +13,32 @@ export function BadgeGrid({ achievements }: Props) {
     <View style={styles.grid}>
       {achievements.map((a) => (
         <View key={a.id} style={[styles.badge, !a.earned && styles.badgeLocked]}>
-          <Text style={[styles.emoji, !a.earned && styles.emojiLocked]}>
-            {a.earned ? a.emoji : ''}
-          </Text>
-          {!a.earned && (
-            <Ionicons
-              name="lock-closed"
-              size={20}
-              color={Colors.textLight}
-              style={styles.lockIcon}
-            />
-          )}
+          {/* Icon area — fixed height, always centered */}
+          <View style={styles.iconArea}>
+            {a.earned ? (
+              <Text style={styles.emoji}>{a.emoji}</Text>
+            ) : (
+              <Ionicons name="lock-closed" size={22} color={Colors.textLight} />
+            )}
+          </View>
+          {/* Name — single line, consistent */}
           <Text
             style={[styles.name, !a.earned && styles.nameLocked]}
             numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.8}
           >
             {a.name}
           </Text>
-          <Text
-            style={[styles.desc, !a.earned && styles.descLocked]}
-            numberOfLines={2}
-          >
-            {a.description}
-          </Text>
+          {/* Description — exactly 2 lines reserved */}
+          <View style={styles.descArea}>
+            <Text
+              style={[styles.desc, !a.earned && styles.descLocked]}
+              numberOfLines={2}
+            >
+              {a.description}
+            </Text>
+          </View>
         </View>
       ))}
     </View>
@@ -50,13 +53,12 @@ const styles = StyleSheet.create({
   },
   badge: {
     width: '30%',
-    minHeight: 110,
+    height: 112,
     backgroundColor: Colors.surfaceAlt,
     borderRadius: Radius.md,
-    paddingVertical: Spacing.md,
-    paddingHorizontal: Spacing.sm,
+    paddingVertical: 10,
+    paddingHorizontal: 6,
     alignItems: 'center',
-    justifyContent: 'center',
     borderWidth: 1,
     borderColor: Colors.primaryDark,
   },
@@ -64,33 +66,35 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     borderColor: Colors.borderLight,
   },
-  emoji: {
-    fontSize: 28,
+  iconArea: {
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
     marginBottom: 4,
   },
-  emojiLocked: {
-    opacity: 0,
-  },
-  lockIcon: {
-    position: 'absolute',
-    top: Spacing.md,
+  emoji: {
+    fontSize: 24,
   },
   name: {
     fontFamily: Fonts.sansSemiBold,
     fontSize: 11,
     color: Colors.text,
     textAlign: 'center',
+    marginBottom: 2,
   },
   nameLocked: {
     color: Colors.textLight,
+  },
+  descArea: {
+    height: 28,
+    justifyContent: 'flex-start',
   },
   desc: {
     fontFamily: Fonts.sans,
     fontSize: 9,
     color: Colors.textSecondary,
     textAlign: 'center',
-    marginTop: 2,
-    lineHeight: 12,
+    lineHeight: 13,
   },
   descLocked: {
     color: Colors.textLight,
