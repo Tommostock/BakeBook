@@ -611,7 +611,7 @@ export const recipes: Recipe[] = [
     totalTime: 75,
     difficulty: 'Easy',
     servings: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1621303837174-89787a7d4729?w=800&q=80',
+    imageUrl: '/assets/recipes/carrot-cake.jpg',
     tips: 'Grate the carrots finely for the best texture. The oil keeps this cake incredibly moist — it tastes even better the next day as the spices develop.',
     dietaryTags: ['Vegetarian'],
   },
