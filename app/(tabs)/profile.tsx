@@ -61,7 +61,7 @@ export default function ProfileScreen() {
         {/* Profile Header — matches home page hero style */}
         <View style={styles.hero}>
           <BakeryCollage />
-          <BakeryFrame width={310} height={152} contentPaddingVertical={10}>
+          <BakeryFrame width={340} height={152} contentPaddingVertical={10}>
             <View style={styles.brandContainer}>
               <Text style={styles.name}>Suzie Stock</Text>
             </View>

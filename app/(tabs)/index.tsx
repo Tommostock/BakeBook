@@ -58,7 +58,7 @@ export default function HomeScreen() {
         {/* Header / Hero */}
         <View style={styles.hero}>
           <BakeryCollage />
-          <BakeryFrame width={310} height={160} contentPaddingVertical={10}>
+          <BakeryFrame width={340} height={160} contentPaddingVertical={10}>
             <View style={styles.brandContainer}>
               <Text style={styles.brandSuzie}>Suzie's</Text>
               <Text style={styles.brandBakeBook}>BAKEBOOK</Text>

@@ -26,9 +26,9 @@ export default function TabLayout() {
           backgroundColor: Colors.white,
           borderTopColor: Colors.borderLight,
           borderTopWidth: 1,
-          height: Platform.OS === 'ios' ? 60 : 56,
-          paddingBottom: Platform.OS === 'ios' ? 8 : 4,
-          paddingTop: 8,
+          height: Platform.OS === 'web' ? 72 : Platform.OS === 'ios' ? 88 : 60,
+          paddingBottom: Platform.OS === 'web' ? 12 : Platform.OS === 'ios' ? 28 : 6,
+          paddingTop: 10,
           elevation: 0,
           shadowOpacity: 0,
         },
@@ -43,7 +43,7 @@ export default function TabLayout() {
             tabBarIcon: ({ focused, color, size }) => (
               <Ionicons
                 name={focused ? tab.iconFocused : tab.icon}
-                size={22}
+                size={26}
                 color={color}
               />
             ),
