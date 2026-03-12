@@ -410,7 +410,7 @@ export const recipes: Recipe[] = [
     totalTime: 150,
     difficulty: 'Easy',
     servings: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1619535860434-ba1d8fa12536?w=800&q=80',
+    imageUrl: '/assets/recipes/rosemary-focaccia.jpg',
     tips: 'The wetter the dough, the lighter the focaccia. Don\'t be tempted to add extra flour. A generous hand with olive oil keeps it moist for days.',
     dietaryTags: ['Vegetarian', 'Vegan'],
   },
