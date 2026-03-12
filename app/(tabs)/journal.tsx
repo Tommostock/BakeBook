@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,7 @@ import {
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { StarRating } from '../../components/StarRating';
 import { useAppStore } from '../../lib/store';
@@ -25,6 +26,8 @@ import type { JournalEntry } from '../../types/recipe';
 const MAX_PHOTOS = 6;
 
 export default function JournalScreen() {
+  const router = useRouter();
+  const params = useLocalSearchParams<{ recipeId?: string }>();
   const journalEntries = useAppStore((s) => s.journalEntries);
   const addJournalEntry = useAppStore((s) => s.addJournalEntry);
   const deleteJournalEntry = useAppStore((s) => s.deleteJournalEntry);
@@ -35,6 +38,16 @@ export default function JournalScreen() {
   const [notes, setNotes] = useState('');
   const [rating, setRating] = useState(0);
   const [photos, setPhotos] = useState<string[]>([]);
+
+  // Auto-open modal when navigated here from a recipe page
+  const handledRecipeId = useRef('');
+  useEffect(() => {
+    if (params.recipeId && params.recipeId !== handledRecipeId.current) {
+      handledRecipeId.current = params.recipeId;
+      setSelectedRecipeId(params.recipeId);
+      setModalVisible(true);
+    }
+  }, [params.recipeId]);
 
   const filteredRecipes = recipeSearch.trim()
     ? recipes.filter((r) => r.title.toLowerCase().includes(recipeSearch.toLowerCase()))
@@ -64,6 +77,20 @@ export default function JournalScreen() {
     setPhotos((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const resetModal = () => {
+    setModalVisible(false);
+    setSelectedRecipeId('');
+    setRecipeSearch('');
+    setNotes('');
+    setRating(0);
+    setPhotos([]);
+    handledRecipeId.current = '';
+    // Clear the recipeId param so re-visiting the tab doesn't re-open the modal
+    if (params.recipeId) {
+      router.replace('/(tabs)/journal');
+    }
+  };
+
   const handleSave = () => {
     if (!selectedRecipeId) {
       Alert.alert('Select a recipe', 'Please choose which recipe you baked.');
@@ -81,21 +108,11 @@ export default function JournalScreen() {
       createdAt: new Date().toISOString(),
     };
     addJournalEntry(entry);
-    setModalVisible(false);
-    setSelectedRecipeId('');
-    setRecipeSearch('');
-    setNotes('');
-    setRating(0);
-    setPhotos([]);
+    resetModal();
   };
 
   const handleClose = () => {
-    setModalVisible(false);
-    setSelectedRecipeId('');
-    setRecipeSearch('');
-    setNotes('');
-    setRating(0);
-    setPhotos([]);
+    resetModal();
   };
 
   const confirmDelete = (id: string) => {

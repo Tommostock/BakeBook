@@ -103,6 +103,10 @@ export default function RecipeDetailScreen() {
     } catch {}
   };
 
+  const handleLogBake = () => {
+    router.push(`/(tabs)/journal?recipeId=${recipe.id}`);
+  };
+
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView showsVerticalScrollIndicator={false}>
@@ -272,6 +276,14 @@ export default function RecipeDetailScreen() {
           ))}
         </View>
       </ScrollView>
+
+      {/* Sticky Log Bake footer */}
+      <View style={styles.logBakeBar}>
+        <Pressable style={styles.logBakeBtn} onPress={handleLogBake}>
+          <Ionicons name="book-outline" size={18} color={Colors.text} />
+          <Text style={styles.logBakeBtnText}>Log This Bake</Text>
+        </Pressable>
+      </View>
     </SafeAreaView>
   );
 }
@@ -530,5 +542,26 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sans,
     fontSize: 11,
     color: Colors.textLight,
+  },
+  logBakeBar: {
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
+    borderTopWidth: 1,
+    borderTopColor: Colors.borderLight,
+    backgroundColor: Colors.background,
+  },
+  logBakeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    backgroundColor: Colors.primary,
+    borderRadius: Radius.full,
+    paddingVertical: Spacing.md,
+  },
+  logBakeBtnText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 15,
+    color: Colors.text,
   },
 });
