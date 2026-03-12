@@ -573,7 +573,7 @@ export const recipes: Recipe[] = [
     totalTime: 50,
     difficulty: 'Easy',
     servings: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1588195538326-c5b1e9f80a1b?w=800&q=80',
+    imageUrl: '/assets/recipes/victoria-sponge.jpg',
     tips: 'All ingredients should be at room temperature for the lightest sponge. Weigh your eggs — they should total about 225g to match the other ingredients for a perfect all-in-one ratio.',
     dietaryTags: ['Vegetarian'],
   },
