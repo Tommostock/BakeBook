@@ -14,6 +14,8 @@ import { CATEGORY_EMOJIS, DIFFICULTY_COLORS } from '../../lib/helpers';
 import { computeSkillStats, computeAchievements } from '../../lib/skills';
 import { SkillProgressCard } from '../../components/SkillProgressCard';
 import { BadgeGrid } from '../../components/BadgeGrid';
+import { BakeryFrame } from '../../components/BakeryFrame';
+import { BakeryCollage } from '../../components/BakeryCollage';
 import type { RecipeCategory } from '../../types/recipe';
 
 const DIFFICULTY_EMOJIS: Record<string, string> = {
@@ -56,11 +58,16 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.safe}>
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
-        {/* Profile Header */}
-        <View style={styles.profileHeader}>
-          <Ionicons name="trophy" size={52} color={Colors.primaryDark} style={{ marginBottom: Spacing.md }} />
-          <Text style={styles.name}>Suzie Stock</Text>
-          <Text style={styles.tagline}>2 x London Bake Off Champion</Text>
+        {/* Profile Header — matches home page hero style */}
+        <View style={styles.hero}>
+          <BakeryCollage />
+          <BakeryFrame width={320}>
+            <View style={styles.brandContainer}>
+              <Text style={styles.name}>Suzie Stock</Text>
+            </View>
+            <View style={styles.divider} />
+            <Text style={styles.tagline}>2 x London Bake Off Champion</Text>
+          </BakeryFrame>
         </View>
 
         {/* Stats */}
@@ -160,23 +167,39 @@ export default function ProfileScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
-  profileHeader: {
-    alignItems: 'center',
-    paddingVertical: Spacing.xxl,
+  hero: {
     backgroundColor: Colors.surfaceAlt,
+    paddingVertical: Spacing.xxl,
+    paddingHorizontal: Spacing.lg,
+    alignItems: 'center',
     borderBottomLeftRadius: Radius.xl,
     borderBottomRightRadius: Radius.xl,
+    position: 'relative',
+    overflow: 'hidden',
+  },
+  brandContainer: {
+    alignItems: 'center',
+    position: 'relative',
+    marginBottom: -4,
   },
   name: {
     fontFamily: Fonts.calligraphy,
     fontSize: 46,
     color: Colors.primaryDark,
+    textAlign: 'center',
+  },
+  divider: {
+    width: 60,
+    height: 2,
+    backgroundColor: Colors.primary,
+    marginVertical: Spacing.md,
+    borderRadius: 1,
   },
   tagline: {
-    fontFamily: Fonts.sans,
-    fontSize: 13,
-    color: Colors.textSecondary,
-    marginTop: 4,
+    fontFamily: Fonts.calligraphy,
+    fontSize: 18,
+    color: Colors.primaryDark,
+    textAlign: 'center',
   },
   statsGrid: {
     flexDirection: 'row',
