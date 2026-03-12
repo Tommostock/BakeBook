@@ -70,7 +70,7 @@ export const recipes: Recipe[] = [
     totalTime: 90,
     difficulty: 'Medium',
     servings: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1578985545062-69928b1d9587?w=800&q=80',
+    imageUrl: '/assets/recipes/rich-chocolate-cake.jpg',
     tips: 'The hot coffee intensifies the chocolate flavour without making it taste like coffee. Don\'t skip it! For an even richer cake, brush each layer with a coffee syrup before frosting.',
     dietaryTags: ['Vegetarian'],
     isFeatured: true,
