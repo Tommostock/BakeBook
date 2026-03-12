@@ -50,11 +50,13 @@ const styles = StyleSheet.create({
   },
   badge: {
     width: '30%',
+    minHeight: 110,
     backgroundColor: Colors.surfaceAlt,
     borderRadius: Radius.md,
     paddingVertical: Spacing.md,
     paddingHorizontal: Spacing.sm,
     alignItems: 'center',
+    justifyContent: 'center',
     borderWidth: 1,
     borderColor: Colors.primaryDark,
   },

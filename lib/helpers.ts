@@ -85,7 +85,7 @@ export const CATEGORY_EMOJIS: Record<RecipeCategory, string> = {
   'Breakfast Bakes': '🧇',
   'Savory Bakes': '🧀',
   Desserts: '🍰',
-  'Quick Breads': '🍌',
+  'Quick Breads': '🥖',
   'Holiday Bakes': '🎄',
 };
 

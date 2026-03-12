@@ -7,7 +7,6 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Image } from 'expo-image';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { useAppStore } from '../../lib/store';
 import { useAllRecipes } from '../../lib/recipes';
@@ -18,65 +17,6 @@ import { BadgeGrid } from '../../components/BadgeGrid';
 import { BakeryFrame } from '../../components/BakeryFrame';
 import { BakeryCollage } from '../../components/BakeryCollage';
 import type { RecipeCategory } from '../../types/recipe';
-
-// Shiny pink trophy SVG with gradient highlight
-const TROPHY_SVG = `<svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="pink" x1="0" y1="0" x2="1" y2="1">
-      <stop offset="0%" stop-color="#FF8EC7"/>
-      <stop offset="30%" stop-color="#FFB6D9"/>
-      <stop offset="50%" stop-color="#FF8EC7"/>
-      <stop offset="70%" stop-color="#F06292"/>
-      <stop offset="100%" stop-color="#E91E8C"/>
-    </linearGradient>
-    <linearGradient id="shine" x1="0.3" y1="0" x2="0.7" y2="1">
-      <stop offset="0%" stop-color="white" stop-opacity="0.6"/>
-      <stop offset="50%" stop-color="white" stop-opacity="0"/>
-      <stop offset="100%" stop-color="white" stop-opacity="0.2"/>
-    </linearGradient>
-    <linearGradient id="base" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#F06292"/>
-      <stop offset="100%" stop-color="#C2185B"/>
-    </linearGradient>
-  </defs>
-  <!-- Cup body -->
-  <path d="M22 16 L22 38 C22 48 30 54 40 54 C50 54 58 48 58 38 L58 16 Z" fill="url(#pink)" stroke="#C2185B" stroke-width="1"/>
-  <!-- Shine overlay on cup -->
-  <path d="M26 18 L26 36 C26 44 32 50 40 50 C42 50 44 49 46 48 L46 18 Z" fill="url(#shine)"/>
-  <!-- Left handle -->
-  <path d="M22 22 C14 22 10 28 10 34 C10 40 14 44 22 44" stroke="url(#pink)" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <path d="M22 22 C14 22 10 28 10 34 C10 40 14 44 22 44" stroke="#C2185B" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <!-- Right handle -->
-  <path d="M58 22 C66 22 70 28 70 34 C70 40 66 44 58 44" stroke="url(#pink)" stroke-width="4" fill="none" stroke-linecap="round"/>
-  <path d="M58 22 C66 22 70 28 70 34 C70 40 66 44 58 44" stroke="#C2185B" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-  <!-- Stem -->
-  <rect x="36" y="54" width="8" height="8" fill="url(#pink)" stroke="#C2185B" stroke-width="0.8"/>
-  <!-- Base -->
-  <rect x="28" y="62" width="24" height="5" rx="2" fill="url(#base)" stroke="#C2185B" stroke-width="0.8"/>
-  <!-- Rim -->
-  <rect x="20" y="14" width="40" height="4" rx="2" fill="url(#pink)" stroke="#C2185B" stroke-width="0.8"/>
-  <!-- Star on cup -->
-  <path d="M40 28 L42 33 L47 33 L43 36.5 L44.5 42 L40 38.5 L35.5 42 L37 36.5 L33 33 L38 33 Z" fill="white" opacity="0.9"/>
-  <!-- Sparkle top-right -->
-  <g transform="translate(60,12)">
-    <line x1="0" y1="-4" x2="0" y2="4" stroke="#FFB6D9" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="-4" y1="0" x2="4" y2="0" stroke="#FFB6D9" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="-2.5" y1="-2.5" x2="2.5" y2="2.5" stroke="#FFB6D9" stroke-width="1" stroke-linecap="round"/>
-    <line x1="2.5" y1="-2.5" x2="-2.5" y2="2.5" stroke="#FFB6D9" stroke-width="1" stroke-linecap="round"/>
-  </g>
-  <!-- Sparkle top-left -->
-  <g transform="translate(16,10) scale(0.7)">
-    <line x1="0" y1="-4" x2="0" y2="4" stroke="#FFB6D9" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="-4" y1="0" x2="4" y2="0" stroke="#FFB6D9" stroke-width="1.5" stroke-linecap="round"/>
-  </g>
-  <!-- Sparkle right -->
-  <g transform="translate(72,24) scale(0.6)">
-    <line x1="0" y1="-3" x2="0" y2="3" stroke="#FF8EC7" stroke-width="1.5" stroke-linecap="round"/>
-    <line x1="-3" y1="0" x2="3" y2="0" stroke="#FF8EC7" stroke-width="1.5" stroke-linecap="round"/>
-  </g>
-</svg>`;
-
-const TROPHY_URI = `data:image/svg+xml,${encodeURIComponent(TROPHY_SVG)}`;
 
 const DIFFICULTY_EMOJIS: Record<string, string> = {
   Easy: '🟢',
@@ -127,11 +67,10 @@ export default function ProfileScreen() {
             </View>
             <View style={styles.divider} />
             <Text style={styles.tagline}>2 x London Bake Off Champion</Text>
-            <Image
-              source={{ uri: TROPHY_URI }}
-              style={styles.trophy}
-              contentFit="contain"
-            />
+            <View style={styles.trophyRow}>
+              <Ionicons name="trophy" size={22} color={Colors.primaryDark} />
+              <Ionicons name="trophy" size={22} color={Colors.primaryDark} />
+            </View>
           </BakeryFrame>
         </View>
 
@@ -266,10 +205,10 @@ const styles = StyleSheet.create({
     color: Colors.primaryDark,
     textAlign: 'center',
   },
-  trophy: {
-    width: 38,
-    height: 38,
-    marginTop: 4,
+  trophyRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 6,
   },
   statsGrid: {
     flexDirection: 'row',
