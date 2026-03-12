@@ -22,6 +22,7 @@ import { useAllRecipes, isUserRecipe } from '../../lib/recipes';
 import { formatTime, DIFFICULTY_COLORS, generateId } from '../../lib/helpers';
 import { scaleAllIngredients } from '../../lib/ingredients';
 import { convertAllIngredients } from '../../lib/unitConversion';
+import { formatRecipeShareShort, formatRecipeShareFull } from '../../lib/shareUtils';
 import type { UnitSystem } from '../../lib/unitConversion';
 import type { RecipeNote, Ingredient } from '../../types/recipe';
 
@@ -53,6 +54,7 @@ export default function RecipeDetailScreen() {
   const [checkedSteps, setCheckedSteps] = useState<Set<number>>(new Set());
   const [showTimer, setShowTimer] = useState(false);
   const [scaledServings, setScaledServings] = useState<number | null>(null);
+  const [showShareSheet, setShowShareSheet] = useState(false);
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -131,11 +133,22 @@ export default function RecipeDetailScreen() {
     setNewNote('');
   };
 
-  const handleShare = async () => {
+  const handleShare = () => {
+    setShowShareSheet(true);
+  };
+
+  const doShare = async (full: boolean) => {
+    setShowShareSheet(false);
+    const text = full ? formatRecipeShareFull(recipe) : formatRecipeShareShort(recipe);
     try {
-      await Share.share({
-        message: `Check out this recipe: ${recipe.title} from Suzie's BakeBook!`,
-      });
+      if (typeof navigator !== 'undefined' && navigator.share) {
+        await navigator.share({ text });
+      } else if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+        Alert.alert('Copied!', 'Recipe copied to clipboard');
+      } else {
+        await Share.share({ message: text });
+      }
     } catch {}
   };
 
@@ -432,6 +445,44 @@ export default function RecipeDetailScreen() {
                 <Text style={styles.confirmBtnDeleteText}>Delete</Text>
               </Pressable>
             </View>
+          </View>
+        </View>
+      )}
+
+      {/* Share Action Sheet */}
+      {showShareSheet && (
+        <View style={styles.confirmOverlay}>
+          <View style={styles.confirmBox}>
+            <Text style={styles.confirmTitle}>Share Recipe</Text>
+            <Text style={styles.confirmText}>
+              Choose how to share "{recipe.title}"
+            </Text>
+            <Pressable
+              style={styles.shareOption}
+              onPress={() => doShare(false)}
+            >
+              <Ionicons name="document-text-outline" size={20} color={Colors.primaryDark} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.shareOptionTitle}>Share Summary</Text>
+                <Text style={styles.shareOptionDesc}>Title, description & timing</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              style={styles.shareOption}
+              onPress={() => doShare(true)}
+            >
+              <Ionicons name="list-outline" size={20} color={Colors.primaryDark} />
+              <View style={{ flex: 1 }}>
+                <Text style={styles.shareOptionTitle}>Share Full Recipe</Text>
+                <Text style={styles.shareOptionDesc}>Includes ingredients & steps</Text>
+              </View>
+            </Pressable>
+            <Pressable
+              style={[styles.confirmBtn, styles.confirmBtnCancel, { marginTop: Spacing.md }]}
+              onPress={() => setShowShareSheet(false)}
+            >
+              <Text style={styles.confirmBtnCancelText}>Cancel</Text>
+            </Pressable>
           </View>
         </View>
       )}
@@ -845,5 +896,26 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.sansSemiBold,
     fontSize: 14,
     color: Colors.white,
+  },
+  shareOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: Spacing.md,
+    paddingVertical: Spacing.md,
+    paddingHorizontal: Spacing.md,
+    backgroundColor: Colors.surfaceAlt,
+    borderRadius: Radius.md,
+    marginBottom: Spacing.sm,
+  },
+  shareOptionTitle: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 14,
+    color: Colors.text,
+  },
+  shareOptionDesc: {
+    fontFamily: Fonts.sans,
+    fontSize: 12,
+    color: Colors.textSecondary,
+    marginTop: 1,
   },
 });
