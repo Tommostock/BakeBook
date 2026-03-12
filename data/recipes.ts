@@ -505,7 +505,7 @@ export const recipes: Recipe[] = [
     totalTime: 200,
     difficulty: 'Medium',
     servings: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1608198093002-ad4e005484ec?w=800&q=80',
+    imageUrl: '/assets/recipes/ciabatta.jpg',
     tips: 'Resist the urge to add more flour. The sticky dough is what creates those beautiful open holes. Handle it gently to preserve the air bubbles.',
     dietaryTags: ['Vegetarian', 'Vegan'],
   },
