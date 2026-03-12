@@ -14,7 +14,7 @@ import { CATEGORY_EMOJIS, DIFFICULTY_COLORS } from '../../lib/helpers';
 import { computeSkillStats, computeAchievements } from '../../lib/skills';
 import { SkillProgressCard } from '../../components/SkillProgressCard';
 import { BadgeGrid } from '../../components/BadgeGrid';
-import { BakeryCollage } from '../../components/BakeryCollage';
+// BakeryCollage removed — clean background matches rest of app
 import type { RecipeCategory } from '../../types/recipe';
 
 const DIFFICULTY_EMOJIS: Record<string, string> = {
@@ -59,9 +59,7 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         {/* Profile Header */}
         <View style={styles.hero}>
-          <BakeryCollage />
-          <Text style={styles.brandName}>Suzie's</Text>
-          <Text style={styles.subtitle}>SUZIE STOCK</Text>
+          <Text style={styles.heroTitle}>Suzie Stock</Text>
           <View style={styles.divider} />
           <Text style={styles.tagline}>2 x London Bake Off Champion</Text>
           <View style={styles.trophyRow}>
@@ -169,47 +167,36 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
   hero: {
     backgroundColor: Colors.surfaceAlt,
-    paddingTop: 20,
-    paddingBottom: 22,
+    paddingTop: 24,
+    paddingBottom: 24,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
     borderBottomLeftRadius: Radius.xl,
     borderBottomRightRadius: Radius.xl,
-    position: 'relative',
-    overflow: 'hidden',
   },
-  brandName: {
-    fontFamily: Fonts.calligraphy,
-    fontSize: 50,
-    color: Colors.primaryDark,
-    marginBottom: -8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontFamily: Fonts.sansSemiBold,
-    fontSize: 11,
-    color: Colors.textSecondary,
-    letterSpacing: 4,
+  heroTitle: {
+    fontFamily: Fonts.serif,
+    fontSize: 28,
+    color: Colors.text,
     textAlign: 'center',
   },
   divider: {
-    width: 36,
-    height: 1.5,
+    width: 50,
+    height: 2,
     backgroundColor: Colors.primaryDark,
-    marginVertical: 8,
-    opacity: 0.35,
+    marginVertical: 10,
     borderRadius: 1,
   },
   tagline: {
     fontFamily: Fonts.serifRegular,
-    fontSize: 14,
-    color: Colors.text,
+    fontSize: 16,
+    color: Colors.textSecondary,
     textAlign: 'center',
   },
   trophyRow: {
     flexDirection: 'row',
-    gap: 6,
-    marginTop: 6,
+    gap: 8,
+    marginTop: 8,
   },
   statsGrid: {
     flexDirection: 'row',

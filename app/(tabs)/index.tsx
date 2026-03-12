@@ -15,7 +15,7 @@ import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { RecipeCard } from '../../components/RecipeCard';
 import { CategoryPill } from '../../components/CategoryPill';
 import { SectionHeader } from '../../components/SectionHeader';
-import { BakeryCollage } from '../../components/BakeryCollage';
+// BakeryCollage removed — clean background matches rest of app
 import { CATEGORIES, CATEGORY_EMOJIS } from '../../lib/helpers';
 import { useAppStore } from '../../lib/store';
 import { useAllRecipes } from '../../lib/recipes';
@@ -56,7 +56,6 @@ export default function HomeScreen() {
       >
         {/* Header / Hero */}
         <View style={styles.hero}>
-          <BakeryCollage />
           <Text style={styles.brandSuzie}>Suzie's</Text>
           <Text style={styles.brandBakeBook}>BakeBook</Text>
           <View style={styles.divider} />
@@ -187,51 +186,46 @@ const styles = StyleSheet.create({
   },
   hero: {
     backgroundColor: Colors.surfaceAlt,
-    paddingTop: 20,
-    paddingBottom: 22,
+    paddingTop: 24,
+    paddingBottom: 24,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
     borderBottomLeftRadius: Radius.xl,
     borderBottomRightRadius: Radius.xl,
-    position: 'relative',
-    overflow: 'hidden',
   },
   brandSuzie: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 54,
-    color: Colors.primaryDark,
-    marginBottom: -14,
+    fontSize: 58,
+    color: Colors.text,
+    marginBottom: -16,
     textAlign: 'center',
   },
   brandBakeBook: {
-    fontFamily: Fonts.serifRegular,
-    fontSize: 17,
+    fontFamily: Fonts.serif,
+    fontSize: 20,
     color: Colors.text,
-    letterSpacing: 3,
+    letterSpacing: 4,
     textAlign: 'center',
   },
   divider: {
-    width: 36,
-    height: 1.5,
+    width: 50,
+    height: 2,
     backgroundColor: Colors.primaryDark,
-    marginVertical: 8,
-    opacity: 0.35,
+    marginVertical: 10,
     borderRadius: 1,
   },
   dedicationText: {
-    fontFamily: Fonts.calligraphy,
-    fontSize: 17,
-    color: Colors.primaryDark,
+    fontFamily: Fonts.serifRegular,
+    fontSize: 16,
+    color: Colors.textSecondary,
     textAlign: 'center',
-    opacity: 0.6,
   },
   dedicationFrom: {
-    fontFamily: Fonts.calligraphy,
-    fontSize: 16,
-    color: Colors.primaryDark,
+    fontFamily: Fonts.serifRegular,
+    fontSize: 15,
+    color: Colors.textSecondary,
     textAlign: 'center',
-    opacity: 0.5,
-    marginTop: 1,
+    marginTop: 2,
   },
   gridContainer: {
     flexDirection: 'row',
