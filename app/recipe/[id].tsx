@@ -20,7 +20,10 @@ import { RecipeFormModal } from '../../components/RecipeFormModal';
 import { useAppStore } from '../../lib/store';
 import { useAllRecipes, isUserRecipe } from '../../lib/recipes';
 import { formatTime, DIFFICULTY_COLORS, generateId } from '../../lib/helpers';
-import type { RecipeNote } from '../../types/recipe';
+import { scaleAllIngredients } from '../../lib/ingredients';
+import { convertAllIngredients } from '../../lib/unitConversion';
+import type { UnitSystem } from '../../lib/unitConversion';
+import type { RecipeNote, Ingredient } from '../../types/recipe';
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -32,6 +35,8 @@ export default function RecipeDetailScreen() {
   const addRecipeNote = useAppStore((s) => s.addRecipeNote);
   const deleteRecipeNote = useAppStore((s) => s.deleteRecipeNote);
   const deleteUserRecipe = useAppStore((s) => s.deleteUserRecipe);
+  const preferredUnits = useAppStore((s) => s.preferredUnits);
+  const setPreferredUnits = useAppStore((s) => s.setPreferredUnits);
 
   const allRecipes = useAllRecipes();
   const recipe = useMemo(() => allRecipes.find((r) => r.id === id), [allRecipes, id]);
@@ -47,6 +52,7 @@ export default function RecipeDetailScreen() {
   const [checkedIngredients, setCheckedIngredients] = useState<Set<number>>(new Set());
   const [checkedSteps, setCheckedSteps] = useState<Set<number>>(new Set());
   const [showTimer, setShowTimer] = useState(false);
+  const [scaledServings, setScaledServings] = useState<number | null>(null);
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -73,6 +79,19 @@ export default function RecipeDetailScreen() {
     toggleFavorite(recipeId);
     playFavoriteAnimation();
   };
+
+  // Compute display ingredients: scale first, then convert units
+  const displayIngredients = useMemo(() => {
+    if (!recipe) return [];
+    const currentServings = scaledServings ?? recipe.servings;
+    let ings = scaleAllIngredients(recipe.ingredients, recipe.servings, currentServings);
+    if (preferredUnits === 'imperial') {
+      ings = convertAllIngredients(ings, 'imperial');
+    }
+    return ings;
+  }, [recipe, scaledServings, preferredUnits]);
+
+  const isScaled = scaledServings !== null && scaledServings !== recipe?.servings;
 
   if (!recipe) {
     return (
@@ -225,9 +244,58 @@ export default function RecipeDetailScreen() {
             ))}
           </View>
 
+          {/* Servings Scaler */}
+          <View style={styles.servingsRow}>
+            <Pressable
+              style={styles.servingsBtn}
+              onPress={() => {
+                const current = scaledServings ?? recipe.servings;
+                if (current > 1) setScaledServings(current - 1);
+              }}
+            >
+              <Ionicons name="remove" size={18} color={Colors.primaryDark} />
+            </Pressable>
+            <Text style={[styles.servingsValue, isScaled && styles.servingsValueScaled]}>
+              {scaledServings ?? recipe.servings} {(scaledServings ?? recipe.servings) === 1 ? 'serving' : 'servings'}
+            </Text>
+            <Pressable
+              style={styles.servingsBtn}
+              onPress={() => {
+                const current = scaledServings ?? recipe.servings;
+                if (current < recipe.servings * 4) setScaledServings(current + 1);
+              }}
+            >
+              <Ionicons name="add" size={18} color={Colors.primaryDark} />
+            </Pressable>
+            {isScaled && (
+              <Pressable
+                style={styles.servingsResetBtn}
+                onPress={() => setScaledServings(null)}
+              >
+                <Ionicons name="refresh" size={14} color={Colors.textSecondary} />
+              </Pressable>
+            )}
+          </View>
+
           {/* Ingredients */}
-          <Text style={styles.sectionTitle}>Ingredients</Text>
-          {recipe.ingredients.map((ing, i) => (
+          <View style={styles.ingredientsHeader}>
+            <Text style={[styles.sectionTitle, { marginTop: 0, marginBottom: 0 }]}>Ingredients</Text>
+            <View style={styles.unitToggle}>
+              <Pressable
+                style={[styles.unitBtn, preferredUnits === 'metric' && styles.unitBtnActive]}
+                onPress={() => setPreferredUnits('metric')}
+              >
+                <Text style={[styles.unitBtnText, preferredUnits === 'metric' && styles.unitBtnTextActive]}>Metric</Text>
+              </Pressable>
+              <Pressable
+                style={[styles.unitBtn, preferredUnits === 'imperial' && styles.unitBtnActive]}
+                onPress={() => setPreferredUnits('imperial')}
+              >
+                <Text style={[styles.unitBtnText, preferredUnits === 'imperial' && styles.unitBtnTextActive]}>Imperial</Text>
+              </Pressable>
+            </View>
+          </View>
+          {displayIngredients.map((ing, i) => (
             <Pressable
               key={i}
               style={styles.ingredientRow}
@@ -485,6 +553,77 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: Colors.borderLight,
     overflow: 'hidden',
+  },
+  servingsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.md,
+    backgroundColor: Colors.surfaceAlt,
+    borderRadius: Radius.md,
+    paddingVertical: Spacing.sm + 2,
+    paddingHorizontal: Spacing.md,
+    marginBottom: Spacing.sm,
+  },
+  servingsBtn: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  servingsValue: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 14,
+    color: Colors.text,
+    minWidth: 90,
+    textAlign: 'center',
+  },
+  servingsValueScaled: {
+    color: Colors.primaryDark,
+  },
+  servingsResetBtn: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  ingredientsHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.md,
+  },
+  unitToggle: {
+    flexDirection: 'row',
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    overflow: 'hidden',
+  },
+  unitBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    backgroundColor: Colors.surface,
+  },
+  unitBtnActive: {
+    backgroundColor: Colors.primaryDark,
+  },
+  unitBtnText: {
+    fontFamily: Fonts.sansMedium,
+    fontSize: 11,
+    color: Colors.textSecondary,
+  },
+  unitBtnTextActive: {
+    color: Colors.white,
   },
   sectionTitle: {
     fontFamily: Fonts.serif,

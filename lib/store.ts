@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Recipe, JournalEntry, RecipeNote } from '../types/recipe';
+import type { UnitSystem } from './unitConversion';
 
 interface AppState {
   favorites: string[];
@@ -8,6 +9,8 @@ interface AppState {
   recipeNotes: RecipeNote[];
   recentlyViewed: string[];
   userRecipes: Recipe[];
+  preferredUnits: UnitSystem;
+  hasSeenOnboarding: boolean;
   searchQuery: string;
   selectedCategory: string | null;
   selectedDifficulty: string | null;
@@ -21,6 +24,8 @@ interface AppState {
   addUserRecipe: (recipe: Recipe) => void;
   updateUserRecipe: (recipe: Recipe) => void;
   deleteUserRecipe: (id: string) => void;
+  setPreferredUnits: (units: UnitSystem) => void;
+  setHasSeenOnboarding: (seen: boolean) => void;
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: string | null) => void;
   setSelectedDifficulty: (difficulty: string | null) => void;
@@ -33,6 +38,8 @@ const STORAGE_KEYS = {
   notes: '@bakebook_notes',
   recent: '@bakebook_recent',
   userRecipes: '@bakebook_user_recipes',
+  units: '@bakebook_units',
+  onboarding: '@bakebook_onboarding',
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -41,6 +48,8 @@ export const useAppStore = create<AppState>((set, get) => ({
   recipeNotes: [],
   recentlyViewed: [],
   userRecipes: [],
+  preferredUnits: 'metric',
+  hasSeenOnboarding: false,
   searchQuery: '',
   selectedCategory: null,
   selectedDifficulty: null,
@@ -134,18 +143,30 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
   },
 
+  setPreferredUnits: (units) => {
+    set({ preferredUnits: units });
+    AsyncStorage.setItem(STORAGE_KEYS.units, JSON.stringify(units));
+  },
+
+  setHasSeenOnboarding: (seen) => {
+    set({ hasSeenOnboarding: seen });
+    AsyncStorage.setItem(STORAGE_KEYS.onboarding, JSON.stringify(seen));
+  },
+
   setSearchQuery: (query) => set({ searchQuery: query }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
   setSelectedDifficulty: (difficulty) => set({ selectedDifficulty: difficulty }),
 
   loadPersistedState: async () => {
     try {
-      const [favs, journal, notes, recent, userRecipes] = await Promise.all([
+      const [favs, journal, notes, recent, userRecipes, units, onboarding] = await Promise.all([
         AsyncStorage.getItem(STORAGE_KEYS.favorites),
         AsyncStorage.getItem(STORAGE_KEYS.journal),
         AsyncStorage.getItem(STORAGE_KEYS.notes),
         AsyncStorage.getItem(STORAGE_KEYS.recent),
         AsyncStorage.getItem(STORAGE_KEYS.userRecipes),
+        AsyncStorage.getItem(STORAGE_KEYS.units),
+        AsyncStorage.getItem(STORAGE_KEYS.onboarding),
       ]);
       set({
         favorites: favs ? JSON.parse(favs) : [],
@@ -153,6 +174,8 @@ export const useAppStore = create<AppState>((set, get) => ({
         recipeNotes: notes ? JSON.parse(notes) : [],
         recentlyViewed: recent ? JSON.parse(recent) : [],
         userRecipes: userRecipes ? JSON.parse(userRecipes) : [],
+        preferredUnits: units ? JSON.parse(units) : 'metric',
+        hasSeenOnboarding: onboarding ? JSON.parse(onboarding) : false,
       });
     } catch (e) {
       console.warn('Failed to load persisted state:', e);
