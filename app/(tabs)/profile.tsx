@@ -195,20 +195,21 @@ const styles = StyleSheet.create({
     borderColor: Colors.borderLight,
   },
   aboutName: {
-    fontFamily: Fonts.serif,
-    fontSize: 22,
-    color: Colors.text,
+    fontFamily: Fonts.calligraphy,
+    fontSize: 32,
+    color: Colors.primaryDark,
   },
   aboutChampRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    marginTop: 6,
+    marginTop: 4,
   },
   aboutChamp: {
-    fontFamily: Fonts.sansSemiBold,
-    fontSize: 13,
-    color: Colors.primaryDark,
+    fontFamily: Fonts.serifRegular,
+    fontSize: 14,
+    color: Colors.textSecondary,
+    fontStyle: 'italic',
   },
   aboutDivider: {
     width: 40,
