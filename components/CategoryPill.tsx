@@ -27,6 +27,7 @@ const styles = StyleSheet.create({
   pill: {
     flexDirection: 'row',
     alignItems: 'center',
+    alignSelf: 'flex-start',
     backgroundColor: Colors.surface,
     borderRadius: Radius.full,
     paddingHorizontal: Spacing.md,

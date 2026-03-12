@@ -39,6 +39,7 @@ export interface JournalEntry {
   recipeId: string;
   recipeTitle: string;
   photoUri?: string;
+  photos?: string[];
   notes: string;
   rating: number;
   dateBaked: string;

@@ -10,8 +10,10 @@ import {
   Modal,
   Alert,
   ScrollView,
+  Platform,
 } from 'react-native';
 import { Image } from 'expo-image';
+import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { StarRating } from '../../components/StarRating';
@@ -19,6 +21,8 @@ import { useAppStore } from '../../lib/store';
 import { recipes } from '../../data/recipes';
 import { generateId } from '../../lib/helpers';
 import type { JournalEntry } from '../../types/recipe';
+
+const MAX_PHOTOS = 6;
 
 export default function JournalScreen() {
   const journalEntries = useAppStore((s) => s.journalEntries);
@@ -29,6 +33,31 @@ export default function JournalScreen() {
   const [selectedRecipeId, setSelectedRecipeId] = useState('');
   const [notes, setNotes] = useState('');
   const [rating, setRating] = useState(0);
+  const [photos, setPhotos] = useState<string[]>([]);
+
+  const pickPhoto = async () => {
+    if (Platform.OS !== 'web') {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== 'granted') {
+        Alert.alert('Permission needed', 'Please allow access to your photo library to add photos.');
+        return;
+      }
+    }
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsMultipleSelection: true,
+      selectionLimit: MAX_PHOTOS - photos.length,
+      quality: 0.8,
+    });
+    if (!result.canceled) {
+      const newUris = result.assets.map((a) => a.uri);
+      setPhotos((prev) => [...prev, ...newUris].slice(0, MAX_PHOTOS));
+    }
+  };
+
+  const removePhoto = (index: number) => {
+    setPhotos((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const handleSave = () => {
     if (!selectedRecipeId) {
@@ -40,6 +69,7 @@ export default function JournalScreen() {
       id: generateId(),
       recipeId: selectedRecipeId,
       recipeTitle: recipe?.title || 'Unknown recipe',
+      photos,
       notes,
       rating,
       dateBaked: new Date().toISOString().split('T')[0],
@@ -50,6 +80,15 @@ export default function JournalScreen() {
     setSelectedRecipeId('');
     setNotes('');
     setRating(0);
+    setPhotos([]);
+  };
+
+  const handleClose = () => {
+    setModalVisible(false);
+    setSelectedRecipeId('');
+    setNotes('');
+    setRating(0);
+    setPhotos([]);
   };
 
   const confirmDelete = (id: string) => {
@@ -61,14 +100,34 @@ export default function JournalScreen() {
 
   const renderEntry = ({ item }: { item: JournalEntry }) => {
     const recipe = recipes.find((r) => r.id === item.recipeId);
+    const displayPhotos = item.photos?.length ? item.photos : item.photoUri ? [item.photoUri] : [];
+    const headerPhoto = displayPhotos[0] || recipe?.imageUrl;
+
     return (
       <View style={styles.entryCard}>
-        {recipe && (
+        {headerPhoto && (
           <Image
-            source={{ uri: recipe.imageUrl }}
+            source={{ uri: headerPhoto }}
             style={styles.entryImage}
             contentFit="cover"
           />
+        )}
+        {displayPhotos.length > 1 && (
+          <ScrollView
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            style={styles.entryPhotoStrip}
+            contentContainerStyle={{ gap: 4, paddingHorizontal: 4 }}
+          >
+            {displayPhotos.slice(1).map((uri, i) => (
+              <Image
+                key={i}
+                source={{ uri }}
+                style={styles.entryPhotoThumb}
+                contentFit="cover"
+              />
+            ))}
+          </ScrollView>
         )}
         <View style={styles.entryContent}>
           <View style={styles.entryHeader}>
@@ -78,7 +137,7 @@ export default function JournalScreen() {
             </Pressable>
           </View>
           <Text style={styles.entryDate}>
-            📅 {new Date(item.dateBaked).toLocaleDateString('en-GB', {
+            {new Date(item.dateBaked).toLocaleDateString('en-GB', {
               day: 'numeric',
               month: 'long',
               year: 'numeric',
@@ -130,11 +189,11 @@ export default function JournalScreen() {
         visible={modalVisible}
         animationType="slide"
         presentationStyle="pageSheet"
-        onRequestClose={() => setModalVisible(false)}
+        onRequestClose={handleClose}
       >
         <SafeAreaView style={styles.modalSafe}>
           <View style={styles.modalHeader}>
-            <Pressable onPress={() => setModalVisible(false)}>
+            <Pressable onPress={handleClose}>
               <Text style={styles.cancelText}>Cancel</Text>
             </Pressable>
             <Text style={styles.modalTitle}>New Journal Entry</Text>
@@ -143,6 +202,7 @@ export default function JournalScreen() {
             </Pressable>
           </View>
           <ScrollView style={styles.modalContent} contentContainerStyle={{ paddingBottom: 40 }}>
+
             <Text style={styles.fieldLabel}>Which recipe did you bake?</Text>
             <ScrollView
               horizontal
@@ -163,10 +223,7 @@ export default function JournalScreen() {
                     style={styles.recipeOptionImage}
                     contentFit="cover"
                   />
-                  <Text
-                    style={styles.recipeOptionTitle}
-                    numberOfLines={2}
-                  >
+                  <Text style={styles.recipeOptionTitle} numberOfLines={2}>
                     {r.title}
                   </Text>
                 </Pressable>
@@ -176,9 +233,30 @@ export default function JournalScreen() {
             <Text style={styles.fieldLabel}>How did it turn out?</Text>
             <StarRating rating={rating} onRate={setRating} size={32} />
 
-            <Text style={[styles.fieldLabel, { marginTop: Spacing.lg }]}>
-              Notes
-            </Text>
+            {/* Photos */}
+            <Text style={[styles.fieldLabel, { marginTop: Spacing.lg }]}>Photos</Text>
+            <View style={styles.photoGrid}>
+              {photos.map((uri, index) => (
+                <View key={index} style={styles.photoThumbWrap}>
+                  <Image source={{ uri }} style={styles.photoThumb} contentFit="cover" />
+                  <Pressable
+                    style={styles.photoRemoveBtn}
+                    onPress={() => removePhoto(index)}
+                    hitSlop={6}
+                  >
+                    <Ionicons name="close-circle" size={20} color={Colors.text} />
+                  </Pressable>
+                </View>
+              ))}
+              {photos.length < MAX_PHOTOS && (
+                <Pressable style={styles.photoAddBtn} onPress={pickPhoto}>
+                  <Ionicons name="camera-outline" size={26} color={Colors.textLight} />
+                  <Text style={styles.photoAddText}>Add</Text>
+                </Pressable>
+              )}
+            </View>
+
+            <Text style={[styles.fieldLabel, { marginTop: Spacing.lg }]}>Notes</Text>
             <TextInput
               style={styles.notesInput}
               placeholder="How was your bake? Any changes you made?"
@@ -232,7 +310,17 @@ const styles = StyleSheet.create({
   },
   entryImage: {
     width: '100%',
-    height: 150,
+    height: 160,
+    backgroundColor: Colors.surfaceAlt,
+  },
+  entryPhotoStrip: {
+    height: 64,
+    backgroundColor: Colors.surface,
+  },
+  entryPhotoThumb: {
+    width: 60,
+    height: 56,
+    borderRadius: Radius.sm,
     backgroundColor: Colors.surfaceAlt,
   },
   entryContent: {
@@ -354,6 +442,48 @@ const styles = StyleSheet.create({
     color: Colors.text,
     padding: 4,
     textAlign: 'center',
+  },
+  photoGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+  },
+  photoThumbWrap: {
+    position: 'relative',
+    width: 88,
+    height: 88,
+    borderRadius: Radius.md,
+    overflow: 'visible',
+  },
+  photoThumb: {
+    width: 88,
+    height: 88,
+    borderRadius: Radius.md,
+    backgroundColor: Colors.surfaceAlt,
+  },
+  photoRemoveBtn: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    backgroundColor: Colors.white,
+    borderRadius: 10,
+  },
+  photoAddBtn: {
+    width: 88,
+    height: 88,
+    borderRadius: Radius.md,
+    borderWidth: 1.5,
+    borderColor: Colors.border,
+    borderStyle: 'dashed',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.surface,
+    gap: 4,
+  },
+  photoAddText: {
+    fontFamily: Fonts.sans,
+    fontSize: 12,
+    color: Colors.textLight,
   },
   notesInput: {
     fontFamily: Fonts.sans,
