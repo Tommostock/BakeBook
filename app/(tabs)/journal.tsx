@@ -11,6 +11,7 @@ import {
   Alert,
   ScrollView,
   Platform,
+  useWindowDimensions,
 } from 'react-native';
 import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
@@ -32,12 +33,18 @@ export default function JournalScreen() {
   const addJournalEntry = useAppStore((s) => s.addJournalEntry);
   const deleteJournalEntry = useAppStore((s) => s.deleteJournalEntry);
 
+  const { width: screenWidth } = useWindowDimensions();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecipeId, setSelectedRecipeId] = useState('');
   const [recipeSearch, setRecipeSearch] = useState('');
   const [notes, setNotes] = useState('');
   const [rating, setRating] = useState(0);
   const [photos, setPhotos] = useState<string[]>([]);
+
+  // Detail view state
+  const [viewingEntry, setViewingEntry] = useState<JournalEntry | null>(null);
+  const [galleryIndex, setGalleryIndex] = useState(0);
 
   // Auto-open modal when navigated here from a recipe page
   const handledRecipeId = useRef('');
@@ -126,32 +133,27 @@ export default function JournalScreen() {
     const recipe = recipes.find((r) => r.id === item.recipeId);
     const displayPhotos = item.photos?.length ? item.photos : item.photoUri ? [item.photoUri] : [];
     const headerPhoto = displayPhotos[0] || recipe?.imageUrl;
+    const photoCount = displayPhotos.length;
 
     return (
-      <View style={styles.entryCard}>
+      <Pressable
+        style={styles.entryCard}
+        onPress={() => { setGalleryIndex(0); setViewingEntry(item); }}
+      >
         {headerPhoto && (
-          <Image
-            source={{ uri: headerPhoto }}
-            style={styles.entryImage}
-            contentFit="cover"
-          />
-        )}
-        {displayPhotos.length > 1 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            style={styles.entryPhotoStrip}
-            contentContainerStyle={{ gap: 4, paddingHorizontal: 4 }}
-          >
-            {displayPhotos.slice(1).map((uri, i) => (
-              <Image
-                key={i}
-                source={{ uri }}
-                style={styles.entryPhotoThumb}
-                contentFit="cover"
-              />
-            ))}
-          </ScrollView>
+          <View>
+            <Image
+              source={{ uri: headerPhoto }}
+              style={styles.entryImage}
+              contentFit="cover"
+            />
+            {photoCount > 1 && (
+              <View style={styles.photoCountBadge}>
+                <Ionicons name="images-outline" size={12} color={Colors.white} />
+                <Text style={styles.photoCountText}>{photoCount}</Text>
+              </View>
+            )}
+          </View>
         )}
         <View style={styles.entryContent}>
           <View style={styles.entryHeader}>
@@ -169,10 +171,10 @@ export default function JournalScreen() {
           </Text>
           <StarRating rating={item.rating} size={16} />
           {item.notes ? (
-            <Text style={styles.entryNotes}>{item.notes}</Text>
+            <Text style={styles.entryNotes} numberOfLines={2}>{item.notes}</Text>
           ) : null}
         </View>
-      </View>
+      </Pressable>
     );
   };
 
@@ -207,6 +209,130 @@ export default function JournalScreen() {
           </View>
         }
       />
+
+      {/* Entry Detail Modal */}
+      <Modal
+        visible={!!viewingEntry}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setViewingEntry(null)}
+      >
+        {viewingEntry && (() => {
+          const recipe = recipes.find((r) => r.id === viewingEntry.recipeId);
+          const displayPhotos = viewingEntry.photos?.length
+            ? viewingEntry.photos
+            : viewingEntry.photoUri
+            ? [viewingEntry.photoUri]
+            : [];
+          const galleryPhotos = displayPhotos.length ? displayPhotos : recipe?.imageUrl ? [recipe.imageUrl] : [];
+
+          return (
+            <SafeAreaView style={styles.modalSafe}>
+              {/* Header */}
+              <View style={styles.detailHeader}>
+                <Pressable onPress={() => setViewingEntry(null)} style={styles.detailCloseBtn}>
+                  <Ionicons name="close" size={22} color={Colors.text} />
+                </Pressable>
+                <Text style={styles.detailHeaderTitle} numberOfLines={1}>{viewingEntry.recipeTitle}</Text>
+                <Pressable
+                  onPress={() => {
+                    setViewingEntry(null);
+                    confirmDelete(viewingEntry.id);
+                  }}
+                  hitSlop={10}
+                >
+                  <Ionicons name="trash-outline" size={20} color={Colors.textLight} />
+                </Pressable>
+              </View>
+
+              <ScrollView showsVerticalScrollIndicator={false}>
+                {/* Photo Gallery */}
+                {galleryPhotos.length > 0 && (
+                  <View>
+                    <ScrollView
+                      horizontal
+                      pagingEnabled
+                      showsHorizontalScrollIndicator={false}
+                      style={{ width: screenWidth }}
+                      onScroll={(e) => {
+                        const idx = Math.round(e.nativeEvent.contentOffset.x / screenWidth);
+                        setGalleryIndex(idx);
+                      }}
+                      scrollEventThrottle={16}
+                    >
+                      {galleryPhotos.map((uri, i) => (
+                        <Image
+                          key={i}
+                          source={{ uri }}
+                          style={{ width: screenWidth, height: 320 }}
+                          contentFit="cover"
+                        />
+                      ))}
+                    </ScrollView>
+                    {/* Dot indicators */}
+                    {galleryPhotos.length > 1 && (
+                      <View style={styles.dotRow}>
+                        {galleryPhotos.map((_, i) => (
+                          <View
+                            key={i}
+                            style={[styles.dot, i === galleryIndex && styles.dotActive]}
+                          />
+                        ))}
+                      </View>
+                    )}
+                  </View>
+                )}
+
+                {/* Entry details */}
+                <View style={styles.detailContent}>
+                  <Text style={styles.detailRecipeTitle}>{viewingEntry.recipeTitle}</Text>
+                  <Text style={styles.detailDate}>
+                    {new Date(viewingEntry.dateBaked).toLocaleDateString('en-GB', {
+                      weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
+                    })}
+                  </Text>
+                  <View style={{ marginTop: Spacing.sm, marginBottom: Spacing.md }}>
+                    <StarRating rating={viewingEntry.rating} size={28} />
+                  </View>
+
+                  {viewingEntry.notes ? (
+                    <View style={styles.detailNotesBox}>
+                      <Text style={styles.detailNotesLabel}>Notes</Text>
+                      <Text style={styles.detailNotesText}>{viewingEntry.notes}</Text>
+                    </View>
+                  ) : null}
+
+                  {galleryPhotos.length > 1 && (
+                    <View style={styles.detailPhotoGrid}>
+                      <Text style={styles.detailNotesLabel}>All Photos ({galleryPhotos.length})</Text>
+                      <View style={styles.detailThumbnailRow}>
+                        {galleryPhotos.map((uri, i) => (
+                          <Pressable
+                            key={i}
+                            onPress={() => {
+                              setGalleryIndex(i);
+                              // scroll gallery to this index — handled via state, user can also swipe
+                            }}
+                          >
+                            <Image
+                              source={{ uri }}
+                              style={[
+                                styles.detailThumbnail,
+                                i === galleryIndex && styles.detailThumbnailActive,
+                              ]}
+                              contentFit="cover"
+                            />
+                          </Pressable>
+                        ))}
+                      </View>
+                    </View>
+                  )}
+                </View>
+              </ScrollView>
+            </SafeAreaView>
+          );
+        })()}
+      </Modal>
 
       {/* New Entry Modal */}
       <Modal
@@ -265,7 +391,10 @@ export default function JournalScreen() {
             <StarRating rating={rating} onRate={setRating} size={32} />
 
             {/* Photos */}
-            <Text style={[styles.fieldLabel, { marginTop: Spacing.lg }]}>Photos</Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: Spacing.lg, marginBottom: Spacing.md }}>
+              <Text style={[styles.fieldLabel, { marginBottom: 0, flex: 1 }]}>Photos</Text>
+              <Text style={styles.photoCountHint}>{photos.length} / {MAX_PHOTOS}</Text>
+            </View>
             <View style={styles.photoGrid}>
               {photos.map((uri, index) => (
                 <View key={index} style={styles.photoThumbWrap}>
@@ -341,18 +470,25 @@ const styles = StyleSheet.create({
   },
   entryImage: {
     width: '100%',
-    height: 160,
+    height: 180,
     backgroundColor: Colors.surfaceAlt,
   },
-  entryPhotoStrip: {
-    height: 64,
-    backgroundColor: Colors.surface,
+  photoCountBadge: {
+    position: 'absolute',
+    bottom: 8,
+    right: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(0,0,0,0.55)',
+    borderRadius: Radius.full,
+    paddingHorizontal: 8,
+    paddingVertical: 3,
   },
-  entryPhotoThumb: {
-    width: 60,
-    height: 56,
-    borderRadius: Radius.sm,
-    backgroundColor: Colors.surfaceAlt,
+  photoCountText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 12,
+    color: Colors.white,
   },
   entryContent: {
     padding: Spacing.md,
@@ -538,5 +674,105 @@ const styles = StyleSheet.create({
     minHeight: 120,
     borderWidth: 1,
     borderColor: Colors.borderLight,
+  },
+  photoCountHint: {
+    fontFamily: Fonts.sans,
+    fontSize: 13,
+    color: Colors.textSecondary,
+  },
+  // Detail modal
+  detailHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.borderLight,
+    gap: Spacing.sm,
+  },
+  detailCloseBtn: {
+    width: 32,
+    height: 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  detailHeaderTitle: {
+    flex: 1,
+    fontFamily: Fonts.serif,
+    fontSize: 18,
+    color: Colors.text,
+  },
+  detailContent: {
+    padding: Spacing.lg,
+    paddingBottom: 48,
+  },
+  detailRecipeTitle: {
+    fontFamily: Fonts.serif,
+    fontSize: 24,
+    color: Colors.text,
+    marginBottom: 4,
+  },
+  detailDate: {
+    fontFamily: Fonts.sans,
+    fontSize: 13,
+    color: Colors.textSecondary,
+  },
+  detailNotesBox: {
+    backgroundColor: Colors.surfaceAlt,
+    borderRadius: Radius.md,
+    padding: Spacing.md,
+    marginTop: Spacing.sm,
+  },
+  detailNotesLabel: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 13,
+    color: Colors.textSecondary,
+    textTransform: 'uppercase',
+    letterSpacing: 0.8,
+    marginBottom: Spacing.sm,
+  },
+  detailNotesText: {
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    color: Colors.text,
+    lineHeight: 22,
+  },
+  detailPhotoGrid: {
+    marginTop: Spacing.lg,
+  },
+  detailThumbnailRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: Spacing.sm,
+  },
+  detailThumbnail: {
+    width: 80,
+    height: 80,
+    borderRadius: Radius.md,
+    backgroundColor: Colors.surfaceAlt,
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  detailThumbnailActive: {
+    borderColor: Colors.primaryDark,
+  },
+  // Gallery dots
+  dotRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: Spacing.sm,
+    backgroundColor: Colors.background,
+  },
+  dot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    backgroundColor: Colors.border,
+  },
+  dotActive: {
+    width: 18,
+    backgroundColor: Colors.primaryDark,
   },
 });
