@@ -50,6 +50,9 @@ export default function JournalScreen() {
   // Delete confirmation state
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
+  // Lightbox state — full-screen photo viewer
+  const [lightboxUri, setLightboxUri] = useState<string | null>(null);
+
   // Web file input ref (mobile browsers don't support expo-image-picker reliably)
   const fileInputRef = useRef<any>(null);
 
@@ -175,9 +178,10 @@ export default function JournalScreen() {
     const headerPhoto = displayPhotos[0] || recipe?.imageUrl;
     const photoCount = displayPhotos.length;
 
+    const cardWidth = (screenWidth - Spacing.lg * 2 - Spacing.md) / 2;
     return (
       <Pressable
-        style={styles.entryCard}
+        style={[styles.entryCard, { maxWidth: cardWidth }]}
         onPress={() => { setGalleryIndex(0); setViewingEntry(item); }}
       >
         <View style={styles.entryImageWrap}>
@@ -297,12 +301,13 @@ export default function JournalScreen() {
                       scrollEventThrottle={16}
                     >
                       {galleryPhotos.map((uri, i) => (
-                        <Image
-                          key={i}
-                          source={{ uri }}
-                          style={{ width: screenWidth, height: 320 }}
-                          contentFit="cover"
-                        />
+                        <Pressable key={i} onPress={() => setLightboxUri(uri)}>
+                          <Image
+                            source={{ uri }}
+                            style={{ width: screenWidth, height: 320 }}
+                            contentFit="cover"
+                          />
+                        </Pressable>
                       ))}
                     </ScrollView>
                     {/* Dot indicators */}
@@ -347,7 +352,7 @@ export default function JournalScreen() {
                             key={i}
                             onPress={() => {
                               setGalleryIndex(i);
-                              // scroll gallery to this index — handled via state, user can also swipe
+                              setLightboxUri(uri);
                             }}
                           >
                             <Image
@@ -479,6 +484,28 @@ export default function JournalScreen() {
             />
           )}
         </SafeAreaView>
+      </Modal>
+
+      {/* Lightbox Modal — full-screen photo viewer */}
+      <Modal
+        visible={!!lightboxUri}
+        transparent
+        animationType="fade"
+        statusBarTranslucent
+        onRequestClose={() => setLightboxUri(null)}
+      >
+        <Pressable style={styles.lightboxOverlay} onPress={() => setLightboxUri(null)}>
+          {lightboxUri && (
+            <Image
+              source={{ uri: lightboxUri }}
+              style={styles.lightboxImage}
+              contentFit="contain"
+            />
+          )}
+          <Pressable style={styles.lightboxCloseBtn} onPress={() => setLightboxUri(null)} hitSlop={12}>
+            <Ionicons name="close" size={24} color="#fff" />
+          </Pressable>
+        </Pressable>
       </Modal>
 
       {/* Delete Confirmation Modal */}
@@ -860,6 +887,28 @@ const styles = StyleSheet.create({
   dotActive: {
     width: 18,
     backgroundColor: Colors.primaryDark,
+  },
+  // Lightbox
+  lightboxOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.95)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lightboxImage: {
+    width: '100%',
+    height: '100%',
+  },
+  lightboxCloseBtn: {
+    position: 'absolute',
+    top: 52,
+    right: 20,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   // Rating warning
   ratingWarning: {

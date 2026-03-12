@@ -31,8 +31,8 @@ export default function ProfileScreen() {
         {/* Profile Header */}
         <View style={styles.profileHeader}>
           <Ionicons name="heart" size={52} color={Colors.primaryDark} style={{ marginBottom: Spacing.md }} />
-          <Text style={styles.name}>For our beautiful mum,</Text>
-          <Text style={styles.tagline}>Love Harry & Oliver</Text>
+          <Text style={styles.name}>Suzie Stock</Text>
+          <Text style={styles.tagline}>2 x London Bake Off Champion</Text>
         </View>
 
         {/* Stats */}
