@@ -31,9 +31,14 @@ export default function JournalScreen() {
 
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedRecipeId, setSelectedRecipeId] = useState('');
+  const [recipeSearch, setRecipeSearch] = useState('');
   const [notes, setNotes] = useState('');
   const [rating, setRating] = useState(0);
   const [photos, setPhotos] = useState<string[]>([]);
+
+  const filteredRecipes = recipeSearch.trim()
+    ? recipes.filter((r) => r.title.toLowerCase().includes(recipeSearch.toLowerCase()))
+    : recipes;
 
   const pickPhoto = async () => {
     if (Platform.OS !== 'web') {
@@ -78,6 +83,7 @@ export default function JournalScreen() {
     addJournalEntry(entry);
     setModalVisible(false);
     setSelectedRecipeId('');
+    setRecipeSearch('');
     setNotes('');
     setRating(0);
     setPhotos([]);
@@ -86,6 +92,7 @@ export default function JournalScreen() {
   const handleClose = () => {
     setModalVisible(false);
     setSelectedRecipeId('');
+    setRecipeSearch('');
     setNotes('');
     setRating(0);
     setPhotos([]);
@@ -204,12 +211,19 @@ export default function JournalScreen() {
           <ScrollView style={styles.modalContent} contentContainerStyle={{ paddingBottom: 40 }}>
 
             <Text style={styles.fieldLabel}>Which recipe did you bake?</Text>
+            <TextInput
+              style={styles.recipeSearchInput}
+              placeholder="Search recipes..."
+              placeholderTextColor={Colors.textLight}
+              value={recipeSearch}
+              onChangeText={setRecipeSearch}
+            />
             <ScrollView
               horizontal
               showsHorizontalScrollIndicator={false}
               style={{ marginBottom: Spacing.lg }}
             >
-              {recipes.slice(0, 20).map((r) => (
+              {filteredRecipes.map((r) => (
                 <Pressable
                   key={r.id}
                   style={[
@@ -419,6 +433,18 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: Colors.text,
     marginBottom: Spacing.md,
+  },
+  recipeSearchInput: {
+    fontFamily: Fonts.sans,
+    fontSize: 14,
+    color: Colors.text,
+    backgroundColor: Colors.surface,
+    borderRadius: Radius.full,
+    paddingHorizontal: Spacing.md,
+    paddingVertical: Spacing.sm,
+    borderWidth: 1,
+    borderColor: Colors.borderLight,
+    marginBottom: Spacing.sm,
   },
   recipeOption: {
     width: 100,

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import type { Recipe, JournalEntry, RecipeNote } from '../types/recipe';
+import type { JournalEntry, RecipeNote } from '../types/recipe';
 
 interface AppState {
   favorites: string[];
@@ -12,12 +12,10 @@ interface AppState {
   selectedDifficulty: string | null;
 
   toggleFavorite: (recipeId: string) => void;
-  isFavorite: (recipeId: string) => boolean;
   addJournalEntry: (entry: JournalEntry) => void;
   deleteJournalEntry: (id: string) => void;
   addRecipeNote: (note: RecipeNote) => void;
   deleteRecipeNote: (id: string) => void;
-  getNotesForRecipe: (recipeId: string) => RecipeNote[];
   addRecentlyViewed: (recipeId: string) => void;
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: string | null) => void;
@@ -52,8 +50,6 @@ export const useAppStore = create<AppState>((set, get) => ({
     });
   },
 
-  isFavorite: (recipeId) => get().favorites.includes(recipeId),
-
   addJournalEntry: (entry) => {
     set((state) => {
       const newEntries = [entry, ...state.journalEntries];
@@ -85,9 +81,6 @@ export const useAppStore = create<AppState>((set, get) => ({
       return { recipeNotes: newNotes };
     });
   },
-
-  getNotesForRecipe: (recipeId) =>
-    get().recipeNotes.filter((n) => n.recipeId === recipeId),
 
   addRecentlyViewed: (recipeId) => {
     set((state) => {

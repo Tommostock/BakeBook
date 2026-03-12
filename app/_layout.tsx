@@ -17,6 +17,7 @@ import {
 } from '@expo-google-fonts/great-vibes';
 import * as SplashScreen from 'expo-splash-screen';
 import { useAppStore } from '../lib/store';
+import { ErrorBoundary } from '../components/ErrorBoundary';
 
 SplashScreen.preventAutoHideAsync();
 
@@ -46,7 +47,7 @@ export default function RootLayout() {
   if (!fontsLoaded) return null;
 
   return (
-    <>
+    <ErrorBoundary>
       <StatusBar style="dark" />
       <Stack
         screenOptions={{
@@ -63,6 +64,6 @@ export default function RootLayout() {
           }}
         />
       </Stack>
-    </>
+    </ErrorBoundary>
   );
 }

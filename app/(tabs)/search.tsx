@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TextInput,
   FlatList,
+  ScrollView,
   Pressable,
   SafeAreaView,
 } from 'react-native';
@@ -90,21 +91,23 @@ export default function SearchScreen() {
       </View>
 
       {/* Category Filter */}
-      <FlatList
-        horizontal
-        data={['All', ...CATEGORIES]}
-        keyExtractor={(item) => item}
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={{ paddingHorizontal: Spacing.lg, paddingVertical: Spacing.sm }}
-        renderItem={({ item }) => (
-          <CategoryPill
-            label={item === 'All' ? 'All' : item}
-            emoji={item === 'All' ? '📋' : CATEGORY_EMOJIS[item as keyof typeof CATEGORY_EMOJIS]}
-            isSelected={item === 'All' ? !selectedCategory : selectedCategory === item}
-            onPress={() => setSelectedCategory(item === 'All' ? null : item)}
-          />
-        )}
-      />
+      <View style={styles.categoryRow}>
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingHorizontal: Spacing.lg, alignItems: 'center' }}
+        >
+          {['All', ...CATEGORIES].map((item) => (
+            <CategoryPill
+              key={item}
+              label={item === 'All' ? 'All' : item}
+              emoji={item === 'All' ? '📋' : CATEGORY_EMOJIS[item as keyof typeof CATEGORY_EMOJIS]}
+              isSelected={item === 'All' ? !selectedCategory : selectedCategory === item}
+              onPress={() => setSelectedCategory(item === 'All' ? null : item)}
+            />
+          ))}
+        </ScrollView>
+      </View>
 
       {/* Difficulty Filter */}
       <View style={styles.difficultyRow}>
@@ -184,6 +187,10 @@ const styles = StyleSheet.create({
     color: Colors.text,
     marginLeft: Spacing.sm,
     paddingVertical: 4,
+  },
+  categoryRow: {
+    height: 52,
+    marginVertical: Spacing.xs,
   },
   difficultyRow: {
     flexDirection: 'row',
