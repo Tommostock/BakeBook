@@ -224,7 +224,7 @@ export const recipes: Recipe[] = [
     totalTime: 165,
     difficulty: 'Medium',
     servings: 12,
-    imageUrl: 'https://images.unsplash.com/photo-1509365390695-33aee754301f?w=800&q=80',
+    imageUrl: '/assets/recipes/cinnamon-rolls.jpg',
     tips: 'For overnight cinnamon rolls, skip the second prove and refrigerate the dish overnight. In the morning, let them come to room temperature for 30 minutes, then bake as directed.',
     dietaryTags: ['Vegetarian'],
     isFeatured: true,
