@@ -111,26 +111,32 @@ export default function SearchScreen() {
 
       {/* Difficulty Filter */}
       <View style={styles.difficultyRow}>
-        {['Easy', 'Medium', 'Hard'].map((d) => (
-          <Pressable
-            key={d}
-            style={[
-              styles.difficultyPill,
-              selectedDifficulty === d && { backgroundColor: DIFFICULTY_COLORS[d] + '30' },
-            ]}
-            onPress={() => setSelectedDifficulty(selectedDifficulty === d ? null : d)}
-          >
-            <Text
+        {['All', 'Easy', 'Medium', 'Hard'].map((d) => {
+          const isAll = d === 'All';
+          const isSelected = isAll ? !selectedDifficulty : selectedDifficulty === d;
+          return (
+            <Pressable
+              key={d}
               style={[
-                styles.difficultyText,
-                { color: DIFFICULTY_COLORS[d] },
-                selectedDifficulty === d && { fontFamily: Fonts.sansBold },
+                styles.difficultyPill,
+                isSelected && !isAll && { backgroundColor: DIFFICULTY_COLORS[d] + '30' },
+                isSelected && isAll && styles.difficultyPillAllSelected,
               ]}
+              onPress={() => setSelectedDifficulty(isAll ? null : (selectedDifficulty === d ? null : d))}
             >
-              {d}
-            </Text>
-          </Pressable>
-        ))}
+              <Text
+                style={[
+                  styles.difficultyText,
+                  { color: isAll ? Colors.textSecondary : DIFFICULTY_COLORS[d] },
+                  isSelected && { fontFamily: Fonts.sansBold },
+                  isSelected && isAll && { color: Colors.primaryDark },
+                ]}
+              >
+                {d}
+              </Text>
+            </Pressable>
+          );
+        })}
       </View>
 
       {/* Results Count */}
@@ -205,6 +211,10 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surface,
     borderWidth: 1,
     borderColor: Colors.borderLight,
+  },
+  difficultyPillAllSelected: {
+    backgroundColor: Colors.primary + '40',
+    borderColor: Colors.primaryDark,
   },
   difficultyText: {
     fontFamily: Fonts.sansMedium,
