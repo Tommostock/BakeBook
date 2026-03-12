@@ -33,55 +33,44 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
 
   return (
     <View style={styles.timerCard}>
-      <View style={styles.timerCardHeader}>
-        <Text style={styles.timerCardLabel}>{timer.label}</Text>
-        <Pressable onPress={() => removeTimer(timer.id)} hitSlop={8}>
-          <Ionicons name="close" size={18} color={Colors.textLight} />
-        </Pressable>
-      </View>
+      {/* Horizontal bar timer */}
+      <View style={styles.timerBarContainer}>
+        <View style={styles.timerBarHeader}>
+          <Text style={styles.timerBarLabel}>{timer.label}</Text>
+          <Text style={styles.timerTime}>{formatDisplay(timer.remainingSeconds)}</Text>
+        </View>
 
-      {/* Circular display */}
-      <View style={styles.timerCircle}>
-        <View style={[styles.progressRing, { opacity: timer.totalSeconds > 0 ? 1 : 0.3 }]}>
+        {/* Progress bar background */}
+        <View style={styles.progressBarBackground}>
+          {/* Progress bar fill */}
           <View
             style={[
-              styles.progressArc,
+              styles.progressBarFill,
               {
-                borderColor: isDone ? Colors.success : Colors.primaryDark,
-                borderRightColor: 'transparent',
-                borderBottomColor: progress > 0.25 ? (isDone ? Colors.success : Colors.primaryDark) : 'transparent',
-                borderLeftColor: progress > 0.5 ? (isDone ? Colors.success : Colors.primaryDark) : 'transparent',
-                borderTopColor: progress > 0.75 ? (isDone ? Colors.success : Colors.primaryDark) : 'transparent',
-                transform: [{ rotate: `${progress * 360}deg` }],
+                width: `${progress * 100}%`,
+                backgroundColor: isDone ? Colors.success : Colors.primaryDark,
               },
             ]}
           />
         </View>
-        <Text style={[styles.timeDisplay, isDone && styles.timeDisplayDone]}>
-          {formatDisplay(timer.remainingSeconds)}
-        </Text>
-        {isDone && <Text style={styles.doneLabel}>Done! 🎉</Text>}
-      </View>
 
-      {/* Controls */}
-      <View style={styles.timerCardControls}>
-        <Pressable
-          style={styles.timerResetBtn}
-          onPress={() => resetTimer(timer.id)}
-        >
-          <Ionicons name="refresh" size={18} color={Colors.textSecondary} />
-        </Pressable>
-        <Pressable
-          style={[styles.timerMainBtn, timer.isRunning ? styles.pauseBtn : styles.startBtn]}
-          onPress={() => timer.isRunning ? pauseTimer(timer.id) : startTimer(timer.id)}
-          disabled={isDone}
-        >
-          <Ionicons
-            name={timer.isRunning ? 'pause' : 'play'}
-            size={22}
-            color={Colors.white}
-          />
-        </Pressable>
+        {/* Controls */}
+        <View style={styles.timerBarControls}>
+          <Pressable
+            style={[styles.timerBarBtn, timer.isRunning ? styles.pauseBtn : styles.startBtn]}
+            onPress={() => timer.isRunning ? pauseTimer(timer.id) : startTimer(timer.id)}
+            disabled={isDone}
+          >
+            <Ionicons
+              name={timer.isRunning ? 'pause' : 'play'}
+              size={20}
+              color={Colors.white}
+            />
+          </Pressable>
+          <Pressable onPress={() => removeTimer(timer.id)} hitSlop={8}>
+            <Ionicons name="close" size={18} color={Colors.textLight} />
+          </Pressable>
+        </View>
       </View>
     </View>
   );
@@ -268,90 +257,60 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
   },
   timerCard: {
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.primaryDark,
     borderRadius: Radius.md,
-    padding: Spacing.md,
     marginBottom: Spacing.md,
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
+    overflow: 'hidden',
   },
-  timerCardHeader: {
+  timerBarContainer: {
+    paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.md,
+  },
+  timerBarHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    width: '100%',
     marginBottom: Spacing.sm,
   },
-  timerCardLabel: {
+  timerBarLabel: {
     fontFamily: Fonts.sansSemiBold,
-    fontSize: 14,
-    color: Colors.text,
+    fontSize: 16,
+    color: Colors.white,
   },
-  timerCircle: {
-    width: 140,
-    height: 140,
-    borderRadius: 70,
-    backgroundColor: Colors.surfaceAlt,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderWidth: 3,
-    borderColor: Colors.borderLight,
-    position: 'relative',
-    marginBottom: Spacing.sm,
-  },
-  progressRing: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 70,
-    overflow: 'hidden',
-  },
-  progressArc: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 70,
-    borderWidth: 3,
-  },
-  timeDisplay: {
+  timerTime: {
     fontFamily: Fonts.sansBold,
-    fontSize: 32,
-    color: Colors.text,
-    letterSpacing: 2,
+    fontSize: 18,
+    color: Colors.white,
+    letterSpacing: 1,
   },
-  timeDisplayDone: {
-    color: Colors.success,
+  progressBarBackground: {
+    height: 6,
+    backgroundColor: Colors.white + '30',
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginBottom: Spacing.md,
   },
-  doneLabel: {
-    fontFamily: Fonts.sansSemiBold,
-    fontSize: 12,
-    color: Colors.success,
-    marginTop: -2,
+  progressBarFill: {
+    height: '100%',
+    borderRadius: 3,
   },
-  timerCardControls: {
+  timerBarControls: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.md,
+    justifyContent: 'space-between',
+    gap: Spacing.sm,
   },
-  timerMainBtn: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+  timerBarBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
   },
   startBtn: {
-    backgroundColor: Colors.primaryDark,
+    backgroundColor: Colors.white,
   },
   pauseBtn: {
-    backgroundColor: '#FF9800',
-  },
-  timerResetBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: Colors.surfaceAlt,
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: Colors.white,
   },
 });
