@@ -58,7 +58,7 @@ export default function HomeScreen() {
         {/* Header / Hero */}
         <View style={styles.hero}>
           <BakeryCollage />
-          <BakeryFrame width={320}>
+          <BakeryFrame width={260} contentPaddingVertical={12}>
             <View style={styles.brandContainer}>
               <Text style={styles.brandSuzie}>Suzie's</Text>
               <Text style={styles.brandBakeBook}>BAKEBOOK</Text>
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
   },
   hero: {
     backgroundColor: Colors.surfaceAlt,
-    paddingVertical: Spacing.xxl,
+    paddingVertical: 8,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
     borderBottomLeftRadius: Radius.xl,
@@ -207,39 +207,39 @@ const styles = StyleSheet.create({
   },
   brandSuzie: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 58,
+    fontSize: 40,
     color: Colors.primaryDark,
-    marginBottom: -16,
+    marginBottom: -10,
     zIndex: 1,
     textAlign: 'center',
-    transform: [{ translateX: -6 }],
+    transform: [{ translateX: -4 }],
   },
   brandBakeBook: {
     fontFamily: Fonts.serif,
-    fontSize: 20,
+    fontSize: 14,
     color: Colors.text,
-    letterSpacing: 8,
+    letterSpacing: 6,
     textAlign: 'center',
   },
   divider: {
-    width: 60,
+    width: 44,
     height: 2,
     backgroundColor: Colors.primary,
-    marginVertical: Spacing.md,
+    marginVertical: 6,
     borderRadius: 1,
   },
   dedicationText: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 20,
+    fontSize: 15,
     color: Colors.primaryDark,
     textAlign: 'center',
   },
   dedicationFrom: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 18,
+    fontSize: 14,
     color: Colors.primaryDark,
     textAlign: 'center',
-    marginTop: 2,
+    marginTop: 1,
   },
   gridContainer: {
     flexDirection: 'row',

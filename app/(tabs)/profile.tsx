@@ -121,7 +121,7 @@ export default function ProfileScreen() {
         {/* Profile Header — matches home page hero style */}
         <View style={styles.hero}>
           <BakeryCollage />
-          <BakeryFrame width={320}>
+          <BakeryFrame width={260} contentPaddingVertical={12}>
             <View style={styles.brandContainer}>
               <Text style={styles.name}>Suzie Stock</Text>
             </View>
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: Colors.background },
   hero: {
     backgroundColor: Colors.surfaceAlt,
-    paddingVertical: Spacing.xxl,
+    paddingVertical: 8,
     paddingHorizontal: Spacing.lg,
     alignItems: 'center',
     borderBottomLeftRadius: Radius.xl,
@@ -249,27 +249,27 @@ const styles = StyleSheet.create({
   },
   name: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 46,
+    fontSize: 34,
     color: Colors.primaryDark,
     textAlign: 'center',
   },
   divider: {
-    width: 60,
+    width: 44,
     height: 2,
     backgroundColor: Colors.primary,
-    marginVertical: Spacing.md,
+    marginVertical: 6,
     borderRadius: 1,
   },
   tagline: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 18,
+    fontSize: 14,
     color: Colors.primaryDark,
     textAlign: 'center',
   },
   trophy: {
-    width: 56,
-    height: 56,
-    marginTop: Spacing.sm,
+    width: 38,
+    height: 38,
+    marginTop: 4,
   },
   statsGrid: {
     flexDirection: 'row',

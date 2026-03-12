@@ -154,7 +154,13 @@ interface Props {
   width?: number;
 }
 
-export function BakeryFrame({ children, width = 320 }: Props) {
+interface Props {
+  children?: React.ReactNode;
+  width?: number;
+  contentPaddingVertical?: number;
+}
+
+export function BakeryFrame({ children, width = 320, contentPaddingVertical = 28 }: Props) {
   const height = width / ASPECT;
   return (
     <View style={[styles.wrapper, { width, height }]}>
@@ -163,7 +169,7 @@ export function BakeryFrame({ children, width = 320 }: Props) {
         style={StyleSheet.absoluteFill}
         contentFit="contain"
       />
-      <View style={styles.content}>
+      <View style={[styles.content, { paddingVertical: contentPaddingVertical }]}>
         {children}
       </View>
     </View>
@@ -180,6 +186,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal: 36,
-    paddingVertical: 28,
   },
 });
