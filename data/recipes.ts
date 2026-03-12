@@ -445,7 +445,7 @@ export const recipes: Recipe[] = [
     totalTime: 720,
     difficulty: 'Medium',
     servings: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1517686469429-8bdb88b9f907?w=800&q=80',
+    imageUrl: '/assets/recipes/brioche-loaf.jpg',
     tips: 'Cold dough is much easier to shape. The overnight fridge rest also develops flavour. Don\'t rush the butter incorporation — patience gives you that silky texture.',
     dietaryTags: ['Vegetarian'],
   },
