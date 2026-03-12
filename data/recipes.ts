@@ -538,7 +538,7 @@ export const recipes: Recipe[] = [
     totalTime: 160,
     difficulty: 'Easy',
     servings: 10,
-    imageUrl: 'https://images.unsplash.com/photo-1598373182133-52452f7691ef?w=800&q=80',
+    imageUrl: '/assets/recipes/wholemeal-loaf.jpg',
     tips: 'Adding some white flour lightens the texture. Pure wholemeal can be dense. The honey feeds the yeast and adds subtle sweetness to balance the nuttiness.',
     dietaryTags: ['Vegetarian'],
   },
