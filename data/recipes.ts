@@ -474,7 +474,7 @@ export const recipes: Recipe[] = [
     totalTime: 55,
     difficulty: 'Easy',
     servings: 8,
-    imageUrl: 'https://images.unsplash.com/photo-1586765501019-cbe3973ef8fa?w=800&q=80',
+    imageUrl: '/assets/recipes/irish-soda-bread.jpg',
     tips: 'The secret is minimal handling — overworking develops gluten and makes it tough. If you don\'t have buttermilk, add 1 tablespoon of lemon juice to regular milk and let it sit for 10 minutes.',
     dietaryTags: ['Vegetarian'],
   },
