@@ -11,11 +11,18 @@ export function generateId(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 8);
 }
 
+export interface AdvancedFilters {
+  maxTotalTime?: number | null;
+  dietaryTags?: string[];
+  maxIngredients?: number | null;
+}
+
 export function searchRecipes(
   recipes: Recipe[],
   query: string,
   category?: string | null,
-  difficulty?: string | null
+  difficulty?: string | null,
+  advanced?: AdvancedFilters
 ): Recipe[] {
   let filtered = [...recipes];
 
@@ -37,6 +44,20 @@ export function searchRecipes(
 
   if (difficulty) {
     filtered = filtered.filter((r) => r.difficulty === difficulty);
+  }
+
+  if (advanced) {
+    if (advanced.maxTotalTime != null) {
+      filtered = filtered.filter((r) => r.totalTime <= advanced.maxTotalTime!);
+    }
+    if (advanced.dietaryTags && advanced.dietaryTags.length > 0) {
+      filtered = filtered.filter((r) =>
+        advanced.dietaryTags!.every((tag) => r.dietaryTags?.includes(tag))
+      );
+    }
+    if (advanced.maxIngredients != null) {
+      filtered = filtered.filter((r) => r.ingredients.length < advanced.maxIngredients!);
+    }
   }
 
   return filtered;

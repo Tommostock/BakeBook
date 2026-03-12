@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { CategoryPill } from '../../components/CategoryPill';
 import { RecipeFormModal } from '../../components/RecipeFormModal';
+import { FilterSheet, FilterOptions, EMPTY_FILTERS, countActiveFilters } from '../../components/FilterSheet';
 import { CATEGORIES, CATEGORY_EMOJIS, searchRecipes, formatTime, DIFFICULTY_COLORS } from '../../lib/helpers';
 import { useAllRecipes } from '../../lib/recipes';
 import type { Recipe } from '../../types/recipe';
@@ -29,6 +30,9 @@ export default function SearchScreen() {
   );
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
   const [showRecipeForm, setShowRecipeForm] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [advancedFilters, setAdvancedFilters] = useState<FilterOptions>(EMPTY_FILTERS);
+  const activeFilterCount = countActiveFilters(advancedFilters);
 
   useEffect(() => {
     if (params.category) {
@@ -37,8 +41,12 @@ export default function SearchScreen() {
   }, [params.category]);
 
   const results = useMemo(
-    () => searchRecipes(allRecipes, query, selectedCategory, selectedDifficulty),
-    [allRecipes, query, selectedCategory, selectedDifficulty]
+    () => searchRecipes(allRecipes, query, selectedCategory, selectedDifficulty, {
+      maxTotalTime: advancedFilters.maxTotalTime,
+      dietaryTags: advancedFilters.dietaryTags,
+      maxIngredients: advancedFilters.maxIngredients,
+    }),
+    [allRecipes, query, selectedCategory, selectedDifficulty, advancedFilters]
   );
 
   const renderRecipeRow = ({ item }: { item: Recipe }) => (
@@ -98,6 +106,14 @@ export default function SearchScreen() {
             <Ionicons name="close-circle" size={20} color={Colors.textLight} />
           </Pressable>
         )}
+        <Pressable style={styles.filterBtn} onPress={() => setShowFilters(true)}>
+          <Ionicons name="options-outline" size={20} color={activeFilterCount > 0 ? Colors.primaryDark : Colors.textSecondary} />
+          {activeFilterCount > 0 && (
+            <View style={styles.filterBadge}>
+              <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
+            </View>
+          )}
+        </Pressable>
       </View>
 
       {/* Category Filter */}
@@ -182,6 +198,14 @@ export default function SearchScreen() {
       <RecipeFormModal
         visible={showRecipeForm}
         onClose={() => setShowRecipeForm(false)}
+      />
+
+      {/* Advanced Filters */}
+      <FilterSheet
+        visible={showFilters}
+        onClose={() => setShowFilters(false)}
+        filters={advancedFilters}
+        onApply={setAdvancedFilters}
       />
     </SafeAreaView>
   );
@@ -338,6 +362,26 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: Colors.textSecondary,
     marginTop: 4,
+  },
+  filterBtn: {
+    marginLeft: Spacing.sm,
+    position: 'relative',
+  },
+  filterBadge: {
+    position: 'absolute',
+    top: -4,
+    right: -4,
+    backgroundColor: Colors.primaryDark,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  filterBadgeText: {
+    fontFamily: Fonts.sansBold,
+    fontSize: 9,
+    color: Colors.white,
   },
   fab: {
     position: 'absolute',

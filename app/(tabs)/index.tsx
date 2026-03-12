@@ -20,11 +20,19 @@ import { BakeryCollage } from '../../components/BakeryCollage';
 import { CATEGORIES, CATEGORY_EMOJIS } from '../../lib/helpers';
 import { useAppStore } from '../../lib/store';
 import { useAllRecipes } from '../../lib/recipes';
+import { getCurrentSeason, getSeasonalLabel, getSeasonalEmoji, getSeasonalRecipes } from '../../lib/seasonal';
 
 export default function HomeScreen() {
   const router = useRouter();
   const recentlyViewed = useAppStore((s) => s.recentlyViewed);
   const allRecipes = useAllRecipes();
+
+  const season = getCurrentSeason();
+  const seasonalLabel = `${getSeasonalLabel(season)} ${getSeasonalEmoji(season)}`;
+  const seasonalRecipes = useMemo(
+    () => getSeasonalRecipes(allRecipes),
+    [allRecipes]
+  );
 
   const featuredRecipes = useMemo(
     () => allRecipes.filter((r) => r.isFeatured).slice(0, 8),
@@ -86,6 +94,21 @@ export default function HomeScreen() {
             />
           )}
         />
+
+        {/* Seasonal Highlights */}
+        {seasonalRecipes.length > 0 && (
+          <>
+            <SectionHeader title={seasonalLabel} />
+            <FlatList
+              horizontal
+              data={seasonalRecipes}
+              keyExtractor={(item) => item.id}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: Spacing.lg }}
+              renderItem={({ item }) => <RecipeCard recipe={item} variant="medium" />}
+            />
+          </>
+        )}
 
         {/* Featured Recipes */}
         <SectionHeader
