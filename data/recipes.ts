@@ -781,7 +781,7 @@ export const recipes: Recipe[] = [
     totalTime: 55,
     difficulty: 'Easy',
     servings: 16,
-    imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=80',
+    imageUrl: '/assets/recipes/classic-shortbread.jpg',
     tips: 'Use softened butter — not melted, just soft enough to mix. Under-baking slightly gives you a more melt-in-the-mouth texture. Use the best butter you can find; you\'ll taste it.',
     dietaryTags: ['Vegetarian'],
   },
