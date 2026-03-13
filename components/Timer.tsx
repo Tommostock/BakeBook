@@ -37,62 +37,71 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
 
   return (
     <View style={styles.timerCard}>
-      {/* Coloured fill that grows left → right */}
-      <View
-        style={[
-          styles.timerFill,
-          {
-            width: `${elapsed * 100}%`,
-            backgroundColor: isDone ? Colors.success : Colors.primaryDark,
-          },
-        ]}
-      />
-
-      {/* Content overlaid on top */}
-      <View style={styles.timerContent}>
-        <View style={styles.timerTextArea}>
-          <Text style={styles.timerLabel} numberOfLines={1}>
-            {timer.label}
-          </Text>
-          <Text style={styles.timerTime}>
-            {formatDisplay(timer.remainingSeconds)}
-          </Text>
+      {/* Top row: label + action buttons */}
+      <View style={styles.timerTopRow}>
+        <Text style={styles.timerLabel} numberOfLines={1}>
+          {timer.label}
+        </Text>
+        <View style={styles.timerButtons}>
+          {/* Play / Pause */}
+          <Pressable
+            style={styles.timerBtn}
+            onPress={() =>
+              timer.isRunning ? pauseTimer(timer.id) : startTimer(timer.id)
+            }
+            disabled={isDone}
+          >
+            <Ionicons
+              name={isDone ? 'checkmark' : timer.isRunning ? 'pause' : 'play'}
+              size={18}
+              color={isDone ? Colors.success : Colors.primaryDark}
+            />
+          </Pressable>
+          {/* Reset */}
+          <Pressable
+            style={styles.timerBtn}
+            onPress={() => resetTimer(timer.id)}
+          >
+            <Ionicons name="refresh" size={18} color={Colors.primaryDark} />
+          </Pressable>
+          {/* Remove */}
+          <Pressable
+            style={styles.timerBtn}
+            onPress={() => removeTimer(timer.id)}
+          >
+            <Ionicons name="close" size={18} color={Colors.primaryDark} />
+          </Pressable>
         </View>
-
-        {/* Play / Pause button */}
-        <Pressable
-          style={styles.timerPlayBtn}
-          onPress={() =>
-            timer.isRunning ? pauseTimer(timer.id) : startTimer(timer.id)
-          }
-          disabled={isDone}
-        >
-          <Ionicons
-            name={isDone ? 'checkmark' : timer.isRunning ? 'pause' : 'play'}
-            size={22}
-            color={isDone ? Colors.success : Colors.primaryDark}
-          />
-        </Pressable>
       </View>
 
-      {/* Thin reset / close row below */}
-      <View style={styles.timerActions}>
-        <Pressable
-          style={styles.timerActionBtn}
-          onPress={() => resetTimer(timer.id)}
-          hitSlop={6}
-        >
-          <Ionicons name="refresh" size={14} color={Colors.text} />
-          <Text style={styles.timerActionText}>Reset</Text>
-        </Pressable>
-        <Pressable
-          style={styles.timerActionBtn}
-          onPress={() => removeTimer(timer.id)}
-          hitSlop={6}
-        >
-          <Ionicons name="close" size={14} color={Colors.text} />
-          <Text style={styles.timerActionText}>Remove</Text>
-        </Pressable>
+      {/* Recipe subtitle */}
+      {timer.recipeTitle ? (
+        <Text style={styles.timerRecipe} numberOfLines={1}>
+          {timer.recipeTitle}
+        </Text>
+      ) : null}
+
+      {/* Large countdown */}
+      <Text
+        style={[
+          styles.timerTime,
+          isDone && { color: Colors.success },
+        ]}
+      >
+        {formatDisplay(timer.remainingSeconds)}
+      </Text>
+
+      {/* Progress bar */}
+      <View style={styles.timerProgressTrack}>
+        <View
+          style={[
+            styles.timerProgressFill,
+            {
+              width: `${elapsed * 100}%`,
+              backgroundColor: isDone ? Colors.success : Colors.primaryDark,
+            },
+          ]}
+        />
       </View>
     </View>
   );
@@ -279,73 +288,63 @@ const styles = StyleSheet.create({
     paddingVertical: Spacing.md,
   },
 
-  /* ── Timer card: the fill IS the background ── */
+  /* ── Timer card ── */
   timerCard: {
     backgroundColor: Colors.primary,
     borderRadius: Radius.md,
     marginBottom: Spacing.md,
     overflow: 'hidden',
-    position: 'relative',
-  },
-  timerFill: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    borderRadius: Radius.md,
-  },
-  timerContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingLeft: Spacing.lg,
-    paddingRight: Spacing.sm,
+    paddingHorizontal: Spacing.lg,
     paddingTop: Spacing.md,
-    paddingBottom: 4,
+    paddingBottom: Spacing.md,
   },
-  timerTextArea: {
-    flex: 1,
+  timerTopRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.md,
+    justifyContent: 'space-between',
   },
   timerLabel: {
-    fontFamily: Fonts.sans,
-    fontSize: 16,
+    fontFamily: Fonts.sansBold,
+    fontSize: 15,
     color: Colors.text,
     flex: 1,
+    marginRight: Spacing.sm,
   },
-  timerTime: {
-    fontFamily: Fonts.sansBold,
-    fontSize: 18,
-    color: Colors.text,
-    letterSpacing: 1,
+  timerButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
-  timerPlayBtn: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
+  timerBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: Spacing.sm,
   },
-  timerActions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-end',
-    gap: Spacing.md,
-    paddingHorizontal: Spacing.lg,
-    paddingBottom: Spacing.sm,
-    paddingTop: 2,
-  },
-  timerActionBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    opacity: 0.7,
-  },
-  timerActionText: {
+  timerRecipe: {
     fontFamily: Fonts.sans,
-    fontSize: 11,
-    color: Colors.text,
+    fontSize: 13,
+    color: Colors.textSecondary,
+    marginTop: 2,
+  },
+  timerTime: {
+    fontFamily: Fonts.sansBold,
+    fontSize: 24,
+    color: Colors.primaryDark,
+    letterSpacing: 1,
+    marginTop: 4,
+  },
+  timerProgressTrack: {
+    height: 4,
+    backgroundColor: Colors.primaryDark + '30',
+    borderRadius: 2,
+    marginTop: Spacing.sm,
+    overflow: 'hidden',
+  },
+  timerProgressFill: {
+    height: '100%',
+    borderRadius: 2,
   },
 });
