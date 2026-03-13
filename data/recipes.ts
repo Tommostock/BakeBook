@@ -1470,7 +1470,7 @@ export const recipes: Recipe[] = [
     totalTime: 30,
     difficulty: 'Easy',
     servings: 20,
-    imageUrl: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=800&q=80',
+    imageUrl: '/assets/recipes/cheese_straws.jpg',
     tips: 'Use the strongest Cheddar you can find — mild cheese disappears in baking. Press the ends firmly onto the tray to stop them untwisting.',
     dietaryTags: ['Vegetarian'],
   },

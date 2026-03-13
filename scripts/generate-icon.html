@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head><title>BakeBook Icon Generator</title></head>
+<body style="background:#333;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0;flex-direction:column;gap:20px;">
+<canvas id="c" width="1024" height="1024"></canvas>
+<a id="dl" download="icon.png" style="color:white;font-size:24px;background:#E8A0B8;padding:12px 32px;border-radius:12px;text-decoration:none;cursor:pointer;">Download Icon (1024x1024)</a>
+<script>
+const c = document.getElementById('c');
+const ctx = c.getContext('2d');
+const W = 1024, H = 1024;
+
+// Background - soft pink
+ctx.fillStyle = '#F8C8DC';
+ctx.beginPath();
+ctx.roundRect(0, 0, W, H, 180);
+ctx.fill();
+
+// Inner subtle gradient circle
+const grad = ctx.createRadialGradient(W/2, H/2, 100, W/2, H/2, 450);
+grad.addColorStop(0, 'rgba(255,255,255,0.3)');
+grad.addColorStop(1, 'rgba(255,255,255,0)');
+ctx.fillStyle = grad;
+ctx.beginPath();
+ctx.arc(W/2, H/2, 420, 0, Math.PI*2);
+ctx.fill();
+
+// === CUPCAKE ===
+
+// Cupcake wrapper (trapezoid) - darker pink
+const wrapTop = 580;
+const wrapBot = 780;
+const wrapTopLeft = 340;
+const wrapTopRight = 684;
+const wrapBotLeft = 390;
+const wrapBotRight = 634;
+
+ctx.fillStyle = '#E8A0B8';
+ctx.beginPath();
+ctx.moveTo(wrapTopLeft, wrapTop);
+ctx.lineTo(wrapTopRight, wrapTop);
+ctx.lineTo(wrapBotRight, wrapBot);
+ctx.lineTo(wrapBotLeft, wrapBot);
+ctx.closePath();
+ctx.fill();
+
+// Wrapper lines (decorative)
+ctx.strokeStyle = '#D4899F';
+ctx.lineWidth = 3;
+for (let i = 1; i <= 4; i++) {
+  const t = i / 5;
+  const y = wrapTop + t * (wrapBot - wrapTop);
+  const lx = wrapTopLeft + t * (wrapBotLeft - wrapTopLeft);
+  const rx = wrapTopRight + t * (wrapBotRight - wrapTopRight);
+  ctx.beginPath();
+  ctx.moveTo(lx + 5, y);
+  ctx.lineTo(rx - 5, y);
+  ctx.stroke();
+}
+
+// Wrapper bottom rounded
+ctx.fillStyle = '#E8A0B8';
+ctx.beginPath();
+ctx.ellipse((wrapBotLeft+wrapBotRight)/2, wrapBot, (wrapBotRight-wrapBotLeft)/2, 18, 0, 0, Math.PI);
+ctx.fill();
+
+// Frosting (swirl mound) - white/cream
+const frostCX = W/2;
+const frostCY = 480;
+
+// Main frosting blob
+ctx.fillStyle = '#FFFFFF';
+ctx.beginPath();
+ctx.moveTo(320, 590);
+// Left swoop
+ctx.quadraticCurveTo(280, 500, 340, 440);
+// Left bump
+ctx.quadraticCurveTo(380, 370, 430, 400);
+// Top left
+ctx.quadraticCurveTo(460, 320, 512, 290);
+// Top right
+ctx.quadraticCurveTo(564, 320, 594, 400);
+// Right bump
+ctx.quadraticCurveTo(644, 370, 684, 440);
+// Right swoop
+ctx.quadraticCurveTo(744, 500, 704, 590);
+// Bottom
+ctx.lineTo(320, 590);
+ctx.closePath();
+ctx.fill();
+
+// Frosting shadow/depth
+ctx.fillStyle = 'rgba(232,160,184,0.15)';
+ctx.beginPath();
+ctx.moveTo(340, 580);
+ctx.quadraticCurveTo(300, 520, 360, 470);
+ctx.quadraticCurveTo(400, 430, 450, 450);
+ctx.lineTo(340, 580);
+ctx.fill();
+
+ctx.beginPath();
+ctx.moveTo(684, 580);
+ctx.quadraticCurveTo(724, 520, 664, 470);
+ctx.quadraticCurveTo(624, 430, 574, 450);
+ctx.lineTo(684, 580);
+ctx.fill();
+
+// Frosting top swirl tip
+ctx.fillStyle = '#FFFFFF';
+ctx.beginPath();
+ctx.ellipse(512, 295, 35, 20, 0, 0, Math.PI * 2);
+ctx.fill();
+
+// Small cherry on top
+ctx.fillStyle = '#E8A0B8';
+ctx.beginPath();
+ctx.arc(512, 265, 28, 0, Math.PI * 2);
+ctx.fill();
+
+// Cherry highlight
+ctx.fillStyle = 'rgba(255,255,255,0.5)';
+ctx.beginPath();
+ctx.arc(502, 255, 10, 0, Math.PI * 2);
+ctx.fill();
+
+// Cherry stem
+ctx.strokeStyle = '#8B6F5E';
+ctx.lineWidth = 4;
+ctx.lineCap = 'round';
+ctx.beginPath();
+ctx.moveTo(512, 238);
+ctx.quadraticCurveTo(525, 215, 535, 225);
+ctx.stroke();
+
+// === LETTER B ===
+ctx.fillStyle = '#E8A0B8';
+ctx.font = 'bold 200px Georgia, serif';
+ctx.textAlign = 'center';
+ctx.textBaseline = 'middle';
+ctx.fillText('B', frostCX, 490);
+
+// B outline for clarity
+ctx.strokeStyle = '#D4899F';
+ctx.lineWidth = 4;
+ctx.strokeText('B', frostCX, 490);
+
+// === SUBTLE SHADOW UNDER CUPCAKE ===
+const shadowGrad = ctx.createRadialGradient(W/2, 810, 10, W/2, 810, 160);
+shadowGrad.addColorStop(0, 'rgba(0,0,0,0.08)');
+shadowGrad.addColorStop(1, 'rgba(0,0,0,0)');
+ctx.fillStyle = shadowGrad;
+ctx.beginPath();
+ctx.ellipse(W/2, 810, 160, 20, 0, 0, Math.PI*2);
+ctx.fill();
+
+// Download link
+const dl = document.getElementById('dl');
+dl.href = c.toDataURL('image/png');
+</script>
+</body>
+</html>
