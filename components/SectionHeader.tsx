@@ -31,8 +31,9 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: Fonts.serif,
-    fontSize: 22,
+    fontSize: 26,
     color: Colors.text,
+    letterSpacing: -0.3,
   },
   seeAll: {
     fontFamily: Fonts.sansSemiBold,

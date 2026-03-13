@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, StyleSheet, Pressable } from 'react-native';
-import { Colors, Fonts, Radius, Spacing } from '../constants/theme';
+import { Colors, Fonts, Radius, Spacing, Shadows } from '../constants/theme';
 
 interface CategoryPillProps {
   label: string;
@@ -28,13 +28,14 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     alignSelf: 'flex-start',
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.white,
     borderRadius: Radius.full,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm + 2,
     marginRight: Spacing.sm,
     borderWidth: 1,
     borderColor: Colors.borderLight,
+    ...Shadows.soft,
   },
   pillSelected: {
     backgroundColor: Colors.primary,

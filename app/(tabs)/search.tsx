@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -8,17 +8,77 @@ import {
   ScrollView,
   Pressable,
   SafeAreaView,
+  Animated,
 } from 'react-native';
 import { Image } from 'expo-image';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
+import { Colors, Fonts, Radius, Spacing, Shadows } from '../../constants/theme';
 import { CategoryPill } from '../../components/CategoryPill';
 import { RecipeFormModal } from '../../components/RecipeFormModal';
 import { FilterSheet, FilterOptions, EMPTY_FILTERS, countActiveFilters } from '../../components/FilterSheet';
 import { CATEGORIES, CATEGORY_EMOJIS, searchRecipes, formatTime, DIFFICULTY_COLORS } from '../../lib/helpers';
 import { useAllRecipes } from '../../lib/recipes';
 import type { Recipe } from '../../types/recipe';
+
+// Animated search result row (#19)
+function AnimatedRecipeRow({ item, index, onPress }: { item: Recipe; index: number; onPress: () => void }) {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(30)).current;
+
+  useEffect(() => {
+    const delay = Math.min(index * 60, 400);
+    Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 350,
+        delay,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 0,
+        duration: 350,
+        delay,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
+  return (
+    <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
+      <Pressable style={styles.recipeRow} onPress={onPress}>
+        <Image
+          source={{ uri: item.imageUrl }}
+          style={styles.recipeImage}
+          contentFit="cover"
+          transition={200}
+        />
+        <View style={styles.recipeInfo}>
+          <View style={styles.categoryRow2}>
+            <Text style={styles.recipeCategory}>{item.category}</Text>
+            {item.isUserRecipe && (
+              <View style={styles.myRecipeBadge}>
+                <Text style={styles.myRecipeBadgeText}>MY RECIPE</Text>
+              </View>
+            )}
+          </View>
+          <Text style={styles.recipeTitle} numberOfLines={2}>
+            {item.title}
+          </Text>
+          <View style={styles.recipeMeta}>
+            <Text style={styles.metaText}>⏱ {formatTime(item.totalTime)}</Text>
+            <Text
+              style={[styles.difficultyBadge, { backgroundColor: DIFFICULTY_COLORS[item.difficulty] + '20', color: DIFFICULTY_COLORS[item.difficulty] }]}
+            >
+              {item.difficulty}
+            </Text>
+            <Text style={styles.metaText}>🍽 {item.servings}</Text>
+          </View>
+        </View>
+      </Pressable>
+    </Animated.View>
+  );
+}
 
 export default function SearchScreen() {
   const router = useRouter();
@@ -32,7 +92,19 @@ export default function SearchScreen() {
   const [showRecipeForm, setShowRecipeForm] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [advancedFilters, setAdvancedFilters] = useState<FilterOptions>(EMPTY_FILTERS);
+  const [searchFocused, setSearchFocused] = useState(false);
   const activeFilterCount = countActiveFilters(advancedFilters);
+
+  // Animated search bar border (#17)
+  const searchBorderAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(searchBorderAnim, {
+      toValue: searchFocused || query.length > 0 ? 1 : 0,
+      duration: 250,
+      useNativeDriver: false,
+    }).start();
+  }, [searchFocused, query]);
 
   useEffect(() => {
     if (params.category) {
@@ -49,40 +121,24 @@ export default function SearchScreen() {
     [allRecipes, query, selectedCategory, selectedDifficulty, advancedFilters]
   );
 
-  const renderRecipeRow = ({ item }: { item: Recipe }) => (
-    <Pressable
-      style={styles.recipeRow}
+  // Key to force re-render animations when results change
+  const [resultsKey, setResultsKey] = useState(0);
+  const prevResultsRef = useRef<string>('');
+  useEffect(() => {
+    const key = results.map(r => r.id).join(',');
+    if (key !== prevResultsRef.current) {
+      prevResultsRef.current = key;
+      setResultsKey(k => k + 1);
+    }
+  }, [results]);
+
+  const renderRecipeRow = ({ item, index }: { item: Recipe; index: number }) => (
+    <AnimatedRecipeRow
+      key={`${item.id}-${resultsKey}`}
+      item={item}
+      index={index}
       onPress={() => router.push(`/recipe/${item.id}`)}
-    >
-      <Image
-        source={{ uri: item.imageUrl }}
-        style={styles.recipeImage}
-        contentFit="cover"
-        transition={200}
-      />
-      <View style={styles.recipeInfo}>
-        <View style={styles.categoryRow2}>
-          <Text style={styles.recipeCategory}>{item.category}</Text>
-          {item.isUserRecipe && (
-            <View style={styles.myRecipeBadge}>
-              <Text style={styles.myRecipeBadgeText}>MY RECIPE</Text>
-            </View>
-          )}
-        </View>
-        <Text style={styles.recipeTitle} numberOfLines={2}>
-          {item.title}
-        </Text>
-        <View style={styles.recipeMeta}>
-          <Text style={styles.metaText}>⏱ {formatTime(item.totalTime)}</Text>
-          <Text
-            style={[styles.difficultyBadge, { backgroundColor: DIFFICULTY_COLORS[item.difficulty] + '20', color: DIFFICULTY_COLORS[item.difficulty] }]}
-          >
-            {item.difficulty}
-          </Text>
-          <Text style={styles.metaText}>🍽 {item.servings}</Text>
-        </View>
-      </View>
-    </Pressable>
+    />
   );
 
   return (
@@ -91,15 +147,31 @@ export default function SearchScreen() {
         <Text style={styles.title}>Search Recipes</Text>
       </View>
 
-      {/* Search Bar */}
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color={Colors.textSecondary} />
+      {/* Animated Search Bar (#17) */}
+      <Animated.View
+        style={[
+          styles.searchContainer,
+          {
+            borderColor: searchBorderAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [Colors.borderLight, Colors.primaryDark],
+            }),
+            backgroundColor: searchBorderAnim.interpolate({
+              inputRange: [0, 1],
+              outputRange: [Colors.surface, Colors.white],
+            }),
+          },
+        ]}
+      >
+        <Ionicons name="search" size={20} color={searchFocused ? Colors.primaryDark : Colors.textSecondary} />
         <TextInput
           style={styles.searchInput}
           placeholder="Search by name, ingredient, category..."
           placeholderTextColor={Colors.textLight}
           value={query}
           onChangeText={setQuery}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
         />
         {query.length > 0 && (
           <Pressable onPress={() => setQuery('')}>
@@ -114,7 +186,7 @@ export default function SearchScreen() {
             </View>
           )}
         </Pressable>
-      </View>
+      </Animated.View>
 
       {/* Category Filter */}
       <View style={styles.categoryRow}>
@@ -175,7 +247,7 @@ export default function SearchScreen() {
         data={results}
         keyExtractor={(item) => item.id}
         renderItem={renderRecipeRow}
-        contentContainerStyle={{ paddingHorizontal: Spacing.lg, paddingBottom: 32 }}
+        contentContainerStyle={{ paddingHorizontal: Spacing.lg, paddingBottom: 100 }}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.empty}>
@@ -222,17 +294,17 @@ const styles = StyleSheet.create({
     fontFamily: Fonts.serif,
     fontSize: 28,
     color: Colors.text,
+    letterSpacing: -0.3,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: Colors.surface,
     borderRadius: Radius.full,
     marginHorizontal: Spacing.lg,
     paddingHorizontal: Spacing.md,
     paddingVertical: Spacing.sm + 2,
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
+    borderWidth: 1.5,
+    ...Shadows.soft,
   },
   searchInput: {
     flex: 1,
@@ -262,7 +334,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.md,
     paddingVertical: 6,
     borderRadius: Radius.full,
-    backgroundColor: Colors.surface,
+    backgroundColor: Colors.white,
     borderWidth: 1,
     borderColor: Colors.borderLight,
   },
@@ -275,7 +347,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   resultCount: {
-    fontFamily: Fonts.sans,
+    fontFamily: Fonts.sansMedium,
     fontSize: 12,
     color: Colors.textSecondary,
     paddingHorizontal: Spacing.lg,
@@ -284,14 +356,10 @@ const styles = StyleSheet.create({
   recipeRow: {
     flexDirection: 'row',
     backgroundColor: Colors.white,
-    borderRadius: Radius.md,
+    borderRadius: Radius.xl,
     overflow: 'hidden',
     marginBottom: Spacing.md,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    ...Shadows.soft,
   },
   recipeImage: {
     width: 110,
@@ -304,7 +372,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   recipeCategory: {
-    fontFamily: Fonts.sansMedium,
+    fontFamily: Fonts.sansSemiBold,
     fontSize: 10,
     color: Colors.primaryDark,
     textTransform: 'uppercase',
@@ -385,7 +453,7 @@ const styles = StyleSheet.create({
   },
   fab: {
     position: 'absolute',
-    bottom: 24,
+    bottom: 90,
     right: 24,
     width: 56,
     height: 56,
@@ -393,10 +461,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primaryDark,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 6,
+    ...Shadows.strong,
   },
 });

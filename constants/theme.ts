@@ -1,10 +1,10 @@
 export const Colors = {
   primary: '#F8C8DC',
   primaryDark: '#E8A0B8',
-  background: '#FFFFFF',
+  background: '#FFFAF7',
   surface: '#FFF9FB',
   surfaceAlt: '#FFF0F5',
-  text: '#333333',
+  text: '#2D2D2D',
   textSecondary: '#777777',
   textLight: '#AAAAAA',
   border: '#F0E4E8',
@@ -15,6 +15,16 @@ export const Colors = {
   success: '#4CAF50',
   error: '#E53935',
   shadow: 'rgba(0,0,0,0.06)',
+
+  // Gradient tokens
+  gradientPink: ['#F8C8DC', '#E8A0B8'] as readonly string[],
+  gradientPeach: ['#F8C8DC', '#F5D0C5'] as readonly string[],
+  gradientSoft: ['#FFF9FB', '#FFF0F5'] as readonly string[],
+  gradientWarm: ['#FFFAF7', '#FFF0F5'] as readonly string[],
+
+  // Glassmorphism
+  glass: 'rgba(255, 255, 255, 0.75)',
+  glassBorder: 'rgba(255, 255, 255, 0.4)',
 };
 
 export const Fonts = {
@@ -42,4 +52,29 @@ export const Radius = {
   lg: 16,
   xl: 24,
   full: 999,
+};
+
+// Enhanced shadow presets
+export const Shadows = {
+  soft: {
+    shadowColor: '#E8A0B8',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.10,
+    shadowRadius: 12,
+    elevation: 3,
+  },
+  medium: {
+    shadowColor: '#E8A0B8',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.14,
+    shadowRadius: 16,
+    elevation: 5,
+  },
+  strong: {
+    shadowColor: '#E8A0B8',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.20,
+    shadowRadius: 20,
+    elevation: 8,
+  },
 };

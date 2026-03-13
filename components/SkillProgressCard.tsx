@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { Colors, Fonts, Radius, Spacing } from '../constants/theme';
+import { Colors, Fonts, Radius, Spacing, Shadows } from '../constants/theme';
 import type { SkillStat } from '../lib/skills';
 
 interface Props {
@@ -66,15 +66,9 @@ export function SkillProgressCard({ label, emoji, stat, accentColor = Colors.pri
 const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.white,
-    borderRadius: Radius.md,
+    borderRadius: Radius.xl,
     padding: Spacing.md,
-    borderWidth: 1,
-    borderColor: Colors.borderLight,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.04,
-    shadowRadius: 6,
-    elevation: 1,
+    ...Shadows.soft,
   },
   topRow: {
     flexDirection: 'row',

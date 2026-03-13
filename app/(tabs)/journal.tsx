@@ -232,7 +232,7 @@ export default function JournalScreen() {
         renderItem={renderEntry}
         numColumns={2}
         columnWrapperStyle={{ gap: Spacing.md }}
-        contentContainerStyle={{ paddingHorizontal: Spacing.lg, paddingBottom: 32, gap: Spacing.md }}
+        contentContainerStyle={{ paddingHorizontal: Spacing.lg, paddingBottom: 100, gap: Spacing.md }}
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.empty}>

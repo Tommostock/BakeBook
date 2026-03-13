@@ -14,7 +14,8 @@ import {
 import { Image } from 'expo-image';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Colors, Fonts, Radius, Spacing, Shadows } from '../../constants/theme';
 import { Timer } from '../../components/Timer';
 import { RecipeFormModal } from '../../components/RecipeFormModal';
 import { useAppStore } from '../../lib/store';
@@ -331,8 +332,25 @@ export default function RecipeDetailScreen() {
             </Pressable>
           ))}
 
-          {/* Steps */}
-          <Text style={styles.sectionTitle}>Instructions</Text>
+          {/* Steps — with progress indicator (#24) */}
+          <View style={styles.stepsHeaderRow}>
+            <Text style={[styles.sectionTitle, { marginTop: 0, marginBottom: 0 }]}>Instructions</Text>
+            <Text style={styles.stepsProgress}>
+              {checkedSteps.size}/{recipe.steps.length} done
+            </Text>
+          </View>
+          {/* Animated progress bar */}
+          <View style={styles.progressTrack}>
+            <LinearGradient
+              colors={checkedSteps.size === recipe.steps.length ? ['#4CAF50', '#66BB6A'] : [Colors.primaryDark, Colors.primary]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 0 }}
+              style={[
+                styles.progressFill,
+                { width: `${recipe.steps.length > 0 ? (checkedSteps.size / recipe.steps.length) * 100 : 0}%` as any },
+              ]}
+            />
+          </View>
           {recipe.steps.map((step, i) => (
             <Pressable key={i} style={styles.stepRow} onPress={() => toggleStep(i)}>
               <View style={[styles.stepNumber, checkedSteps.has(i) && styles.stepNumberDone]}>
@@ -406,7 +424,7 @@ export default function RecipeDetailScreen() {
       {/* Sticky Log Bake footer */}
       <View style={styles.logBakeBar}>
         <Pressable style={styles.logBakeBtn} onPress={handleLogBake}>
-          <Ionicons name="book-outline" size={18} color={Colors.text} />
+          <Ionicons name="book-outline" size={18} color={Colors.white} />
           <Text style={styles.logBakeBtnText}>Log This Bake</Text>
         </Pressable>
       </View>
@@ -499,6 +517,29 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: 100,
   },
+  stepsHeaderRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.sm,
+  },
+  stepsProgress: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 13,
+    color: Colors.primaryDark,
+  },
+  progressTrack: {
+    height: 6,
+    backgroundColor: Colors.borderLight,
+    borderRadius: 3,
+    overflow: 'hidden',
+    marginBottom: Spacing.md,
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 3,
+  },
   heroContainer: {
     height: 320,
     position: 'relative',
@@ -536,7 +577,7 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: Spacing.lg,
-    paddingBottom: Spacing.xxl,
+    paddingBottom: 80,
   },
   category: {
     fontFamily: Fonts.sansSemiBold,
@@ -835,14 +876,15 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.sm,
-    backgroundColor: Colors.primary,
+    backgroundColor: Colors.primaryDark,
     borderRadius: Radius.full,
     paddingVertical: Spacing.md,
+    ...Shadows.medium,
   },
   logBakeBtnText: {
     fontFamily: Fonts.sansSemiBold,
     fontSize: 15,
-    color: Colors.text,
+    color: Colors.white,
   },
   confirmOverlay: {
     ...StyleSheet.absoluteFillObject,

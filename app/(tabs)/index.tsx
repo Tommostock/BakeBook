@@ -9,12 +9,14 @@ import {
   SafeAreaView,
 } from 'react-native';
 import { Image } from 'expo-image';
+import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
+import { Colors, Fonts, Radius, Spacing, Shadows } from '../../constants/theme';
 import { RecipeCard } from '../../components/RecipeCard';
 import { CategoryPill } from '../../components/CategoryPill';
 import { SectionHeader } from '../../components/SectionHeader';
+import { AnimatedEntry } from '../../components/AnimatedEntry';
 import { CATEGORIES, CATEGORY_EMOJIS } from '../../lib/helpers';
 import { useAppStore } from '../../lib/store';
 import { useAllRecipes } from '../../lib/recipes';
@@ -51,47 +53,51 @@ export default function HomeScreen() {
       <ScrollView
         style={styles.container}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 32 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
       >
         {/* Top Logo Bar */}
-        <View style={styles.logoBar}>
-          <View>
-            <Text style={styles.logoSuzie}>Suzie's</Text>
-            <Text style={styles.logoBakeBook}>BakeBook</Text>
+        <AnimatedEntry delay={0} slideFrom="none">
+          <View style={styles.logoBar}>
+            <View>
+              <Text style={styles.logoSuzie}>Suzie's</Text>
+              <Text style={styles.logoBakeBook}>BakeBook</Text>
+            </View>
+            <Pressable
+              style={styles.searchIcon}
+              onPress={() => router.push('/(tabs)/search')}
+            >
+              <Ionicons name="search" size={22} color={Colors.text} />
+            </Pressable>
           </View>
-          <Pressable
-            style={styles.searchIcon}
-            onPress={() => router.push('/(tabs)/search')}
-          >
-            <Ionicons name="search" size={22} color={Colors.text} />
-          </Pressable>
-        </View>
+        </AnimatedEntry>
 
         {/* Categories */}
-        <SectionHeader title="Categories" />
-        <FlatList
-          horizontal
-          data={CATEGORIES}
-          keyExtractor={(item) => item}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: Spacing.lg }}
-          renderItem={({ item }) => (
-            <CategoryPill
-              label={item}
-              emoji={CATEGORY_EMOJIS[item]}
-              onPress={() =>
-                router.push({
-                  pathname: '/(tabs)/search',
-                  params: { category: item },
-                })
-              }
-            />
-          )}
-        />
+        <AnimatedEntry delay={50}>
+          <SectionHeader title="Categories" />
+          <FlatList
+            horizontal
+            data={CATEGORIES}
+            keyExtractor={(item) => item}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: Spacing.lg }}
+            renderItem={({ item }) => (
+              <CategoryPill
+                label={item}
+                emoji={CATEGORY_EMOJIS[item]}
+                onPress={() =>
+                  router.push({
+                    pathname: '/(tabs)/search',
+                    params: { category: item },
+                  })
+                }
+              />
+            )}
+          />
+        </AnimatedEntry>
 
         {/* Seasonal Highlights */}
         {seasonalRecipes.length > 0 && (
-          <>
+          <AnimatedEntry delay={100}>
             <SectionHeader title={seasonalLabel} />
             <FlatList
               horizontal
@@ -101,37 +107,41 @@ export default function HomeScreen() {
               contentContainerStyle={{ paddingHorizontal: Spacing.lg }}
               renderItem={({ item }) => <RecipeCard recipe={item} variant="medium" />}
             />
-          </>
+          </AnimatedEntry>
         )}
 
         {/* Featured Recipes */}
-        <SectionHeader
-          title="Featured Recipes"
-          onSeeAll={() => router.push('/(tabs)/search')}
-        />
-        <FlatList
-          horizontal
-          data={featuredRecipes}
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: Spacing.lg }}
-          renderItem={({ item }) => <RecipeCard recipe={item} variant="medium" />}
-        />
+        <AnimatedEntry delay={150}>
+          <SectionHeader
+            title="Featured Recipes"
+            onSeeAll={() => router.push('/(tabs)/search')}
+          />
+          <FlatList
+            horizontal
+            data={featuredRecipes}
+            keyExtractor={(item) => item.id}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: Spacing.lg }}
+            renderItem={({ item }) => <RecipeCard recipe={item} variant="medium" />}
+          />
+        </AnimatedEntry>
 
         {/* Quick & Easy */}
-        <SectionHeader title="Quick & Easy" />
-        <FlatList
-          horizontal
-          data={allRecipes.filter((r) => r.difficulty === 'Easy').slice(0, 8)}
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: Spacing.lg }}
-          renderItem={({ item }) => <RecipeCard recipe={item} variant="small" />}
-        />
+        <AnimatedEntry delay={200}>
+          <SectionHeader title="Quick & Easy" />
+          <FlatList
+            horizontal
+            data={allRecipes.filter((r) => r.difficulty === 'Easy').slice(0, 8)}
+            keyExtractor={(item) => item.id}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={{ paddingHorizontal: Spacing.lg }}
+            renderItem={({ item }) => <RecipeCard recipe={item} variant="small" />}
+          />
+        </AnimatedEntry>
 
         {/* Recently Viewed */}
         {recentRecipes.length > 0 && (
-          <>
+          <AnimatedEntry delay={250}>
             <SectionHeader title="Recently Viewed" />
             <FlatList
               horizontal
@@ -143,34 +153,42 @@ export default function HomeScreen() {
                 <RecipeCard recipe={item} variant="small" />
               )}
             />
-          </>
+          </AnimatedEntry>
         )}
 
         {/* Browse All */}
-        <SectionHeader
-          title="All Recipes"
-          onSeeAll={() => router.push('/(tabs)/search')}
-        />
-        <View style={styles.gridContainer}>
-          {allRecipes.slice(0, 6).map((recipe) => (
-            <Pressable
-              key={recipe.id}
-              style={styles.gridCard}
-              onPress={() => router.push(`/recipe/${recipe.id}`)}
-            >
-              <Image
-                source={{ uri: recipe.imageUrl }}
-                style={styles.gridImage}
-                contentFit="cover"
-                transition={300}
-              />
-              <Text style={styles.gridTitle} numberOfLines={2}>
-                {recipe.title}
-              </Text>
-              <Text style={styles.gridCategory}>{recipe.category}</Text>
-            </Pressable>
-          ))}
-        </View>
+        <AnimatedEntry delay={300}>
+          <SectionHeader
+            title="All Recipes"
+            onSeeAll={() => router.push('/(tabs)/search')}
+          />
+          <View style={styles.gridContainer}>
+            {allRecipes.slice(0, 6).map((recipe) => (
+              <Pressable
+                key={recipe.id}
+                style={styles.gridCard}
+                onPress={() => router.push(`/recipe/${recipe.id}`)}
+              >
+                <View style={styles.gridImageContainer}>
+                  <Image
+                    source={{ uri: recipe.imageUrl }}
+                    style={styles.gridImage}
+                    contentFit="cover"
+                    transition={300}
+                  />
+                  <LinearGradient
+                    colors={['transparent', 'rgba(0,0,0,0.25)']}
+                    style={styles.gridOverlay}
+                  />
+                </View>
+                <Text style={styles.gridTitle} numberOfLines={2}>
+                  {recipe.title}
+                </Text>
+                <Text style={styles.gridCategory}>{recipe.category}</Text>
+              </Pressable>
+            ))}
+          </View>
+        </AnimatedEntry>
       </ScrollView>
     </SafeAreaView>
   );
@@ -185,7 +203,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  /* ── Compact logo bar (top-left like modern apps) ── */
+  /* ── Compact logo bar ── */
   logoBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -208,12 +226,13 @@ const styles = StyleSheet.create({
     marginTop: -6,
   },
   searchIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.surfaceAlt,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: Colors.white,
     alignItems: 'center',
     justifyContent: 'center',
+    ...Shadows.soft,
   },
 
   gridContainer: {
@@ -225,18 +244,24 @@ const styles = StyleSheet.create({
   gridCard: {
     width: '47%',
     backgroundColor: Colors.white,
-    borderRadius: Radius.md,
+    borderRadius: Radius.xl,
     overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    ...Shadows.soft,
+  },
+  gridImageContainer: {
+    position: 'relative',
   },
   gridImage: {
     width: '100%',
     height: 120,
     backgroundColor: Colors.surfaceAlt,
+  },
+  gridOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: 30,
   },
   gridTitle: {
     fontFamily: Fonts.sansSemiBold,
