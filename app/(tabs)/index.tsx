@@ -214,16 +214,17 @@ const styles = StyleSheet.create({
   },
   logoSuzie: {
     fontFamily: Fonts.calligraphy,
-    fontSize: 36,
+    fontSize: 32,
     color: Colors.primaryDark,
-    lineHeight: 40,
+    lineHeight: 36,
   },
   logoBakeBook: {
     fontFamily: Fonts.serif,
-    fontSize: 13,
+    fontSize: 14,
     color: Colors.text,
-    letterSpacing: 3,
-    marginTop: -6,
+    letterSpacing: 4,
+    textTransform: 'uppercase',
+    marginTop: -4,
   },
   searchIcon: {
     width: 44,
