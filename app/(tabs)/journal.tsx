@@ -71,6 +71,14 @@ export default function JournalScreen() {
     ? allRecipes.filter((r) => r.title.toLowerCase().includes(recipeSearch.toLowerCase()))
     : allRecipes;
 
+  // Put the selected recipe at the front so it's immediately visible
+  const sortedRecipes = selectedRecipeId
+    ? [
+        ...filteredRecipes.filter((r) => r.id === selectedRecipeId),
+        ...filteredRecipes.filter((r) => r.id !== selectedRecipeId),
+      ]
+    : filteredRecipes;
+
   // Convert a File/Blob to a base64 data URI so photos persist in storage
   const fileToBase64 = (file: Blob): Promise<string> =>
     new Promise((resolve, reject) => {
@@ -408,7 +416,7 @@ export default function JournalScreen() {
               showsHorizontalScrollIndicator={false}
               style={{ marginBottom: Spacing.lg }}
             >
-              {filteredRecipes.map((r) => (
+              {sortedRecipes.map((r) => (
                 <Pressable
                   key={r.id}
                   style={[
