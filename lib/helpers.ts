@@ -14,7 +14,10 @@ export function generateId(): string {
 export interface AdvancedFilters {
   maxTotalTime?: number | null;
   dietaryTags?: string[];
+  flavourTags?: string[];
+  seasonTags?: string[];
   maxIngredients?: number | null;
+  maxServings?: number | null;
 }
 
 export function searchRecipes(
@@ -34,7 +37,9 @@ export function searchRecipes(
         r.description.toLowerCase().includes(q) ||
         r.category.toLowerCase().includes(q) ||
         r.ingredients.some((i) => i.name.toLowerCase().includes(q)) ||
-        (r.dietaryTags?.some((t) => t.toLowerCase().includes(q)) ?? false)
+        (r.dietaryTags?.some((t) => t.toLowerCase().includes(q)) ?? false) ||
+        (r.flavourTags?.some((t) => t.toLowerCase().includes(q)) ?? false) ||
+        (r.seasonTags?.some((t) => t.toLowerCase().includes(q)) ?? false)
     );
   }
 
@@ -55,8 +60,21 @@ export function searchRecipes(
         advanced.dietaryTags!.every((tag) => r.dietaryTags?.includes(tag))
       );
     }
+    if (advanced.flavourTags && advanced.flavourTags.length > 0) {
+      filtered = filtered.filter((r) =>
+        advanced.flavourTags!.some((tag) => r.flavourTags?.includes(tag))
+      );
+    }
+    if (advanced.seasonTags && advanced.seasonTags.length > 0) {
+      filtered = filtered.filter((r) =>
+        advanced.seasonTags!.some((tag) => r.seasonTags?.includes(tag))
+      );
+    }
     if (advanced.maxIngredients != null) {
       filtered = filtered.filter((r) => r.ingredients.length < advanced.maxIngredients!);
+    }
+    if (advanced.maxServings != null) {
+      filtered = filtered.filter((r) => r.servings <= advanced.maxServings!);
     }
   }
 

@@ -13,6 +13,8 @@ export interface Recipe {
   imageUrl: string;
   tips?: string;
   dietaryTags?: string[];
+  flavourTags?: string[];
+  seasonTags?: string[];
   isFeatured?: boolean;
   isUserRecipe?: boolean;
 }
