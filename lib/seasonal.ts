@@ -19,6 +19,8 @@ const SEASONAL_RECIPE_IDS: Record<Season, string[]> = {
     'breakfast-003', // Classic Scones
     'quick-009',   // Lemon Poppy Seed Loaf
     'dessert-010', // Lemon Posset
+    'cake-015',    // Lemon Cheesecake
+    'cake-017',    // Strawberry Cheesecake
   ],
   summer: [
     'pastry-007', // French Fruit Tart
@@ -28,6 +30,8 @@ const SEASONAL_RECIPE_IDS: Record<Season, string[]> = {
     'dessert-006', // Eton Mess
     'breakfast-003', // Classic Scones
     'quick-003',  // Blueberry Muffins
+    'cake-017',   // Strawberry Cheesecake
+    'cake-022',   // Pineapple Upside-Down Cake
   ],
   autumn: [
     'pie-001',    // Classic Apple Pie
@@ -37,6 +41,8 @@ const SEASONAL_RECIPE_IDS: Record<Season, string[]> = {
     'quick-006',  // Date & Walnut Loaf
     'bread-001',  // Sourdough Loaf
     'pie-003',    // Treacle Tart
+    'cake-020',   // Apple Cake
+    'cake-023',   // Sticky Ginger Cake
   ],
   winter: [
     'holiday-001', // Gingerbread
@@ -47,6 +53,8 @@ const SEASONAL_RECIPE_IDS: Record<Season, string[]> = {
     'holiday-008', // Panettone
     'holiday-009', // Lebkuchen
     'holiday-011', // Dundee Cake
+    'cake-018',   // Biscoff Cheesecake
+    'cake-024',   // Orange Drizzle Cake
   ],
 };
 
