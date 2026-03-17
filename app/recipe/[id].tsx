@@ -17,6 +17,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Fonts, Radius, Spacing, Shadows } from '../../constants/theme';
 import { Timer } from '../../components/Timer';
+import { BakeMode } from '../../components/BakeMode';
 import { RecipeFormModal } from '../../components/RecipeFormModal';
 import { useAppStore } from '../../lib/store';
 import { useAllRecipes, isUserRecipe } from '../../lib/recipes';
@@ -66,6 +67,7 @@ export default function RecipeDetailScreen() {
   const [showTimer, setShowTimer] = useState(false);
   const [scaledServings, setScaledServings] = useState<number | null>(null);
   const [showShareSheet, setShowShareSheet] = useState(false);
+  const [showBakeMode, setShowBakeMode] = useState(false);
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
@@ -406,9 +408,15 @@ export default function RecipeDetailScreen() {
           {/* Steps — with progress indicator (#24) */}
           <View style={styles.stepsHeaderRow}>
             <Text style={[styles.sectionTitle, { marginTop: 0, marginBottom: 0 }]}>Instructions</Text>
-            <Text style={styles.stepsProgress}>
-              {checkedSteps.size}/{recipe.steps.length} done
-            </Text>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
+              <Pressable style={styles.bakeModeBtn} onPress={() => setShowBakeMode(true)}>
+                <Ionicons name="expand-outline" size={14} color={Colors.primaryDark} />
+                <Text style={styles.bakeModeBtnText}>Bake Mode</Text>
+              </Pressable>
+              <Text style={styles.stepsProgress}>
+                {checkedSteps.size}/{recipe.steps.length}
+              </Text>
+            </View>
           </View>
           {/* Animated progress bar */}
           <View style={styles.progressTrack}>
@@ -632,6 +640,15 @@ export default function RecipeDetailScreen() {
           </View>
         </View>
       )}
+
+      {/* Bake Mode */}
+      <BakeMode
+        visible={showBakeMode}
+        onClose={() => setShowBakeMode(false)}
+        steps={recipe.steps}
+        recipeTitle={recipe.title}
+        tips={recipe.tips}
+      />
 
       {/* Share Action Sheet */}
       {showShareSheet && (
@@ -1258,5 +1275,23 @@ const styles = StyleSheet.create({
   },
   stepNumberChainDone: {
     backgroundColor: Colors.success,
+  },
+
+  /* ── Bake Mode button ── */
+  bakeModeBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: Colors.primaryDark + '15',
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Colors.primaryDark + '30',
+  },
+  bakeModeBtnText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 11,
+    color: Colors.primaryDark,
   },
 });
