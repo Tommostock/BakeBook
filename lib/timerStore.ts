@@ -8,12 +8,19 @@ export interface TimerInstance {
   remainingSeconds: number;
   isRunning: boolean;
   recipeTitle?: string;
+  /** ID of the next timer to auto-start when this one completes */
+  nextTimerId?: string;
+  /** Chain group ID — all timers in a bake-along share this */
+  chainId?: string;
+  /** Step index this timer is attached to (for bake-along) */
+  stepIndex?: number;
 }
 
 interface TimerState {
   timers: TimerInstance[];
   addTimer: (timer: Omit<TimerInstance, 'isRunning'>) => void;
   removeTimer: (id: string) => void;
+  removeChain: (chainId: string) => void;
   startTimer: (id: string) => void;
   pauseTimer: (id: string) => void;
   resetTimer: (id: string) => void;
@@ -36,6 +43,16 @@ export const useTimerStore = create<TimerState>((set, get) => ({
       timers: state.timers.filter((t) => t.id !== id),
     }));
     // Stop global tick if no timers remain running
+    const { timers } = get();
+    if (!timers.some((t) => t.isRunning)) {
+      stopGlobalTick();
+    }
+  },
+
+  removeChain: (chainId) => {
+    set((state) => ({
+      timers: state.timers.filter((t) => t.chainId !== chainId),
+    }));
     const { timers } = get();
     if (!timers.some((t) => t.isRunning)) {
       stopGlobalTick();
@@ -88,6 +105,17 @@ export const useTimerStore = create<TimerState>((set, get) => ({
 
     // Fire completion alerts for each finished timer
     completedTimers.forEach((t) => fireCompletionAlert(t));
+
+    // Auto-start next timer in chain
+    completedTimers.forEach((t) => {
+      if (t.nextTimerId) {
+        const { timers: currentTimers } = get();
+        const nextTimer = currentTimers.find((ct) => ct.id === t.nextTimerId);
+        if (nextTimer && nextTimer.remainingSeconds > 0) {
+          get().startTimer(t.nextTimerId);
+        }
+      }
+    });
 
     // Stop ticking if nothing is running
     const { timers } = get();

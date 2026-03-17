@@ -72,6 +72,12 @@ export function FloatingTimerBadge() {
                       {timer.recipeTitle && (
                         <Text style={styles.timerRecipe}>{timer.recipeTitle}</Text>
                       )}
+                      {timer.chainId && (
+                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 2 }}>
+                          <Ionicons name="link" size={10} color={Colors.primaryDark} />
+                          <Text style={{ fontFamily: Fonts.sansSemiBold, fontSize: 10, color: Colors.primaryDark }}>Bake-Along</Text>
+                        </View>
+                      )}
                       <Text style={[styles.timerTime, isDone && styles.timerTimeDone]}>
                         {isDone ? 'Done! 🎉' : formatTime(timer.remainingSeconds)}
                       </Text>
