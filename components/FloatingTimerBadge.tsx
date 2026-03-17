@@ -18,6 +18,7 @@ export function FloatingTimerBadge() {
   const pauseTimer = useTimerStore((s) => s.pauseTimer);
   const resetTimer = useTimerStore((s) => s.resetTimer);
   const removeTimer = useTimerStore((s) => s.removeTimer);
+  const removeChain = useTimerStore((s) => s.removeChain);
   const [showOverlay, setShowOverlay] = useState(false);
 
   const runningCount = timers.filter((t) => t.isRunning).length;
@@ -105,21 +106,42 @@ export function FloatingTimerBadge() {
                           />
                         </Pressable>
                       )}
+                      {!isDone && (
+                        <Pressable
+                          style={styles.timerActionBtn}
+                          onPress={() => resetTimer(timer.id)}
+                        >
+                          <Ionicons name="refresh" size={16} color={Colors.textSecondary} />
+                        </Pressable>
+                      )}
                       <Pressable
-                        style={styles.timerActionBtn}
-                        onPress={() => isDone ? removeTimer(timer.id) : resetTimer(timer.id)}
+                        style={[styles.timerActionBtn, styles.timerActionBtnDelete]}
+                        onPress={() => {
+                          if (timer.chainId) {
+                            removeChain(timer.chainId);
+                          } else {
+                            removeTimer(timer.id);
+                          }
+                        }}
                       >
-                        <Ionicons
-                          name={isDone ? 'close' : 'refresh'}
-                          size={16}
-                          color={Colors.textSecondary}
-                        />
+                        <Ionicons name="trash-outline" size={16} color={Colors.error} />
                       </Pressable>
                     </View>
                   </View>
                 );
               })}
             </ScrollView>
+            {timers.length > 1 && (
+              <Pressable
+                style={styles.clearAllBtn}
+                onPress={() => {
+                  timers.forEach((t) => removeTimer(t.id));
+                }}
+              >
+                <Ionicons name="trash-outline" size={14} color={Colors.error} />
+                <Text style={styles.clearAllText}>Clear All Timers</Text>
+              </Pressable>
+            )}
           </View>
         </Pressable>
       </Modal>
@@ -239,5 +261,23 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.surfaceAlt,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  timerActionBtnDelete: {
+    backgroundColor: Colors.error + '12',
+  },
+  clearAllBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    paddingVertical: Spacing.sm + 2,
+    marginTop: Spacing.md,
+    borderRadius: Radius.sm,
+    backgroundColor: Colors.error + '10',
+  },
+  clearAllText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 13,
+    color: Colors.error,
   },
 });
