@@ -74,6 +74,7 @@ export const CATEGORIES: RecipeCategory[] = [
   'Desserts',
   'Quick Breads',
   'Holiday Bakes',
+  'Kids',
 ];
 
 export const CATEGORY_EMOJIS: Record<RecipeCategory, string> = {
@@ -87,6 +88,7 @@ export const CATEGORY_EMOJIS: Record<RecipeCategory, string> = {
   Desserts: '🍰',
   'Quick Breads': '🥖',
   'Holiday Bakes': '🎄',
+  Kids: '👶',
 };
 
 export const DIFFICULTY_COLORS: Record<string, string> = {
