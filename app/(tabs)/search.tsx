@@ -116,11 +116,7 @@ export default function SearchScreen() {
   }, [params.category]);
 
   const results = useMemo(
-    () => searchRecipes(allRecipes, query, selectedCategory, selectedDifficulty, {
-      maxTotalTime: advancedFilters.maxTotalTime,
-      dietaryTags: advancedFilters.dietaryTags,
-      maxIngredients: advancedFilters.maxIngredients,
-    }),
+    () => searchRecipes(allRecipes, query, selectedCategory, selectedDifficulty, advancedFilters),
     [allRecipes, query, selectedCategory, selectedDifficulty, advancedFilters]
   );
 

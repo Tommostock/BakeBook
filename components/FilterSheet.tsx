@@ -16,13 +16,19 @@ import { useAllRecipes } from '../lib/recipes';
 export interface FilterOptions {
   maxTotalTime: number | null;    // in minutes, null = any
   dietaryTags: string[];          // empty = any
+  flavourTags: string[];          // empty = any
+  seasonTags: string[];           // empty = any
   maxIngredients: number | null;  // null = any
+  maxServings: number | null;     // null = any
 }
 
 export const EMPTY_FILTERS: FilterOptions = {
   maxTotalTime: null,
   dietaryTags: [],
+  flavourTags: [],
+  seasonTags: [],
   maxIngredients: null,
+  maxServings: null,
 };
 
 /**
@@ -32,7 +38,10 @@ export function countActiveFilters(filters: FilterOptions): number {
   let count = 0;
   if (filters.maxTotalTime !== null) count++;
   if (filters.dietaryTags.length > 0) count++;
+  if (filters.flavourTags.length > 0) count++;
+  if (filters.seasonTags.length > 0) count++;
   if (filters.maxIngredients !== null) count++;
+  if (filters.maxServings !== null) count++;
   return count;
 }
 
@@ -44,10 +53,12 @@ interface FilterSheetProps {
 }
 
 const TIME_OPTIONS = [
+  { label: 'Under 15m', value: 15 },
   { label: 'Under 30m', value: 30 },
+  { label: 'Under 45m', value: 45 },
   { label: 'Under 1h', value: 60 },
   { label: 'Under 2h', value: 120 },
-  { label: 'Any', value: null as number | null },
+  { label: '2h+', value: null as number | null },
 ];
 
 const INGREDIENT_OPTIONS = [
@@ -56,15 +67,34 @@ const INGREDIENT_OPTIONS = [
   { label: 'Any', value: null as number | null },
 ];
 
+const SERVINGS_OPTIONS = [
+  { label: '1–2', value: 2 },
+  { label: '4–6', value: 6 },
+  { label: '8–10', value: 10 },
+  { label: '12+', value: null as number | null },
+];
+
 export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetProps) {
   const { colors: C } = useTheme();
   const [localFilters, setLocalFilters] = useState<FilterOptions>(filters);
   const allRecipes = useAllRecipes();
 
-  // Extract all unique dietary tags from recipe data
+  // Extract all unique tags from recipe data
   const allDietaryTags = useMemo(() => {
     const tags = new Set<string>();
     allRecipes.forEach((r) => r.dietaryTags?.forEach((t) => tags.add(t)));
+    return Array.from(tags).sort();
+  }, [allRecipes]);
+
+  const allFlavourTags = useMemo(() => {
+    const tags = new Set<string>();
+    allRecipes.forEach((r) => r.flavourTags?.forEach((t) => tags.add(t)));
+    return Array.from(tags).sort();
+  }, [allRecipes]);
+
+  const allSeasonTags = useMemo(() => {
+    const tags = new Set<string>();
+    allRecipes.forEach((r) => r.seasonTags?.forEach((t) => tags.add(t)));
     return Array.from(tags).sort();
   }, [allRecipes]);
 
@@ -73,12 +103,12 @@ export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetP
     if (visible) setLocalFilters(filters);
   }, [visible, filters]);
 
-  const toggleDietaryTag = (tag: string) => {
+  const toggleTag = (field: 'dietaryTags' | 'flavourTags' | 'seasonTags', tag: string) => {
     setLocalFilters((prev) => ({
       ...prev,
-      dietaryTags: prev.dietaryTags.includes(tag)
-        ? prev.dietaryTags.filter((t) => t !== tag)
-        : [...prev.dietaryTags, tag],
+      [field]: prev[field].includes(tag)
+        ? prev[field].filter((t: string) => t !== tag)
+        : [...prev[field], tag],
     }));
   };
 
@@ -110,6 +140,58 @@ export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetP
         </View>
 
         <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 40 }}>
+          {/* Flavour */}
+          {allFlavourTags.length > 0 && (
+            <>
+              <Text style={[styles.sectionLabel, { color: C.text }]}>Flavour</Text>
+              <View style={styles.pillRow}>
+                {allFlavourTags.map((tag) => {
+                  const isSelected = localFilters.flavourTags.includes(tag);
+                  return (
+                    <Pressable
+                      key={tag}
+                      style={[styles.pill, isSelected && styles.pillSelected]}
+                      onPress={() => toggleTag('flavourTags', tag)}
+                    >
+                      {isSelected && (
+                        <Ionicons name="checkmark" size={14} color={C.white} style={{ marginRight: 4 }} />
+                      )}
+                      <Text style={[styles.pillText, isSelected && styles.pillTextSelected]}>
+                        {tag}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </>
+          )}
+
+          {/* Season / Occasion */}
+          {allSeasonTags.length > 0 && (
+            <>
+              <Text style={[styles.sectionLabel, { color: C.text }]}>Season & Occasion</Text>
+              <View style={styles.pillRow}>
+                {allSeasonTags.map((tag) => {
+                  const isSelected = localFilters.seasonTags.includes(tag);
+                  return (
+                    <Pressable
+                      key={tag}
+                      style={[styles.pill, isSelected && styles.pillSelected]}
+                      onPress={() => toggleTag('seasonTags', tag)}
+                    >
+                      {isSelected && (
+                        <Ionicons name="checkmark" size={14} color={C.white} style={{ marginRight: 4 }} />
+                      )}
+                      <Text style={[styles.pillText, isSelected && styles.pillTextSelected]}>
+                        {tag}
+                      </Text>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </>
+          )}
+
           {/* Max Time */}
           <Text style={[styles.sectionLabel, { color: C.text }]}>Maximum Time</Text>
           <View style={styles.pillRow}>
@@ -120,6 +202,25 @@ export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetP
                   key={opt.label}
                   style={[styles.pill, isSelected && styles.pillSelected]}
                   onPress={() => setLocalFilters((prev) => ({ ...prev, maxTotalTime: opt.value }))}
+                >
+                  <Text style={[styles.pillText, isSelected && styles.pillTextSelected]}>
+                    {opt.label}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
+
+          {/* Servings */}
+          <Text style={[styles.sectionLabel, { color: C.text }]}>Servings</Text>
+          <View style={styles.pillRow}>
+            {SERVINGS_OPTIONS.map((opt) => {
+              const isSelected = localFilters.maxServings === opt.value;
+              return (
+                <Pressable
+                  key={opt.label}
+                  style={[styles.pill, isSelected && styles.pillSelected]}
+                  onPress={() => setLocalFilters((prev) => ({ ...prev, maxServings: opt.value }))}
                 >
                   <Text style={[styles.pillText, isSelected && styles.pillTextSelected]}>
                     {opt.label}
@@ -140,7 +241,7 @@ export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetP
                     <Pressable
                       key={tag}
                       style={[styles.pill, isSelected && styles.pillSelected]}
-                      onPress={() => toggleDietaryTag(tag)}
+                      onPress={() => toggleTag('dietaryTags', tag)}
                     >
                       {isSelected && (
                         <Ionicons name="checkmark" size={14} color={C.white} style={{ marginRight: 4 }} />
