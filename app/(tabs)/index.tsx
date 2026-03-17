@@ -69,12 +69,16 @@ export default function HomeScreen() {
               <Pressable
                 style={[styles.searchIcon, { backgroundColor: C.white }, S.soft]}
                 onPress={toggleDarkMode}
+                accessibilityRole="button"
+                accessibilityLabel={isDarkMode ? 'Switch to light mode' : 'Switch to dark mode'}
               >
                 <Ionicons name={isDarkMode ? 'moon' : 'moon-outline'} size={20} color={C.text} />
               </Pressable>
               <Pressable
                 style={[styles.searchIcon, { backgroundColor: C.white }, S.soft]}
                 onPress={() => router.push('/(tabs)/search')}
+                accessibilityRole="button"
+                accessibilityLabel="Search recipes"
               >
                 <Ionicons name="search" size={22} color={C.text} />
               </Pressable>

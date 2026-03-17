@@ -11,8 +11,9 @@ interface Props {
   accentColor?: string;
 }
 
-export function SkillProgressCard({ label, emoji, stat, accentColor = Colors.primaryDark }: Props) {
+export function SkillProgressCard({ label, emoji, stat, accentColor }: Props) {
   const { colors: C, shadows: S } = useTheme();
+  const resolvedAccent = accentColor ?? C.primaryDark;
   const { count, badge, nextBadge, recipesNeeded } = stat;
 
   // Progress toward next badge (0–1)
@@ -46,7 +47,7 @@ export function SkillProgressCard({ label, emoji, stat, accentColor = Colors.pri
             <View
               style={[
                 styles.progressFill,
-                { width: `${Math.min(progress * 100, 100)}%`, backgroundColor: accentColor },
+                { width: `${Math.min(progress * 100, 100)}%`, backgroundColor: resolvedAccent },
               ]}
             />
           </View>
@@ -57,7 +58,7 @@ export function SkillProgressCard({ label, emoji, stat, accentColor = Colors.pri
       )}
 
       {!nextBadge && count > 0 && (
-        <Text style={[styles.progressText, { marginTop: Spacing.xs, color: accentColor }]}>
+        <Text style={[styles.progressText, { marginTop: Spacing.xs, color: resolvedAccent }]}>
           🏆 Max level reached!
         </Text>
       )}

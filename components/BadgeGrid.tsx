@@ -64,7 +64,7 @@ function AnimatedBadge({ achievement, index }: { achievement: Achievement; index
           borderColor: glowAnim.interpolate({
             inputRange: [0, 1],
             outputRange: [C.primaryDark, C.primary] as [string, string],
-          }) as any,
+          }) as unknown as string,
         },
       ]}
     >
@@ -72,7 +72,7 @@ function AnimatedBadge({ achievement, index }: { achievement: Achievement; index
         {achievement.earned ? (
           <Text style={styles.emoji}>{achievement.emoji}</Text>
         ) : (
-          <Ionicons name="lock-closed" size={20} color={Colors.textLight} />
+          <Ionicons name="lock-closed" size={20} color={C.textLight} />
         )}
       </View>
       <Text

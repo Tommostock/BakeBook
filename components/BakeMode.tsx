@@ -44,6 +44,7 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
   const addTimer = useTimerStore((s) => s.addTimer);
   const startTimer = useTimerStore((s) => s.startTimer);
   const removeTimer = useTimerStore((s) => s.removeTimer);
+  const removeChain = useTimerStore((s) => s.removeChain);
   const allTimers = useTimerStore((s) => s.timers);
 
   // Parse timers for all steps
@@ -125,9 +126,8 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
     startTimer(timerId);
   };
 
-  const handleFinish = () => {
-    setCompletedSteps((prev) => new Set(prev).add(currentStep));
-    // Clean up any bake-mode timers
+  const handleClose = () => {
+    // Clean up all bake-mode timers (finished and idle ones)
     bakeModeTimers.forEach((t) => {
       if (t.remainingSeconds === 0 || !t.isRunning) {
         removeTimer(t.id);
@@ -136,10 +136,17 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
     onClose();
   };
 
+  const handleFinish = () => {
+    setCompletedSteps((prev) => new Set(prev).add(currentStep));
+    // Clean up all bake-mode timers
+    removeChain('bake-mode');
+    onClose();
+  };
+
   if (!visible) return null;
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+    <Modal visible={visible} animationType="slide" onRequestClose={handleClose}>
       <SafeAreaView style={[bm.safe, { backgroundColor: C.background }]}>
         <LinearGradient
           colors={[C.background, C.surfaceAlt] as [string, string]}
@@ -147,7 +154,7 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
         >
           {/* Header */}
           <View style={bm.header}>
-            <Pressable style={[bm.closeBtn, { backgroundColor: C.surfaceAlt }]} onPress={onClose}>
+            <Pressable style={[bm.closeBtn, { backgroundColor: C.surfaceAlt }]} onPress={handleClose}>
               <Ionicons name="close" size={24} color={C.text} />
             </Pressable>
             <View style={bm.headerCenter}>
@@ -183,7 +190,7 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
               {/* Step number badge */}
               <View style={bm.stepBadge}>
                 {completedSteps.has(currentStep) ? (
-                  <Ionicons name="checkmark" size={24} color={Colors.white} />
+                  <Ionicons name="checkmark" size={24} color={C.white} />
                 ) : (
                   <Text style={bm.stepBadgeText}>{currentStep + 1}</Text>
                 )}
@@ -209,7 +216,7 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
                             style={bm.timerStartBtn}
                             onPress={() => handleStartStepTimer(st)}
                           >
-                            <Ionicons name="timer-outline" size={22} color={Colors.white} />
+                            <Ionicons name="timer-outline" size={22} color={C.white} />
                             <Text style={bm.timerStartText}>Start {st.label}</Text>
                           </Pressable>
                         ) : (
@@ -217,9 +224,9 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
                             <Ionicons
                               name={isDone ? 'checkmark-circle' : 'timer'}
                               size={28}
-                              color={isDone ? Colors.success : Colors.primaryDark}
+                              color={isDone ? C.success : C.primaryDark}
                             />
-                            <Text style={[bm.timerCountdown, isDone && { color: Colors.success }]}>
+                            <Text style={[bm.timerCountdown, isDone && { color: C.success }]}>
                               {isDone ? 'Done!' : formatCountdown(active.remainingSeconds)}
                             </Text>
                             <Text style={bm.timerLabel}>{st.label}</Text>
@@ -230,7 +237,7 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
                                   bm.timerProgressFill,
                                   {
                                     width: `${active.totalSeconds > 0 ? ((active.totalSeconds - active.remainingSeconds) / active.totalSeconds) * 100 : 0}%`,
-                                    backgroundColor: isDone ? Colors.success : Colors.primaryDark,
+                                    backgroundColor: isDone ? C.success : C.primaryDark,
                                   },
                                 ]}
                               />
@@ -263,20 +270,20 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
               <Ionicons
                 name="chevron-back"
                 size={22}
-                color={isFirstStep ? Colors.textLight : Colors.primaryDark}
+                color={isFirstStep ? C.textLight : C.primaryDark}
               />
               <Text style={[bm.navBtnText, isFirstStep && bm.navBtnTextDisabled]}>Previous</Text>
             </Pressable>
 
             {isLastStep ? (
               <Pressable style={bm.finishBtn} onPress={handleFinish}>
-                <Ionicons name="checkmark-circle" size={22} color={Colors.white} />
+                <Ionicons name="checkmark-circle" size={22} color={C.white} />
                 <Text style={bm.finishBtnText}>Finish</Text>
               </Pressable>
             ) : (
               <Pressable style={bm.navBtn} onPress={handleNext}>
                 <Text style={bm.navBtnText}>Next</Text>
-                <Ionicons name="chevron-forward" size={22} color={Colors.primaryDark} />
+                <Ionicons name="chevron-forward" size={22} color={C.primaryDark} />
               </Pressable>
             )}
           </View>

@@ -22,7 +22,7 @@ interface RecipeCardProps {
   variant?: 'large' | 'medium' | 'small';
 }
 
-export function RecipeCard({ recipe, variant = 'medium' }: RecipeCardProps) {
+export const RecipeCard = React.memo(function RecipeCard({ recipe, variant = 'medium' }: RecipeCardProps) {
   const router = useRouter();
   const { colors: C, shadows: S } = useTheme();
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -60,6 +60,8 @@ export function RecipeCard({ recipe, variant = 'medium' }: RecipeCardProps) {
         onPress={() => router.push(`/recipe/${recipe.id}`)}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
+        accessibilityRole="button"
+        accessibilityLabel={`${recipe.title}, ${recipe.difficulty}, ${recipe.category}`}
       >
         <View style={styles.imageContainer}>
           <Image
@@ -97,7 +99,7 @@ export function RecipeCard({ recipe, variant = 'medium' }: RecipeCardProps) {
       </Pressable>
     </Animated.View>
   );
-}
+});
 
 const styles = StyleSheet.create({
   card: {

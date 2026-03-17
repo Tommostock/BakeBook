@@ -56,7 +56,7 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
             <Ionicons
               name={isDone ? 'checkmark' : timer.isRunning ? 'pause' : 'play'}
               size={18}
-              color={isDone ? Colors.success : C.primaryDark}
+              color={isDone ? C.success : C.primaryDark}
             />
           </Pressable>
           {/* Reset */}
@@ -86,7 +86,7 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
       {/* Chain indicator */}
       {timer.chainId && (
         <View style={styles.chainBadge}>
-          <Ionicons name="link" size={11} color={Colors.primaryDark} />
+          <Ionicons name="link" size={11} color={C.primaryDark} />
           <Text style={styles.chainBadgeText}>Bake-Along</Text>
           {timer.nextTimerId && !isDone && (
             <Text style={styles.chainNextText}>→ auto-starts next</Text>
@@ -98,7 +98,7 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
       <Text
         style={[
           styles.timerTime,
-          isDone && { color: Colors.success },
+          isDone && { color: C.success },
         ]}
       >
         {formatDisplay(timer.remainingSeconds)}
@@ -111,7 +111,7 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
             styles.timerProgressFill,
             {
               width: `${elapsed * 100}%`,
-              backgroundColor: isDone ? Colors.success : Colors.primaryDark,
+              backgroundColor: isDone ? C.success : C.primaryDark,
             },
           ]}
         />
@@ -154,7 +154,7 @@ export function Timer({ defaultMinutes = 0, prepTime, bakeTime, recipeTitle }: T
               style={styles.suggestBtn}
               onPress={() => addPresetTimer('Prep', prepTime)}
             >
-              <Ionicons name="time-outline" size={14} color={Colors.primaryDark} />
+              <Ionicons name="time-outline" size={14} color={C.primaryDark} />
               <Text style={styles.suggestBtnText}>Prep {prepTime}m</Text>
             </Pressable>
           ) : null}
@@ -163,7 +163,7 @@ export function Timer({ defaultMinutes = 0, prepTime, bakeTime, recipeTitle }: T
               style={styles.suggestBtn}
               onPress={() => addPresetTimer('Bake', bakeTime)}
             >
-              <Ionicons name="flame-outline" size={14} color={Colors.primaryDark} />
+              <Ionicons name="flame-outline" size={14} color={C.primaryDark} />
               <Text style={styles.suggestBtnText}>Bake {bakeTime}m</Text>
             </Pressable>
           ) : null}
@@ -190,13 +190,13 @@ export function Timer({ defaultMinutes = 0, prepTime, bakeTime, recipeTitle }: T
         <TextInput
           style={styles.customInput}
           placeholder="Custom mins"
-          placeholderTextColor={Colors.textLight}
+          placeholderTextColor={C.textLight}
           value={customMins}
           onChangeText={setCustomMins}
           keyboardType="numeric"
         />
         <Pressable style={styles.customAddBtn} onPress={addCustomTimer}>
-          <Ionicons name="add" size={18} color={Colors.white} />
+          <Ionicons name="add" size={18} color={C.white} />
         </Pressable>
       </View>
 

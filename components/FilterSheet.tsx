@@ -143,7 +143,7 @@ export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetP
                       onPress={() => toggleDietaryTag(tag)}
                     >
                       {isSelected && (
-                        <Ionicons name="checkmark" size={14} color={Colors.white} style={{ marginRight: 4 }} />
+                        <Ionicons name="checkmark" size={14} color={C.white} style={{ marginRight: 4 }} />
                       )}
                       <Text style={[styles.pillText, isSelected && styles.pillTextSelected]}>
                         {tag}
@@ -176,7 +176,7 @@ export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetP
 
           {/* Clear All */}
           <Pressable style={styles.clearBtn} onPress={handleClear}>
-            <Ionicons name="refresh-outline" size={16} color={Colors.textSecondary} />
+            <Ionicons name="refresh-outline" size={16} color={C.textSecondary} />
             <Text style={styles.clearBtnText}>Clear All Filters</Text>
           </Pressable>
         </ScrollView>

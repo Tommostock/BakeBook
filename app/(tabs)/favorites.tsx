@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useRef } from 'react';
+import React, { useCallback, useMemo, useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -84,7 +84,7 @@ function SwipeableCard({ item, onRemove, onPress }: { item: Recipe; onRemove: ()
     >
       {/* Delete background */}
       <View style={styles.swipeBackground}>
-        <Ionicons name="trash-outline" size={24} color={Colors.white} />
+        <Ionicons name="trash-outline" size={24} color={C.white} />
         <Text style={styles.swipeText}>Remove</Text>
       </View>
       <Animated.View
@@ -141,13 +141,13 @@ export default function FavoritesScreen() {
     }
   }, [favorites, allRecipes, sortMode]);
 
-  const renderItem = ({ item }: { item: Recipe }) => (
+  const renderItem = useCallback(({ item }: { item: Recipe }) => (
     <SwipeableCard
       item={item}
       onRemove={() => toggleFavorite(item.id)}
       onPress={() => router.push(`/recipe/${item.id}`)}
     />
-  );
+  ), [toggleFavorite, router]);
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
@@ -159,6 +159,8 @@ export default function FavoritesScreen() {
             <Pressable
               style={[styles.sortBtn, { backgroundColor: C.white }, S.soft]}
               onPress={() => setShowSort(!showSort)}
+              accessibilityRole="button"
+              accessibilityLabel="Sort favourites"
             >
               <Ionicons name="swap-vertical" size={18} color={C.primaryDark} />
             </Pressable>

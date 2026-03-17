@@ -50,7 +50,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
   const [steps, setSteps] = useState<string[]>(['']);
   const [tips, setTips] = useState('');
 
-  const fileInputRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Populate form when editing
   useEffect(() => {
@@ -119,7 +119,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
     }
   };
 
-  const handleWebFileChange = async (e: any) => {
+  const handleWebFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const dataUri = await fileToBase64(file);
@@ -241,7 +241,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
                 <Image source={{ uri: photo }} style={styles.photoImage} contentFit="cover" />
               ) : (
                 <View style={styles.photoPlaceholder}>
-                  <Ionicons name="camera-outline" size={36} color={Colors.textLight} />
+                  <Ionicons name="camera-outline" size={36} color={C.textLight} />
                   <Text style={styles.photoText}>Add Photo</Text>
                 </View>
               )}
@@ -263,7 +263,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
               value={title}
               onChangeText={setTitle}
               placeholder="e.g. Lemon Drizzle Cake"
-              placeholderTextColor={Colors.textLight}
+              placeholderTextColor={C.textLight}
             />
 
             {/* Category */}
@@ -291,7 +291,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
               value={description}
               onChangeText={setDescription}
               placeholder="Brief description of the recipe..."
-              placeholderTextColor={Colors.textLight}
+              placeholderTextColor={C.textLight}
               multiline
               numberOfLines={3}
             />
@@ -323,7 +323,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
                   value={prepTime}
                   onChangeText={setPrepTime}
                   placeholder="30"
-                  placeholderTextColor={Colors.textLight}
+                  placeholderTextColor={C.textLight}
                   keyboardType="numeric"
                 />
               </View>
@@ -334,7 +334,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
                   value={bakeTime}
                   onChangeText={setBakeTime}
                   placeholder="45"
-                  placeholderTextColor={Colors.textLight}
+                  placeholderTextColor={C.textLight}
                   keyboardType="numeric"
                 />
               </View>
@@ -345,7 +345,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
                   value={servings}
                   onChangeText={setServings}
                   placeholder="8"
-                  placeholderTextColor={Colors.textLight}
+                  placeholderTextColor={C.textLight}
                   keyboardType="numeric"
                 />
               </View>
@@ -360,7 +360,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
                   value={ing.amount}
                   onChangeText={(v) => updateIngredient(i, 'amount', v)}
                   placeholder="200"
-                  placeholderTextColor={Colors.textLight}
+                  placeholderTextColor={C.textLight}
                   keyboardType="numeric"
                 />
                 <TextInput
@@ -368,24 +368,24 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
                   value={ing.unit || ''}
                   onChangeText={(v) => updateIngredient(i, 'unit', v)}
                   placeholder="g"
-                  placeholderTextColor={Colors.textLight}
+                  placeholderTextColor={C.textLight}
                 />
                 <TextInput
                   style={[styles.input, styles.ingName]}
                   value={ing.name}
                   onChangeText={(v) => updateIngredient(i, 'name', v)}
                   placeholder="plain flour"
-                  placeholderTextColor={Colors.textLight}
+                  placeholderTextColor={C.textLight}
                 />
                 {ingredients.length > 1 && (
                   <Pressable onPress={() => removeIngredient(i)} hitSlop={8}>
-                    <Ionicons name="close-circle" size={20} color={Colors.textLight} />
+                    <Ionicons name="close-circle" size={20} color={C.textLight} />
                   </Pressable>
                 )}
               </View>
             ))}
             <Pressable style={styles.addBtn} onPress={addIngredient}>
-              <Ionicons name="add-circle-outline" size={18} color={Colors.primaryDark} />
+              <Ionicons name="add-circle-outline" size={18} color={C.primaryDark} />
               <Text style={styles.addBtnText}>Add Ingredient</Text>
             </Pressable>
 
@@ -401,18 +401,18 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
                   value={step}
                   onChangeText={(v) => updateStep(i, v)}
                   placeholder={`Step ${i + 1}...`}
-                  placeholderTextColor={Colors.textLight}
+                  placeholderTextColor={C.textLight}
                   multiline
                 />
                 {steps.length > 1 && (
                   <Pressable onPress={() => removeStep(i)} hitSlop={8}>
-                    <Ionicons name="close-circle" size={20} color={Colors.textLight} />
+                    <Ionicons name="close-circle" size={20} color={C.textLight} />
                   </Pressable>
                 )}
               </View>
             ))}
             <Pressable style={styles.addBtn} onPress={addStep}>
-              <Ionicons name="add-circle-outline" size={18} color={Colors.primaryDark} />
+              <Ionicons name="add-circle-outline" size={18} color={C.primaryDark} />
               <Text style={styles.addBtnText}>Add Step</Text>
             </Pressable>
 
@@ -423,7 +423,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
               value={tips}
               onChangeText={setTips}
               placeholder="Any helpful tips..."
-              placeholderTextColor={Colors.textLight}
+              placeholderTextColor={C.textLight}
               multiline
               numberOfLines={3}
             />

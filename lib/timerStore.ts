@@ -39,9 +39,18 @@ export const useTimerStore = create<TimerState>((set, get) => ({
   },
 
   removeTimer: (id) => {
-    set((state) => ({
-      timers: state.timers.filter((t) => t.id !== id),
-    }));
+    set((state) => {
+      const target = state.timers.find((t) => t.id === id);
+      let timers = state.timers.filter((t) => t.id !== id);
+      // Re-link chain: if a predecessor pointed to this timer, point it to
+      // the removed timer's nextTimerId (or clear the link)
+      if (target?.chainId) {
+        timers = timers.map((t) =>
+          t.nextTimerId === id ? { ...t, nextTimerId: target.nextTimerId } : t
+        );
+      }
+      return { timers };
+    });
     // Stop global tick if no timers remain running
     const { timers } = get();
     if (!timers.some((t) => t.isRunning)) {
@@ -164,6 +173,8 @@ function fireCompletionAlert(timer: TimerInstance) {
         osc.start(ctx.currentTime + delay);
         osc.stop(ctx.currentTime + delay + 0.15);
       });
+      // Close AudioContext after beeps finish to free resources
+      setTimeout(() => ctx.close().catch(() => {}), 1000);
     } catch {}
   }
 }
