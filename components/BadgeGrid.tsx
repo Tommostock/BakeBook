@@ -72,7 +72,7 @@ function AnimatedBadge({ achievement, index }: { achievement: Achievement; index
         {achievement.earned ? (
           <Text style={styles.emoji}>{achievement.emoji}</Text>
         ) : (
-          <Ionicons name="lock-closed" size={20} color={Colors.textLight} />
+          <Ionicons name="lock-closed" size={20} color={C.textLight} />
         )}
       </View>
       <Text

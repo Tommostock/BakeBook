@@ -38,7 +38,7 @@ export function FloatingTimerBadge() {
         ]}
         onPress={() => setShowOverlay(true)}
       >
-        <Ionicons name="timer-outline" size={16} color={Colors.white} />
+        <Ionicons name="timer-outline" size={16} color={C.white} />
         <Text style={styles.badgeText}>
           {completedCount > 0
             ? `${completedCount} done!`
@@ -77,8 +77,8 @@ export function FloatingTimerBadge() {
                       )}
                       {timer.chainId && (
                         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 3, marginTop: 2 }}>
-                          <Ionicons name="link" size={10} color={Colors.primaryDark} />
-                          <Text style={{ fontFamily: Fonts.sansSemiBold, fontSize: 10, color: Colors.primaryDark }}>Bake-Along</Text>
+                          <Ionicons name="link" size={10} color={C.primaryDark} />
+                          <Text style={{ fontFamily: Fonts.sansSemiBold, fontSize: 10, color: C.primaryDark }}>Bake-Along</Text>
                         </View>
                       )}
                       <Text style={[styles.timerTime, isDone && styles.timerTimeDone]}>
@@ -104,7 +104,7 @@ export function FloatingTimerBadge() {
                           <Ionicons
                             name={timer.isRunning ? 'pause' : 'play'}
                             size={16}
-                            color={Colors.primaryDark}
+                            color={C.primaryDark}
                           />
                         </Pressable>
                       )}
@@ -113,7 +113,7 @@ export function FloatingTimerBadge() {
                           style={styles.timerActionBtn}
                           onPress={() => resetTimer(timer.id)}
                         >
-                          <Ionicons name="refresh" size={16} color={Colors.textSecondary} />
+                          <Ionicons name="refresh" size={16} color={C.textSecondary} />
                         </Pressable>
                       )}
                       <Pressable
@@ -126,7 +126,7 @@ export function FloatingTimerBadge() {
                           }
                         }}
                       >
-                        <Ionicons name="trash-outline" size={16} color={Colors.error} />
+                        <Ionicons name="trash-outline" size={16} color={C.error} />
                       </Pressable>
                     </View>
                   </View>
@@ -140,7 +140,7 @@ export function FloatingTimerBadge() {
                   timers.forEach((t) => removeTimer(t.id));
                 }}
               >
-                <Ionicons name="trash-outline" size={14} color={Colors.error} />
+                <Ionicons name="trash-outline" size={14} color={C.error} />
                 <Text style={styles.clearAllText}>Clear All Timers</Text>
               </Pressable>
             )}

@@ -209,7 +209,7 @@ export default function JournalScreen() {
           )}
           {photoCount > 1 && (
             <View style={styles.photoCountBadge}>
-              <Ionicons name="images-outline" size={11} color={Colors.white} />
+              <Ionicons name="images-outline" size={11} color={C.white} />
               <Text style={styles.photoCountText}>{photoCount}</Text>
             </View>
           )}
@@ -232,7 +232,7 @@ export default function JournalScreen() {
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: C.text }]}>Baking Journal</Text>
         <Pressable style={[styles.addBtn, { backgroundColor: C.primaryDark }]} onPress={() => setModalVisible(true)}>
-          <Ionicons name="add" size={22} color={Colors.white} />
+          <Ionicons name="add" size={22} color={C.white} />
         </Pressable>
       </View>
 
@@ -459,13 +459,13 @@ export default function JournalScreen() {
                     onPress={() => removePhoto(index)}
                     hitSlop={6}
                   >
-                    <Ionicons name="close-circle" size={20} color={Colors.text} />
+                    <Ionicons name="close-circle" size={20} color={C.text} />
                   </Pressable>
                 </View>
               ))}
               {photos.length < MAX_PHOTOS && (
                 <Pressable style={styles.photoAddBtn} onPress={pickPhoto}>
-                  <Ionicons name="camera-outline" size={26} color={Colors.textLight} />
+                  <Ionicons name="camera-outline" size={26} color={C.textLight} />
                   <Text style={styles.photoAddText}>Add</Text>
                 </Pressable>
               )}

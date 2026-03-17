@@ -84,7 +84,7 @@ function SwipeableCard({ item, onRemove, onPress }: { item: Recipe; onRemove: ()
     >
       {/* Delete background */}
       <View style={styles.swipeBackground}>
-        <Ionicons name="trash-outline" size={24} color={Colors.white} />
+        <Ionicons name="trash-outline" size={24} color={C.white} />
         <Text style={styles.swipeText}>Remove</Text>
       </View>
       <Animated.View

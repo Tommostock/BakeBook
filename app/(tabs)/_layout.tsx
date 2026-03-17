@@ -65,6 +65,8 @@ function AnimatedTabIcon({
     }
   }, [focused]);
 
+  const { colors: C } = useTheme();
+
   // Centre FAB style for Search (the middle tab)
   if (isCenter) {
     return (
@@ -73,14 +75,14 @@ function AnimatedTabIcon({
           styles.centerFab,
           {
             transform: [{ scale: scaleAnim }, { translateY }],
-            backgroundColor: focused ? Colors.primaryDark : Colors.primary,
+            backgroundColor: focused ? C.primaryDark : C.primary,
           },
         ]}
       >
         <Ionicons
           name={focused ? iconFocused : icon}
           size={26}
-          color={focused ? Colors.white : Colors.text}
+          color={focused ? C.white : C.text}
         />
       </Animated.View>
     );

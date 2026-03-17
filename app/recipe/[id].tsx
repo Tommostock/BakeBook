@@ -267,7 +267,7 @@ export default function RecipeDetailScreen() {
                   <Ionicons
                     name={fav ? 'heart' : 'heart-outline'}
                     size={22}
-                    color={fav ? Colors.primaryDark : Colors.white}
+                    color={fav ? C.primaryDark : Colors.white}
                   />
                 </Pressable>
               </Animated.View>
@@ -280,8 +280,8 @@ export default function RecipeDetailScreen() {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <Text style={[styles.category, { color: C.primaryDark }]}>{recipe.category}</Text>
             {isOwn && (
-              <View style={{ backgroundColor: Colors.primaryDark + '20', paddingHorizontal: 6, paddingVertical: 1, borderRadius: 4 }}>
-                <Text style={{ fontFamily: Fonts.sansSemiBold, fontSize: 9, color: Colors.primaryDark, letterSpacing: 0.5 }}>MY RECIPE</Text>
+              <View style={{ backgroundColor: C.primaryDark + '20', paddingHorizontal: 6, paddingVertical: 1, borderRadius: 4 }}>
+                <Text style={{ fontFamily: Fonts.sansSemiBold, fontSize: 9, color: C.primaryDark, letterSpacing: 0.5 }}>MY RECIPE</Text>
               </View>
             )}
           </View>
@@ -361,7 +361,7 @@ export default function RecipeDetailScreen() {
                 style={styles.servingsResetBtn}
                 onPress={() => setScaledServings(null)}
               >
-                <Ionicons name="refresh" size={14} color={Colors.textSecondary} />
+                <Ionicons name="refresh" size={14} color={C.textSecondary} />
               </Pressable>
             )}
           </View>
@@ -413,7 +413,7 @@ export default function RecipeDetailScreen() {
             <Text style={[styles.sectionTitle, { marginTop: 0, marginBottom: 0, color: C.text }]}>Instructions</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
               <Pressable style={styles.bakeModeBtn} onPress={() => setShowBakeMode(true)}>
-                <Ionicons name="expand-outline" size={14} color={Colors.primaryDark} />
+                <Ionicons name="expand-outline" size={14} color={C.primaryDark} />
                 <Text style={styles.bakeModeBtnText}>Bake Mode</Text>
               </Pressable>
               <Text style={styles.stepsProgress}>
@@ -424,7 +424,7 @@ export default function RecipeDetailScreen() {
           {/* Animated progress bar */}
           <View style={[styles.progressTrack, { backgroundColor: C.borderLight }]}>
             <LinearGradient
-              colors={checkedSteps.size === recipe.steps.length ? ['#4CAF50', '#66BB6A'] : [Colors.primaryDark, Colors.primary]}
+              colors={checkedSteps.size === recipe.steps.length ? ['#4CAF50', '#66BB6A'] : [C.primaryDark, C.primary] as [string, string]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
               style={[
@@ -439,7 +439,7 @@ export default function RecipeDetailScreen() {
             <View style={styles.bakeAlongContainer}>
               {!isBakeAlongActive ? (
                 <Pressable style={styles.bakeAlongBtn} onPress={handleStartBakeAlong}>
-                  <Ionicons name="play-circle" size={20} color={Colors.white} />
+                  <Ionicons name="play-circle" size={20} color={C.white} />
                   <Text style={styles.bakeAlongBtnText}>
                     Start Bake-Along ({stepTimers.length} timer{stepTimers.length !== 1 ? 's' : ''})
                   </Text>
@@ -448,11 +448,11 @@ export default function RecipeDetailScreen() {
                 <View style={styles.bakeAlongActiveCard}>
                   <View style={styles.bakeAlongActiveHeader}>
                     <View style={styles.bakeAlongActiveLeft}>
-                      <Ionicons name="timer" size={18} color={Colors.primaryDark} />
+                      <Ionicons name="timer" size={18} color={C.primaryDark} />
                       <Text style={styles.bakeAlongActiveTitle}>Bake-Along Active</Text>
                     </View>
                     <Pressable style={styles.bakeAlongStopBtn} onPress={handleStopBakeAlong}>
-                      <Ionicons name="close" size={16} color={Colors.error} />
+                      <Ionicons name="close" size={16} color={C.error} />
                       <Text style={styles.bakeAlongStopText}>Stop</Text>
                     </Pressable>
                   </View>
@@ -500,14 +500,14 @@ export default function RecipeDetailScreen() {
                     { backgroundColor: C.primary },
                     checkedSteps.has(i) && { backgroundColor: C.primaryDark },
                     isChainStepRunning && { backgroundColor: C.primaryDark },
-                    isChainStepDone && { backgroundColor: Colors.success },
+                    isChainStepDone && { backgroundColor: C.success },
                   ]}>
                     {checkedSteps.has(i) ? (
-                      <Ionicons name="checkmark" size={14} color={Colors.white} />
+                      <Ionicons name="checkmark" size={14} color={C.white} />
                     ) : isChainStepDone ? (
-                      <Ionicons name="checkmark" size={14} color={Colors.white} />
+                      <Ionicons name="checkmark" size={14} color={C.white} />
                     ) : (
-                      <Text style={[styles.stepNumberText, { color: C.text }, isChainStepRunning && { color: Colors.white }]}>{i + 1}</Text>
+                      <Text style={[styles.stepNumberText, { color: C.text }, isChainStepRunning && { color: C.white }]}>{i + 1}</Text>
                     )}
                   </View>
                   <Text style={[styles.stepText, { color: C.text }, checkedSteps.has(i) && { textDecorationLine: 'line-through', color: C.textLight }]}>{step}</Text>
@@ -521,7 +521,7 @@ export default function RecipeDetailScreen() {
                         style={styles.stepTimerBtn}
                         onPress={() => handleAddStepTimer(st.stepIndex, st.label, st.seconds)}
                       >
-                        <Ionicons name="timer-outline" size={13} color={Colors.primaryDark} />
+                        <Ionicons name="timer-outline" size={13} color={C.primaryDark} />
                         <Text style={styles.stepTimerBtnText}>{st.label}</Text>
                       </Pressable>
                     ))}
@@ -531,7 +531,7 @@ export default function RecipeDetailScreen() {
                 {chainTimer && isChainStepRunning && (
                   <View style={styles.stepTimerRow}>
                     <View style={styles.stepTimerActiveIndicator}>
-                      <Ionicons name="timer" size={13} color={Colors.primaryDark} />
+                      <Ionicons name="timer" size={13} color={C.primaryDark} />
                       <Text style={styles.stepTimerActiveText}>
                         {formatChainTime(chainTimer.remainingSeconds)} remaining
                       </Text>
@@ -580,7 +580,7 @@ export default function RecipeDetailScreen() {
               onChangeText={setNewNote}
             />
             <Pressable style={styles.noteAddBtn} onPress={handleAddNote}>
-              <Ionicons name="add" size={20} color={Colors.white} />
+              <Ionicons name="add" size={20} color={C.white} />
             </Pressable>
           </View>
           {notes.map((note) => (
@@ -602,7 +602,7 @@ export default function RecipeDetailScreen() {
       {/* Sticky Log Bake footer */}
       <View style={[styles.logBakeBar, { backgroundColor: C.background, borderTopColor: C.borderLight }]}>
         <Pressable style={styles.logBakeBtn} onPress={handleLogBake}>
-          <Ionicons name="book-outline" size={18} color={Colors.white} />
+          <Ionicons name="book-outline" size={18} color={C.white} />
           <Text style={styles.logBakeBtnText}>Log This Bake</Text>
         </Pressable>
       </View>
@@ -666,7 +666,7 @@ export default function RecipeDetailScreen() {
               style={styles.shareOption}
               onPress={() => doShare(false)}
             >
-              <Ionicons name="document-text-outline" size={20} color={Colors.primaryDark} />
+              <Ionicons name="document-text-outline" size={20} color={C.primaryDark} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.shareOptionTitle}>Share Summary</Text>
                 <Text style={styles.shareOptionDesc}>Title, description & timing</Text>
@@ -676,7 +676,7 @@ export default function RecipeDetailScreen() {
               style={styles.shareOption}
               onPress={() => doShare(true)}
             >
-              <Ionicons name="list-outline" size={20} color={Colors.primaryDark} />
+              <Ionicons name="list-outline" size={20} color={C.primaryDark} />
               <View style={{ flex: 1 }}>
                 <Text style={styles.shareOptionTitle}>Share Full Recipe</Text>
                 <Text style={styles.shareOptionDesc}>Includes ingredients & steps</Text>

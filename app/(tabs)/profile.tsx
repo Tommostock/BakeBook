@@ -91,7 +91,7 @@ export default function ProfileScreen() {
         <AnimatedEntry delay={50}>
           <View style={styles.levelCard}>
             <LinearGradient
-              colors={[Colors.primaryDark, '#D48BA6']}
+              colors={[C.primaryDark, '#D48BA6'] as [string, string]}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.levelGradient}

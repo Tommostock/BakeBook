@@ -256,7 +256,7 @@ export default function SearchScreen() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Ionicons name="search" size={48} color={Colors.textLight} />
+            <Ionicons name="search" size={48} color={C.textLight} />
             <Text style={styles.emptyText}>No recipes found</Text>
             <Text style={styles.emptySubtext}>Try a different search term</Text>
           </View>
@@ -268,7 +268,7 @@ export default function SearchScreen() {
         style={styles.fab}
         onPress={() => setShowRecipeForm(true)}
       >
-        <Ionicons name="add" size={28} color={Colors.white} />
+        <Ionicons name="add" size={28} color={C.white} />
       </Pressable>
 
       {/* Recipe Form Modal */}
