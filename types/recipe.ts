@@ -33,7 +33,8 @@ export type RecipeCategory =
   | 'Savory Bakes'
   | 'Desserts'
   | 'Quick Breads'
-  | 'Holiday Bakes';
+  | 'Holiday Bakes'
+  | 'Kids';
 
 export interface JournalEntry {
   id: string;

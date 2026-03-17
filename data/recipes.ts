@@ -4591,7 +4591,7 @@ export const recipes: Recipe[] = [
   {
     id: 'cake-025',
     title: 'Banana Oat Mini Muffins',
-    category: 'Cakes',
+    category: 'Kids',
     description: 'Naturally sweet mini muffins made with ripe bananas and oats. No added refined sugar — perfect for little ones aged 1 and up.',
     ingredients: [
       { name: 'ripe bananas', amount: '2', unit: 'large' },
@@ -4624,7 +4624,7 @@ export const recipes: Recipe[] = [
   {
     id: 'cake-026',
     title: 'Sweet Potato & Apple Mini Cakes',
-    category: 'Cakes',
+    category: 'Kids',
     description: 'Soft, naturally sweet mini cakes made with sweet potato purée and grated apple. No refined sugar, packed with goodness for tiny tummies.',
     ingredients: [
       { name: 'sweet potato (cooked and mashed)', amount: '200', unit: 'g' },
@@ -4656,7 +4656,7 @@ export const recipes: Recipe[] = [
   {
     id: 'cake-027',
     title: 'Blueberry Yoghurt Baby Cake',
-    category: 'Cakes',
+    category: 'Kids',
     description: 'A soft, lightly sweet sponge made with Greek yoghurt and fresh blueberries. Gentle flavours perfect for babies aged 1 and over.',
     ingredients: [
       { name: 'self-raising flour', amount: '150', unit: 'g' },
@@ -4688,7 +4688,7 @@ export const recipes: Recipe[] = [
   {
     id: 'cake-028',
     title: 'Carrot & Apple Fingers',
-    category: 'Cakes',
+    category: 'Kids',
     description: 'Soft baked fingers packed with grated carrot and apple. No refined sugar, easy to hold, and perfect for baby-led weaning.',
     ingredients: [
       { name: 'carrot (peeled and finely grated)', amount: '1', unit: 'large' },
@@ -4721,7 +4721,7 @@ export const recipes: Recipe[] = [
   {
     id: 'cake-029',
     title: 'First Birthday Smash Cake',
-    category: 'Cakes',
+    category: 'Kids',
     description: 'A lightly sweetened vanilla sponge with a gentle cream cheese frosting. Designed for a first birthday celebration — soft, safe, and fun to smash.',
     ingredients: [
       { name: 'self-raising flour', amount: '150', unit: 'g' },
