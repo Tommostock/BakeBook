@@ -44,6 +44,7 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
   const addTimer = useTimerStore((s) => s.addTimer);
   const startTimer = useTimerStore((s) => s.startTimer);
   const removeTimer = useTimerStore((s) => s.removeTimer);
+  const removeChain = useTimerStore((s) => s.removeChain);
   const allTimers = useTimerStore((s) => s.timers);
 
   // Parse timers for all steps
@@ -125,9 +126,8 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
     startTimer(timerId);
   };
 
-  const handleFinish = () => {
-    setCompletedSteps((prev) => new Set(prev).add(currentStep));
-    // Clean up any bake-mode timers
+  const handleClose = () => {
+    // Clean up all bake-mode timers (finished and idle ones)
     bakeModeTimers.forEach((t) => {
       if (t.remainingSeconds === 0 || !t.isRunning) {
         removeTimer(t.id);
@@ -136,10 +136,17 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
     onClose();
   };
 
+  const handleFinish = () => {
+    setCompletedSteps((prev) => new Set(prev).add(currentStep));
+    // Clean up all bake-mode timers
+    removeChain('bake-mode');
+    onClose();
+  };
+
   if (!visible) return null;
 
   return (
-    <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
+    <Modal visible={visible} animationType="slide" onRequestClose={handleClose}>
       <SafeAreaView style={[bm.safe, { backgroundColor: C.background }]}>
         <LinearGradient
           colors={[C.background, C.surfaceAlt] as [string, string]}
@@ -147,7 +154,7 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
         >
           {/* Header */}
           <View style={bm.header}>
-            <Pressable style={[bm.closeBtn, { backgroundColor: C.surfaceAlt }]} onPress={onClose}>
+            <Pressable style={[bm.closeBtn, { backgroundColor: C.surfaceAlt }]} onPress={handleClose}>
               <Ionicons name="close" size={24} color={C.text} />
             </Pressable>
             <View style={bm.headerCenter}>

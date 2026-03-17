@@ -34,6 +34,13 @@ interface AppState {
   loadPersistedState: () => Promise<void>;
 }
 
+/** Fire-and-forget persist with error logging */
+function persist(key: string, value: unknown) {
+  AsyncStorage.setItem(key, JSON.stringify(value)).catch((e) =>
+    console.warn(`Failed to persist ${key}:`, e)
+  );
+}
+
 const STORAGE_KEYS = {
   favorites: '@bakebook_favorites',
   journal: '@bakebook_journal',
@@ -64,7 +71,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       const newFavorites = isFav
         ? state.favorites.filter((id) => id !== recipeId)
         : [...state.favorites, recipeId];
-      AsyncStorage.setItem(STORAGE_KEYS.favorites, JSON.stringify(newFavorites));
+      persist(STORAGE_KEYS.favorites, newFavorites);
       return { favorites: newFavorites };
     });
   },
@@ -72,7 +79,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   addJournalEntry: (entry) => {
     set((state) => {
       const newEntries = [entry, ...state.journalEntries];
-      AsyncStorage.setItem(STORAGE_KEYS.journal, JSON.stringify(newEntries));
+      persist(STORAGE_KEYS.journal, newEntries);
       return { journalEntries: newEntries };
     });
   },
@@ -80,7 +87,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   deleteJournalEntry: (id) => {
     set((state) => {
       const newEntries = state.journalEntries.filter((e) => e.id !== id);
-      AsyncStorage.setItem(STORAGE_KEYS.journal, JSON.stringify(newEntries));
+      persist(STORAGE_KEYS.journal, newEntries);
       return { journalEntries: newEntries };
     });
   },
@@ -88,7 +95,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   addRecipeNote: (note) => {
     set((state) => {
       const newNotes = [note, ...state.recipeNotes];
-      AsyncStorage.setItem(STORAGE_KEYS.notes, JSON.stringify(newNotes));
+      persist(STORAGE_KEYS.notes, newNotes);
       return { recipeNotes: newNotes };
     });
   },
@@ -96,7 +103,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   deleteRecipeNote: (id) => {
     set((state) => {
       const newNotes = state.recipeNotes.filter((n) => n.id !== id);
-      AsyncStorage.setItem(STORAGE_KEYS.notes, JSON.stringify(newNotes));
+      persist(STORAGE_KEYS.notes, newNotes);
       return { recipeNotes: newNotes };
     });
   },
@@ -105,7 +112,7 @@ export const useAppStore = create<AppState>((set, get) => ({
     set((state) => {
       const filtered = state.recentlyViewed.filter((id) => id !== recipeId);
       const newRecent = [recipeId, ...filtered].slice(0, 20);
-      AsyncStorage.setItem(STORAGE_KEYS.recent, JSON.stringify(newRecent));
+      persist(STORAGE_KEYS.recent, newRecent);
       return { recentlyViewed: newRecent };
     });
   },
@@ -113,7 +120,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   addUserRecipe: (recipe) => {
     set((state) => {
       const newRecipes = [recipe, ...state.userRecipes];
-      AsyncStorage.setItem(STORAGE_KEYS.userRecipes, JSON.stringify(newRecipes));
+      persist(STORAGE_KEYS.userRecipes, newRecipes);
       return { userRecipes: newRecipes };
     });
   },
@@ -123,7 +130,7 @@ export const useAppStore = create<AppState>((set, get) => ({
       const newRecipes = state.userRecipes.map((r) =>
         r.id === recipe.id ? recipe : r
       );
-      AsyncStorage.setItem(STORAGE_KEYS.userRecipes, JSON.stringify(newRecipes));
+      persist(STORAGE_KEYS.userRecipes, newRecipes);
       return { userRecipes: newRecipes };
     });
   },
@@ -134,10 +141,10 @@ export const useAppStore = create<AppState>((set, get) => ({
       const newFavorites = state.favorites.filter((fId) => fId !== id);
       const newNotes = state.recipeNotes.filter((n) => n.recipeId !== id);
       const newRecent = state.recentlyViewed.filter((rId) => rId !== id);
-      AsyncStorage.setItem(STORAGE_KEYS.userRecipes, JSON.stringify(newRecipes));
-      AsyncStorage.setItem(STORAGE_KEYS.favorites, JSON.stringify(newFavorites));
-      AsyncStorage.setItem(STORAGE_KEYS.notes, JSON.stringify(newNotes));
-      AsyncStorage.setItem(STORAGE_KEYS.recent, JSON.stringify(newRecent));
+      persist(STORAGE_KEYS.userRecipes, newRecipes);
+      persist(STORAGE_KEYS.favorites, newFavorites);
+      persist(STORAGE_KEYS.notes, newNotes);
+      persist(STORAGE_KEYS.recent, newRecent);
       return {
         userRecipes: newRecipes,
         favorites: newFavorites,
@@ -149,18 +156,18 @@ export const useAppStore = create<AppState>((set, get) => ({
 
   setPreferredUnits: (units) => {
     set({ preferredUnits: units });
-    AsyncStorage.setItem(STORAGE_KEYS.units, JSON.stringify(units));
+    persist(STORAGE_KEYS.units, units);
   },
 
   setHasSeenOnboarding: (seen) => {
     set({ hasSeenOnboarding: seen });
-    AsyncStorage.setItem(STORAGE_KEYS.onboarding, JSON.stringify(seen));
+    persist(STORAGE_KEYS.onboarding, seen);
   },
 
   toggleDarkMode: () => {
     set((state) => {
       const newVal = !state.isDarkMode;
-      AsyncStorage.setItem(STORAGE_KEYS.darkMode, JSON.stringify(newVal));
+      persist(STORAGE_KEYS.darkMode, newVal);
       return { isDarkMode: newVal };
     });
   },
