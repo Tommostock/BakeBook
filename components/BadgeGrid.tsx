@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { View, Text, StyleSheet, Dimensions, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing, Shadows } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 import type { Achievement } from '../lib/skills';
 
 interface Props {
@@ -16,6 +17,7 @@ const CARD_WIDTH =
 
 // Animated badge with scale-in + glow for earned badges (#37)
 function AnimatedBadge({ achievement, index }: { achievement: Achievement; index: number }) {
+  const { colors: C, shadows: S } = useTheme();
   const scaleAnim = useRef(new Animated.Value(achievement.earned ? 0.5 : 1)).current;
   const glowAnim = useRef(new Animated.Value(0)).current;
 
@@ -54,12 +56,14 @@ function AnimatedBadge({ achievement, index }: { achievement: Achievement; index
     <Animated.View
       style={[
         styles.badge,
-        !achievement.earned && styles.badgeLocked,
+        { backgroundColor: C.white, borderColor: C.primaryDark },
+        S.soft,
+        !achievement.earned && { backgroundColor: C.surface, borderColor: C.borderLight, borderWidth: 1 },
         achievement.earned && {
           transform: [{ scale: scaleAnim }],
           borderColor: glowAnim.interpolate({
             inputRange: [0, 1],
-            outputRange: [Colors.primaryDark, Colors.primary],
+            outputRange: [C.primaryDark, C.primary] as [string, string],
           }) as any,
         },
       ]}
@@ -72,7 +76,7 @@ function AnimatedBadge({ achievement, index }: { achievement: Achievement; index
         )}
       </View>
       <Text
-        style={[styles.name, !achievement.earned && styles.nameLocked]}
+        style={[styles.name, { color: C.text }, !achievement.earned && { color: C.textLight }]}
         numberOfLines={1}
         adjustsFontSizeToFit
         minimumFontScale={0.75}
@@ -80,7 +84,7 @@ function AnimatedBadge({ achievement, index }: { achievement: Achievement; index
         {achievement.name}
       </Text>
       <Text
-        style={[styles.desc, !achievement.earned && styles.descLocked]}
+        style={[styles.desc, { color: C.textSecondary }, !achievement.earned && { color: C.textLight }]}
         numberOfLines={2}
       >
         {achievement.description}

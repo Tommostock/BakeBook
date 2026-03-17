@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, Modal, SafeAreaView, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 import { useTimerStore } from '../lib/timerStore';
 
 function formatTime(secs: number): string {
@@ -13,6 +14,7 @@ function formatTime(secs: number): string {
 }
 
 export function FloatingTimerBadge() {
+  const { colors: C } = useTheme();
   const timers = useTimerStore((s) => s.timers);
   const startTimer = useTimerStore((s) => s.startTimer);
   const pauseTimer = useTimerStore((s) => s.pauseTimer);
@@ -55,11 +57,11 @@ export function FloatingTimerBadge() {
         onRequestClose={() => setShowOverlay(false)}
       >
         <Pressable style={styles.overlayBg} onPress={() => setShowOverlay(false)}>
-          <View style={styles.overlayCard} onStartShouldSetResponder={() => true}>
+          <View style={[styles.overlayCard, { backgroundColor: C.white }]} onStartShouldSetResponder={() => true}>
             <View style={styles.overlayHeader}>
-              <Text style={styles.overlayTitle}>Active Timers</Text>
+              <Text style={[styles.overlayTitle, { color: C.text }]}>Active Timers</Text>
               <Pressable onPress={() => setShowOverlay(false)} hitSlop={10}>
-                <Ionicons name="close" size={22} color={Colors.text} />
+                <Ionicons name="close" size={22} color={C.text} />
               </Pressable>
             </View>
             <ScrollView style={{ maxHeight: 400 }}>
@@ -67,9 +69,9 @@ export function FloatingTimerBadge() {
                 const isDone = timer.remainingSeconds === 0 && timer.totalSeconds > 0;
                 const progress = timer.totalSeconds > 0 ? timer.remainingSeconds / timer.totalSeconds : 0;
                 return (
-                  <View key={timer.id} style={styles.timerRow}>
+                  <View key={timer.id} style={[styles.timerRow, { borderBottomColor: C.borderLight }]}>
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.timerLabel}>{timer.label}</Text>
+                      <Text style={[styles.timerLabel, { color: C.text }]}>{timer.label}</Text>
                       {timer.recipeTitle && (
                         <Text style={styles.timerRecipe}>{timer.recipeTitle}</Text>
                       )}

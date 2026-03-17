@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 
 interface StarRatingProps {
   rating: number;
@@ -10,6 +11,7 @@ interface StarRatingProps {
 }
 
 export function StarRating({ rating, onRate, size = 24 }: StarRatingProps) {
+  const { colors: C } = useTheme();
   return (
     <View style={styles.container}>
       {[1, 2, 3, 4, 5].map((star) => (
@@ -22,7 +24,7 @@ export function StarRating({ rating, onRate, size = 24 }: StarRatingProps) {
           <Ionicons
             name={star <= rating ? 'star' : 'star-outline'}
             size={size}
-            color={star <= rating ? Colors.star : Colors.textLight}
+            color={star <= rating ? C.star : C.textLight}
             style={{ marginRight: 2 }}
           />
         </Pressable>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { Colors, Fonts, Radius, Spacing, Shadows } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 import type { SkillStat } from '../lib/skills';
 
 interface Props {
@@ -11,6 +12,7 @@ interface Props {
 }
 
 export function SkillProgressCard({ label, emoji, stat, accentColor = Colors.primaryDark }: Props) {
+  const { colors: C, shadows: S } = useTheme();
   const { count, badge, nextBadge, recipesNeeded } = stat;
 
   // Progress toward next badge (0–1)
@@ -20,17 +22,17 @@ export function SkillProgressCard({ label, emoji, stat, accentColor = Colors.pri
   const progress = range > 0 ? (count - prevThreshold) / range : 1;
 
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, { backgroundColor: C.white }, S.soft]}>
       <View style={styles.topRow}>
         <Text style={styles.emoji}>{emoji}</Text>
         <View style={styles.labelCol}>
-          <Text style={styles.label}>{label}</Text>
-          <Text style={styles.countText}>
+          <Text style={[styles.label, { color: C.text }]}>{label}</Text>
+          <Text style={[styles.countText, { color: C.textSecondary }]}>
             {count} {count === 1 ? 'bake' : 'bakes'}
           </Text>
         </View>
         {badge && (
-          <View style={styles.badgeChip}>
+          <View style={[styles.badgeChip, { backgroundColor: C.surfaceAlt }]}>
             <Text style={styles.badgeEmoji}>{badge.emoji}</Text>
             <Text style={styles.badgeName}>{badge.name}</Text>
           </View>
@@ -40,7 +42,7 @@ export function SkillProgressCard({ label, emoji, stat, accentColor = Colors.pri
       {/* Progress bar */}
       {nextBadge && (
         <View style={styles.progressArea}>
-          <View style={styles.progressTrack}>
+          <View style={[styles.progressTrack, { backgroundColor: C.borderLight }]}>
             <View
               style={[
                 styles.progressFill,

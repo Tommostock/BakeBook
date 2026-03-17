@@ -18,6 +18,7 @@ import {
 } from '@expo-google-fonts/great-vibes';
 import * as SplashScreen from 'expo-splash-screen';
 import { useAppStore } from '../lib/store';
+import { useTheme } from '../lib/useTheme';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import { FloatingTimerBadge } from '../components/FloatingTimerBadge';
 import { OnboardingModal } from '../components/OnboardingModal';
@@ -26,6 +27,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const loadPersistedState = useAppStore((s) => s.loadPersistedState);
+  const { colors: C, isDarkMode } = useTheme();
   const [isOffline, setIsOffline] = useState(false);
 
   const [fontsLoaded] = useFonts({
@@ -69,7 +71,7 @@ export default function RootLayout() {
 
   return (
     <ErrorBoundary>
-      <StatusBar style="dark" />
+      <StatusBar style={isDarkMode ? 'light' : 'dark'} />
       {isOffline && (
         <View style={offlineStyles.banner}>
           <Text style={offlineStyles.text}>
@@ -82,7 +84,7 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#FFFAF7' },
+          contentStyle: { backgroundColor: C.background },
         }}
       >
         <Stack.Screen name="(tabs)" />

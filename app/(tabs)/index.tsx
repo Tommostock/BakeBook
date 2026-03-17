@@ -20,12 +20,15 @@ import { AnimatedEntry } from '../../components/AnimatedEntry';
 import { CATEGORIES, CATEGORY_EMOJIS } from '../../lib/helpers';
 import { useAppStore } from '../../lib/store';
 import { useAllRecipes } from '../../lib/recipes';
+import { useTheme } from '../../lib/useTheme';
 import { getCurrentSeason, getSeasonalLabel, getSeasonalEmoji, getSeasonalRecipes } from '../../lib/seasonal';
 
 export default function HomeScreen() {
   const router = useRouter();
   const recentlyViewed = useAppStore((s) => s.recentlyViewed);
+  const toggleDarkMode = useAppStore((s) => s.toggleDarkMode);
   const allRecipes = useAllRecipes();
+  const { colors: C, shadows: S, isDarkMode } = useTheme();
 
   const season = getCurrentSeason();
   const seasonalLabel = `${getSeasonalLabel(season)} ${getSeasonalEmoji(season)}`;
@@ -49,7 +52,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
       <ScrollView
         style={styles.container}
         showsVerticalScrollIndicator={false}
@@ -59,15 +62,23 @@ export default function HomeScreen() {
         <AnimatedEntry delay={0} slideFrom="none">
           <View style={styles.logoBar}>
             <View>
-              <Text style={styles.logoSuzie}>Suzie's</Text>
-              <Text style={styles.logoBakeBook}>BakeBook</Text>
+              <Text style={[styles.logoSuzie, { color: C.primaryDark }]}>Suzie's</Text>
+              <Text style={[styles.logoBakeBook, { color: C.text }]}>BakeBook</Text>
             </View>
-            <Pressable
-              style={styles.searchIcon}
-              onPress={() => router.push('/(tabs)/search')}
-            >
-              <Ionicons name="search" size={22} color={Colors.text} />
-            </Pressable>
+            <View style={{ flexDirection: 'row', gap: Spacing.sm }}>
+              <Pressable
+                style={[styles.searchIcon, { backgroundColor: C.white }, S.soft]}
+                onPress={toggleDarkMode}
+              >
+                <Ionicons name={isDarkMode ? 'moon' : 'moon-outline'} size={20} color={C.text} />
+              </Pressable>
+              <Pressable
+                style={[styles.searchIcon, { backgroundColor: C.white }, S.soft]}
+                onPress={() => router.push('/(tabs)/search')}
+              >
+                <Ionicons name="search" size={22} color={C.text} />
+              </Pressable>
+            </View>
           </View>
         </AnimatedEntry>
 
@@ -166,13 +177,13 @@ export default function HomeScreen() {
             {allRecipes.slice(0, 6).map((recipe) => (
               <Pressable
                 key={recipe.id}
-                style={styles.gridCard}
+                style={[styles.gridCard, { backgroundColor: C.white }, S.soft]}
                 onPress={() => router.push(`/recipe/${recipe.id}`)}
               >
                 <View style={styles.gridImageContainer}>
                   <Image
                     source={{ uri: recipe.imageUrl }}
-                    style={styles.gridImage}
+                    style={[styles.gridImage, { backgroundColor: C.surfaceAlt }]}
                     contentFit="cover"
                     transition={300}
                   />
@@ -181,10 +192,10 @@ export default function HomeScreen() {
                     style={styles.gridOverlay}
                   />
                 </View>
-                <Text style={styles.gridTitle} numberOfLines={2}>
+                <Text style={[styles.gridTitle, { color: C.text }]} numberOfLines={2}>
                   {recipe.title}
                 </Text>
-                <Text style={styles.gridCategory}>{recipe.category}</Text>
+                <Text style={[styles.gridCategory, { color: C.textSecondary }]}>{recipe.category}</Text>
               </Pressable>
             ))}
           </View>

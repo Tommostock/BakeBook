@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react';
 import { Tabs } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Shadows } from '../../constants/theme';
+import { useTheme } from '../../lib/useTheme';
 import { Platform, Animated, View, StyleSheet } from 'react-native';
 
 type IoniconsName = React.ComponentProps<typeof Ionicons>['name'];
@@ -97,12 +98,13 @@ function AnimatedTabIcon({
 }
 
 export default function TabLayout() {
+  const { colors: C, shadows: S } = useTheme();
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: Colors.primaryDark,
-        tabBarInactiveTintColor: Colors.textLight,
+        tabBarActiveTintColor: C.primaryDark,
+        tabBarInactiveTintColor: C.textLight,
         tabBarShowLabel: true,
         tabBarLabelStyle: {
           fontFamily: Fonts.sansMedium,
@@ -114,13 +116,13 @@ export default function TabLayout() {
           bottom: Platform.OS === 'web' ? 12 : 20,
           left: 16,
           right: 16,
-          backgroundColor: Colors.white,
+          backgroundColor: C.white,
           borderRadius: 28,
           height: Platform.OS === 'web' ? 68 : 70,
           paddingBottom: Platform.OS === 'web' ? 8 : 10,
           paddingTop: 8,
           borderTopWidth: 0,
-          ...Shadows.strong,
+          ...S.strong,
         },
       }}
     >

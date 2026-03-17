@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 import { useAppStore } from '../lib/store';
 
 interface OnboardingCard {
@@ -49,6 +50,7 @@ const CARDS: OnboardingCard[] = [
 ];
 
 export function OnboardingModal() {
+  const { colors: C } = useTheme();
   const { width } = useWindowDimensions();
   const setHasSeenOnboarding = useAppStore((s) => s.setHasSeenOnboarding);
   const hasSeenOnboarding = useAppStore((s) => s.hasSeenOnboarding);
@@ -74,7 +76,7 @@ export function OnboardingModal() {
   return (
     <Modal visible transparent animationType="fade" statusBarTranslucent>
       <View style={styles.overlay}>
-        <View style={[styles.container, { width: width * 0.9, maxWidth: 400 }]}>
+        <View style={[styles.container, { width: width * 0.9, maxWidth: 400, backgroundColor: C.white }]}>
           {/* Skip button */}
           <Pressable style={styles.skipBtn} onPress={dismiss}>
             <Text style={styles.skipText}>Skip</Text>
@@ -95,7 +97,7 @@ export function OnboardingModal() {
                 {/* Icon area */}
                 <View style={styles.iconArea}>
                   <View style={styles.iconCircle}>
-                    <Ionicons name={card.icon} size={48} color={Colors.primaryDark} />
+                    <Ionicons name={card.icon} size={48} color={C.primaryDark} />
                   </View>
                 </View>
 
@@ -103,13 +105,13 @@ export function OnboardingModal() {
                 <View style={styles.textArea}>
                   {index === 0 ? (
                     <View style={{ alignItems: 'center' }}>
-                      <Text style={styles.welcomeCalligraphy}>{card.title}</Text>
-                      <Text style={styles.welcomeSerif}>{card.subtitle}</Text>
+                      <Text style={[styles.welcomeCalligraphy, { color: C.primaryDark }]}>{card.title}</Text>
+                      <Text style={[styles.welcomeSerif, { color: C.text }]}>{card.subtitle}</Text>
                     </View>
                   ) : (
-                    <Text style={styles.cardTitle}>{card.title}</Text>
+                    <Text style={[styles.cardTitle, { color: C.text }]}>{card.title}</Text>
                   )}
-                  <Text style={styles.cardDescription}>{card.description}</Text>
+                  <Text style={[styles.cardDescription, { color: C.textSecondary }]}>{card.description}</Text>
                 </View>
               </View>
             ))}

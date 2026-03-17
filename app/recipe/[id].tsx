@@ -16,6 +16,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Fonts, Radius, Spacing, Shadows } from '../../constants/theme';
+import { useTheme } from '../../lib/useTheme';
 import { Timer } from '../../components/Timer';
 import { BakeMode } from '../../components/BakeMode';
 import { RecipeFormModal } from '../../components/RecipeFormModal';
@@ -41,6 +42,7 @@ function formatChainTime(secs: number): string {
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const router = useRouter();
+  const { colors: C, shadows: S } = useTheme();
   const addRecentlyViewed = useAppStore((s) => s.addRecentlyViewed);
   const toggleFavorite = useAppStore((s) => s.toggleFavorite);
   const fav = useAppStore((s) => s.favorites.includes(id ?? ''));
@@ -171,8 +173,8 @@ export default function RecipeDetailScreen() {
 
   if (!recipe) {
     return (
-      <SafeAreaView style={styles.safe}>
-        <Text style={styles.errorText}>Recipe not found</Text>
+      <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
+        <Text style={[styles.errorText, { color: C.textSecondary }]}>Recipe not found</Text>
       </SafeAreaView>
     );
   }
@@ -231,7 +233,7 @@ export default function RecipeDetailScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Hero Image */}
         <View style={styles.heroContainer}>
@@ -273,43 +275,43 @@ export default function RecipeDetailScreen() {
           </View>
         </View>
 
-        <View style={styles.content}>
+        <View style={[styles.content, { backgroundColor: C.background }]}>
           {/* Title & Category */}
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <Text style={styles.category}>{recipe.category}</Text>
+            <Text style={[styles.category, { color: C.primaryDark }]}>{recipe.category}</Text>
             {isOwn && (
               <View style={{ backgroundColor: Colors.primaryDark + '20', paddingHorizontal: 6, paddingVertical: 1, borderRadius: 4 }}>
                 <Text style={{ fontFamily: Fonts.sansSemiBold, fontSize: 9, color: Colors.primaryDark, letterSpacing: 0.5 }}>MY RECIPE</Text>
               </View>
             )}
           </View>
-          <Text style={styles.title}>{recipe.title}</Text>
-          <Text style={styles.description}>{recipe.description}</Text>
+          <Text style={[styles.title, { color: C.text }]}>{recipe.title}</Text>
+          <Text style={[styles.description, { color: C.textSecondary }]}>{recipe.description}</Text>
 
           {/* Time & Difficulty Bar */}
-          <View style={styles.metaBar}>
+          <View style={[styles.metaBar, { backgroundColor: C.surfaceAlt }]}>
             <View style={styles.metaItem}>
-              <Ionicons name="time-outline" size={18} color={Colors.primaryDark} />
-              <Text style={styles.metaLabel}>Prep</Text>
-              <Text style={styles.metaValue}>{formatTime(recipe.prepTime)}</Text>
+              <Ionicons name="time-outline" size={18} color={C.primaryDark} />
+              <Text style={[styles.metaLabel, { color: C.textSecondary }]}>Prep</Text>
+              <Text style={[styles.metaValue, { color: C.text }]}>{formatTime(recipe.prepTime)}</Text>
             </View>
-            <View style={styles.metaDivider} />
+            <View style={[styles.metaDivider, { backgroundColor: C.border }]} />
             <View style={styles.metaItem}>
-              <Ionicons name="flame-outline" size={18} color={Colors.primaryDark} />
-              <Text style={styles.metaLabel}>Bake</Text>
-              <Text style={styles.metaValue}>{formatTime(recipe.bakeTime)}</Text>
+              <Ionicons name="flame-outline" size={18} color={C.primaryDark} />
+              <Text style={[styles.metaLabel, { color: C.textSecondary }]}>Bake</Text>
+              <Text style={[styles.metaValue, { color: C.text }]}>{formatTime(recipe.bakeTime)}</Text>
             </View>
-            <View style={styles.metaDivider} />
+            <View style={[styles.metaDivider, { backgroundColor: C.border }]} />
             <View style={styles.metaItem}>
-              <Ionicons name="hourglass-outline" size={18} color={Colors.primaryDark} />
-              <Text style={styles.metaLabel}>Total</Text>
-              <Text style={styles.metaValue}>{formatTime(recipe.totalTime)}</Text>
+              <Ionicons name="hourglass-outline" size={18} color={C.primaryDark} />
+              <Text style={[styles.metaLabel, { color: C.textSecondary }]}>Total</Text>
+              <Text style={[styles.metaValue, { color: C.text }]}>{formatTime(recipe.totalTime)}</Text>
             </View>
-            <View style={styles.metaDivider} />
+            <View style={[styles.metaDivider, { backgroundColor: C.border }]} />
             <View style={styles.metaItem}>
-              <Ionicons name="restaurant-outline" size={18} color={Colors.primaryDark} />
-              <Text style={styles.metaLabel}>Serves</Text>
-              <Text style={styles.metaValue}>{recipe.servings}</Text>
+              <Ionicons name="restaurant-outline" size={18} color={C.primaryDark} />
+              <Text style={[styles.metaLabel, { color: C.textSecondary }]}>Serves</Text>
+              <Text style={[styles.metaValue, { color: C.text }]}>{recipe.servings}</Text>
             </View>
           </View>
 
@@ -332,27 +334,27 @@ export default function RecipeDetailScreen() {
           </View>
 
           {/* Servings Scaler */}
-          <View style={styles.servingsRow}>
+          <View style={[styles.servingsRow, { backgroundColor: C.surfaceAlt }]}>
             <Pressable
-              style={styles.servingsBtn}
+              style={[styles.servingsBtn, { backgroundColor: C.white, borderColor: C.borderLight }]}
               onPress={() => {
                 const current = scaledServings ?? recipe.servings;
                 if (current > 1) setScaledServings(current - 1);
               }}
             >
-              <Ionicons name="remove" size={18} color={Colors.primaryDark} />
+              <Ionicons name="remove" size={18} color={C.primaryDark} />
             </Pressable>
-            <Text style={[styles.servingsValue, isScaled && styles.servingsValueScaled]}>
+            <Text style={[styles.servingsValue, { color: C.text }, isScaled && { color: C.primaryDark }]}>
               {scaledServings ?? recipe.servings} {(scaledServings ?? recipe.servings) === 1 ? 'serving' : 'servings'}
             </Text>
             <Pressable
-              style={styles.servingsBtn}
+              style={[styles.servingsBtn, { backgroundColor: C.white, borderColor: C.borderLight }]}
               onPress={() => {
                 const current = scaledServings ?? recipe.servings;
                 if (current < recipe.servings * 4) setScaledServings(current + 1);
               }}
             >
-              <Ionicons name="add" size={18} color={Colors.primaryDark} />
+              <Ionicons name="add" size={18} color={C.primaryDark} />
             </Pressable>
             {isScaled && (
               <Pressable
@@ -366,7 +368,7 @@ export default function RecipeDetailScreen() {
 
           {/* Ingredients */}
           <View style={styles.ingredientsHeader}>
-            <Text style={[styles.sectionTitle, { marginTop: 0, marginBottom: 0 }]}>Ingredients</Text>
+            <Text style={[styles.sectionTitle, { marginTop: 0, marginBottom: 0, color: C.text }]}>Ingredients</Text>
             <View style={styles.unitToggle}>
               <Pressable
                 style={[styles.unitBtn, preferredUnits === 'metric' && styles.unitBtnActive]}
@@ -385,18 +387,19 @@ export default function RecipeDetailScreen() {
           {displayIngredients.map((ing, i) => (
             <Pressable
               key={i}
-              style={styles.ingredientRow}
+              style={[styles.ingredientRow, { borderBottomColor: C.borderLight }]}
               onPress={() => toggleIngredient(i)}
             >
               <Ionicons
                 name={checkedIngredients.has(i) ? 'checkbox' : 'square-outline'}
                 size={20}
-                color={checkedIngredients.has(i) ? Colors.primaryDark : Colors.textLight}
+                color={checkedIngredients.has(i) ? C.primaryDark : C.textLight}
               />
               <Text
                 style={[
                   styles.ingredientText,
-                  checkedIngredients.has(i) && styles.ingredientChecked,
+                  { color: C.text },
+                  checkedIngredients.has(i) && { textDecorationLine: 'line-through', color: C.textLight },
                 ]}
               >
                 {ing.amount}
@@ -407,7 +410,7 @@ export default function RecipeDetailScreen() {
 
           {/* Steps — with progress indicator (#24) */}
           <View style={styles.stepsHeaderRow}>
-            <Text style={[styles.sectionTitle, { marginTop: 0, marginBottom: 0 }]}>Instructions</Text>
+            <Text style={[styles.sectionTitle, { marginTop: 0, marginBottom: 0, color: C.text }]}>Instructions</Text>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
               <Pressable style={styles.bakeModeBtn} onPress={() => setShowBakeMode(true)}>
                 <Ionicons name="expand-outline" size={14} color={Colors.primaryDark} />
@@ -419,7 +422,7 @@ export default function RecipeDetailScreen() {
             </View>
           </View>
           {/* Animated progress bar */}
-          <View style={styles.progressTrack}>
+          <View style={[styles.progressTrack, { backgroundColor: C.borderLight }]}>
             <LinearGradient
               colors={checkedSteps.size === recipe.steps.length ? ['#4CAF50', '#66BB6A'] : [Colors.primaryDark, Colors.primary]}
               start={{ x: 0, y: 0 }}
@@ -494,19 +497,20 @@ export default function RecipeDetailScreen() {
                 <Pressable style={styles.stepRow} onPress={() => toggleStep(i)}>
                   <View style={[
                     styles.stepNumber,
-                    checkedSteps.has(i) && styles.stepNumberDone,
-                    isChainStepRunning && styles.stepNumberRunning,
-                    isChainStepDone && styles.stepNumberChainDone,
+                    { backgroundColor: C.primary },
+                    checkedSteps.has(i) && { backgroundColor: C.primaryDark },
+                    isChainStepRunning && { backgroundColor: C.primaryDark },
+                    isChainStepDone && { backgroundColor: Colors.success },
                   ]}>
                     {checkedSteps.has(i) ? (
                       <Ionicons name="checkmark" size={14} color={Colors.white} />
                     ) : isChainStepDone ? (
                       <Ionicons name="checkmark" size={14} color={Colors.white} />
                     ) : (
-                      <Text style={[styles.stepNumberText, isChainStepRunning && { color: Colors.white }]}>{i + 1}</Text>
+                      <Text style={[styles.stepNumberText, { color: C.text }, isChainStepRunning && { color: Colors.white }]}>{i + 1}</Text>
                     )}
                   </View>
-                  <Text style={[styles.stepText, checkedSteps.has(i) && styles.stepTextDone]}>{step}</Text>
+                  <Text style={[styles.stepText, { color: C.text }, checkedSteps.has(i) && { textDecorationLine: 'line-through', color: C.textLight }]}>{step}</Text>
                 </Pressable>
                 {/* Inline timer buttons for this step */}
                 {timersForStep.length > 0 && !isBakeAlongActive && (
@@ -540,9 +544,9 @@ export default function RecipeDetailScreen() {
 
           {/* Tips */}
           {recipe.tips && (
-            <View style={styles.tipsBox}>
-              <Text style={styles.tipsTitle}>💡 Baker's Tips</Text>
-              <Text style={styles.tipsText}>{recipe.tips}</Text>
+            <View style={[styles.tipsBox, { backgroundColor: C.surfaceAlt, borderLeftColor: C.primary }]}>
+              <Text style={[styles.tipsTitle, { color: C.text }]}>💡 Baker's Tips</Text>
+              <Text style={[styles.tipsText, { color: C.textSecondary }]}>{recipe.tips}</Text>
             </View>
           )}
 
@@ -551,8 +555,8 @@ export default function RecipeDetailScreen() {
             style={styles.timerToggle}
             onPress={() => setShowTimer(!showTimer)}
           >
-            <Ionicons name="timer-outline" size={20} color={Colors.primaryDark} />
-            <Text style={styles.timerToggleText}>
+            <Ionicons name="timer-outline" size={20} color={C.primaryDark} />
+            <Text style={[styles.timerToggleText, { color: C.primaryDark }]}>
               {showTimer ? 'Hide Timer' : 'Show Baking Timer'}
             </Text>
           </Pressable>
@@ -566,12 +570,12 @@ export default function RecipeDetailScreen() {
           )}
 
           {/* Personal Notes */}
-          <Text style={styles.sectionTitle}>My Notes</Text>
+          <Text style={[styles.sectionTitle, { color: C.text }]}>My Notes</Text>
           <View style={styles.noteInputRow}>
             <TextInput
-              style={styles.noteInput}
+              style={[styles.noteInput, { color: C.text, backgroundColor: C.surface, borderColor: C.borderLight }]}
               placeholder="Add a note (e.g., 'Use less sugar next time')"
-              placeholderTextColor={Colors.textLight}
+              placeholderTextColor={C.textLight}
               value={newNote}
               onChangeText={setNewNote}
             />
@@ -580,14 +584,14 @@ export default function RecipeDetailScreen() {
             </Pressable>
           </View>
           {notes.map((note) => (
-            <View key={note.id} style={styles.noteCard}>
-              <Text style={styles.noteText}>{note.text}</Text>
+            <View key={note.id} style={[styles.noteCard, { backgroundColor: C.surface, borderColor: C.borderLight }]}>
+              <Text style={[styles.noteText, { color: C.text }]}>{note.text}</Text>
               <View style={styles.noteFooter}>
-                <Text style={styles.noteDate}>
+                <Text style={[styles.noteDate, { color: C.textLight }]}>
                   {new Date(note.createdAt).toLocaleDateString('en-GB')}
                 </Text>
                 <Pressable onPress={() => deleteRecipeNote(note.id)} hitSlop={10}>
-                  <Ionicons name="close-circle-outline" size={18} color={Colors.textLight} />
+                  <Ionicons name="close-circle-outline" size={18} color={C.textLight} />
                 </Pressable>
               </View>
             </View>
@@ -596,7 +600,7 @@ export default function RecipeDetailScreen() {
       </ScrollView>
 
       {/* Sticky Log Bake footer */}
-      <View style={styles.logBakeBar}>
+      <View style={[styles.logBakeBar, { backgroundColor: C.background, borderTopColor: C.borderLight }]}>
         <Pressable style={styles.logBakeBtn} onPress={handleLogBake}>
           <Ionicons name="book-outline" size={18} color={Colors.white} />
           <Text style={styles.logBakeBtnText}>Log This Bake</Text>
@@ -614,9 +618,9 @@ export default function RecipeDetailScreen() {
       {/* Delete Confirmation */}
       {showDeleteConfirm && (
         <View style={styles.confirmOverlay}>
-          <View style={styles.confirmBox}>
-            <Text style={styles.confirmTitle}>Delete Recipe</Text>
-            <Text style={styles.confirmText}>
+          <View style={[styles.confirmBox, { backgroundColor: C.white }]}>
+            <Text style={[styles.confirmTitle, { color: C.text }]}>Delete Recipe</Text>
+            <Text style={[styles.confirmText, { color: C.textSecondary }]}>
               Are you sure you want to delete "{recipe.title}"? This cannot be undone.
             </Text>
             <View style={styles.confirmButtons}>
@@ -653,9 +657,9 @@ export default function RecipeDetailScreen() {
       {/* Share Action Sheet */}
       {showShareSheet && (
         <View style={styles.confirmOverlay}>
-          <View style={styles.confirmBox}>
-            <Text style={styles.confirmTitle}>Share Recipe</Text>
-            <Text style={styles.confirmText}>
+          <View style={[styles.confirmBox, { backgroundColor: C.white }]}>
+            <Text style={[styles.confirmTitle, { color: C.text }]}>Share Recipe</Text>
+            <Text style={[styles.confirmText, { color: C.textSecondary }]}>
               Choose how to share "{recipe.title}"
             </Text>
             <Pressable

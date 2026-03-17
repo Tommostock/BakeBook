@@ -1,3 +1,5 @@
+export type ThemeColors = typeof Colors;
+
 export const Colors = {
   primary: '#F8C8DC',
   primaryDark: '#E8A0B8',
@@ -25,6 +27,33 @@ export const Colors = {
   // Glassmorphism
   glass: 'rgba(255, 255, 255, 0.75)',
   glassBorder: 'rgba(255, 255, 255, 0.4)',
+};
+
+export const DarkColors: ThemeColors = {
+  primary: '#3D2233',
+  primaryDark: '#E8A0B8',
+  background: '#1A1118',
+  surface: '#241920',
+  surfaceAlt: '#2E1F28',
+  text: '#F5F0F2',
+  textSecondary: '#A89BA2',
+  textLight: '#6E5F67',
+  border: '#3D2D35',
+  borderLight: '#2E1F28',
+  white: '#241920',
+  black: '#F5F0F2',
+  star: '#FFB800',
+  success: '#4CAF50',
+  error: '#E53935',
+  shadow: 'rgba(0,0,0,0.3)',
+
+  gradientPink: ['#3D2233', '#2E1828'] as readonly string[],
+  gradientPeach: ['#3D2233', '#332028'] as readonly string[],
+  gradientSoft: ['#241920', '#2E1F28'] as readonly string[],
+  gradientWarm: ['#1A1118', '#2E1F28'] as readonly string[],
+
+  glass: 'rgba(30, 20, 26, 0.85)',
+  glassBorder: 'rgba(62, 45, 53, 0.5)',
 };
 
 export const Fonts = {
