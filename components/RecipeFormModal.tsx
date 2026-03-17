@@ -16,6 +16,7 @@ import { Image } from 'expo-image';
 import * as ImagePicker from 'expo-image-picker';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 import { CategoryPill } from './CategoryPill';
 import { useAppStore } from '../lib/store';
 import { generateId, CATEGORIES, CATEGORY_EMOJIS } from '../lib/helpers';
@@ -32,6 +33,7 @@ const DIFFICULTIES: Recipe['difficulty'][] = ['Easy', 'Medium', 'Hard'];
 const emptyIngredient = (): Ingredient => ({ name: '', amount: '', unit: '' });
 
 export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
+  const { colors: C } = useTheme();
   const addUserRecipe = useAppStore((s) => s.addUserRecipe);
   const updateUserRecipe = useAppStore((s) => s.updateUserRecipe);
 
@@ -209,17 +211,17 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
-      <SafeAreaView style={styles.safe}>
+      <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
         {/* Header */}
-        <View style={styles.header}>
+        <View style={[styles.header, { borderBottomColor: C.borderLight }]}>
           <Pressable onPress={handleCancel} hitSlop={12}>
-            <Text style={styles.headerCancel}>Cancel</Text>
+            <Text style={[styles.headerCancel, { color: C.textSecondary }]}>Cancel</Text>
           </Pressable>
-          <Text style={styles.headerTitle}>
+          <Text style={[styles.headerTitle, { color: C.text }]}>
             {editingRecipe ? 'Edit Recipe' : 'New Recipe'}
           </Text>
           <Pressable onPress={handleSave} hitSlop={12}>
-            <Text style={styles.headerSave}>Save</Text>
+            <Text style={[styles.headerSave, { color: C.primaryDark }]}>Save</Text>
           </Pressable>
         </View>
 

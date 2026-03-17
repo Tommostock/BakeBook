@@ -10,6 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing, Shadows } from '../../constants/theme';
 import { useAppStore } from '../../lib/store';
+import { useTheme } from '../../lib/useTheme';
 import { useAllRecipes } from '../../lib/recipes';
 import { CATEGORY_EMOJIS, DIFFICULTY_COLORS } from '../../lib/helpers';
 import { computeSkillStats, computeAchievements } from '../../lib/skills';
@@ -26,6 +27,7 @@ const DIFFICULTY_EMOJIS: Record<string, string> = {
 };
 
 export default function ProfileScreen() {
+  const { colors: C, shadows: S } = useTheme();
   const favorites = useAppStore((s) => s.favorites);
   const journalEntries = useAppStore((s) => s.journalEntries);
   const allRecipes = useAllRecipes();
@@ -62,24 +64,24 @@ export default function ProfileScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
       <ScrollView contentContainerStyle={{ paddingBottom: 100 }}>
         {/* Page Title */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Profile</Text>
+          <Text style={[styles.headerTitle, { color: C.text }]}>Profile</Text>
         </View>
 
         {/* About Card */}
         <AnimatedEntry delay={0}>
-          <View style={styles.aboutCard}>
-            <Text style={styles.aboutName}>Suzie Stock</Text>
+          <View style={[styles.aboutCard, { backgroundColor: C.white }, S.soft]}>
+            <Text style={[styles.aboutName, { color: C.primaryDark }]}>Suzie Stock</Text>
             <View style={styles.aboutChampRow}>
-              <Ionicons name="trophy" size={16} color={Colors.primaryDark} />
-              <Text style={styles.aboutChamp}>2 x London Bake Off Champion</Text>
-              <Ionicons name="trophy" size={16} color={Colors.primaryDark} />
+              <Ionicons name="trophy" size={16} color={C.primaryDark} />
+              <Text style={[styles.aboutChamp, { color: C.textSecondary }]}>2 x London Bake Off Champion</Text>
+              <Ionicons name="trophy" size={16} color={C.primaryDark} />
             </View>
-            <View style={styles.aboutDivider} />
-            <Text style={styles.aboutDedication}>
+            <View style={[styles.aboutDivider, { backgroundColor: C.border }]} />
+            <Text style={[styles.aboutDedication, { color: C.textSecondary }]}>
               For our beautiful mum,{'\n'}Love Harry & Oliver
             </Text>
           </View>
@@ -122,10 +124,10 @@ export default function ProfileScreen() {
         <AnimatedEntry delay={100}>
           <View style={styles.statsGrid}>
             {stats.map((stat) => (
-              <View key={stat.label} style={styles.statCard}>
-                <Ionicons name={stat.icon} size={24} color={Colors.primaryDark} />
-                <Text style={styles.statValue}>{stat.value}</Text>
-                <Text style={styles.statLabel}>{stat.label}</Text>
+              <View key={stat.label} style={[styles.statCard, { backgroundColor: C.white }, S.soft]}>
+                <Ionicons name={stat.icon} size={24} color={C.primaryDark} />
+                <Text style={[styles.statValue, { color: C.text }]}>{stat.value}</Text>
+                <Text style={[styles.statLabel, { color: C.textSecondary }]}>{stat.label}</Text>
               </View>
             ))}
           </View>
@@ -134,33 +136,33 @@ export default function ProfileScreen() {
         {/* Your Baking Journey */}
         <AnimatedEntry delay={150}>
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Your Baking Journey</Text>
+            <Text style={[styles.sectionTitle, { color: C.text }]}>Your Baking Journey</Text>
 
             {!hasBakes ? (
-              <View style={styles.emptyState}>
-                <Ionicons name="sparkles-outline" size={36} color={Colors.textLight} />
-                <Text style={styles.emptyText}>Start baking to earn badges!</Text>
-                <Text style={styles.emptySubtext}>
+              <View style={[styles.emptyState, { backgroundColor: C.white }, S.soft]}>
+                <Ionicons name="sparkles-outline" size={36} color={C.textLight} />
+                <Text style={[styles.emptyText, { color: C.text }]}>Start baking to earn badges!</Text>
+                <Text style={[styles.emptySubtext, { color: C.textSecondary }]}>
                   Log your bakes in the Journal to track your skills and unlock achievements.
                 </Text>
               </View>
             ) : (
-              <View style={styles.overviewRow}>
+              <View style={[styles.overviewRow, { backgroundColor: C.white }, S.soft]}>
                 <View style={styles.overviewItem}>
-                  <Text style={styles.overviewValue}>{skills.totalBakes}</Text>
-                  <Text style={styles.overviewLabel}>Total Bakes</Text>
+                  <Text style={[styles.overviewValue, { color: C.primaryDark }]}>{skills.totalBakes}</Text>
+                  <Text style={[styles.overviewLabel, { color: C.textSecondary }]}>Total Bakes</Text>
                 </View>
-                <View style={styles.overviewDivider} />
+                <View style={[styles.overviewDivider, { backgroundColor: C.border }]} />
                 <View style={styles.overviewItem}>
-                  <Text style={styles.overviewValue}>{skills.uniqueRecipesBaked}</Text>
-                  <Text style={styles.overviewLabel}>Unique Recipes</Text>
+                  <Text style={[styles.overviewValue, { color: C.primaryDark }]}>{skills.uniqueRecipesBaked}</Text>
+                  <Text style={[styles.overviewLabel, { color: C.textSecondary }]}>Unique Recipes</Text>
                 </View>
-                <View style={styles.overviewDivider} />
+                <View style={[styles.overviewDivider, { backgroundColor: C.border }]} />
                 <View style={styles.overviewItem}>
-                  <Text style={styles.overviewValue}>
+                  <Text style={[styles.overviewValue, { color: C.primaryDark }]}>
                     {skills.averageRating > 0 ? skills.averageRating.toFixed(1) : '–'}
                   </Text>
-                  <Text style={styles.overviewLabel}>Avg Rating</Text>
+                  <Text style={[styles.overviewLabel, { color: C.textSecondary }]}>Avg Rating</Text>
                 </View>
               </View>
             )}
@@ -170,7 +172,7 @@ export default function ProfileScreen() {
         {/* Achievements */}
         <AnimatedEntry delay={200}>
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Achievements</Text>
+            <Text style={[styles.sectionTitle, { color: C.text }]}>Achievements</Text>
             <BadgeGrid achievements={achievements} />
           </View>
         </AnimatedEntry>
@@ -179,7 +181,7 @@ export default function ProfileScreen() {
         {sortedCategories.length > 0 && (
           <AnimatedEntry delay={250}>
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Skills by Category</Text>
+              <Text style={[styles.sectionTitle, { color: C.text }]}>Skills by Category</Text>
               <View style={styles.cardList}>
                 {sortedCategories.map(([category, stat]) => (
                   <SkillProgressCard
@@ -198,7 +200,7 @@ export default function ProfileScreen() {
         {hasBakes && (
           <AnimatedEntry delay={300}>
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Skills by Difficulty</Text>
+              <Text style={[styles.sectionTitle, { color: C.text }]}>Skills by Difficulty</Text>
               <View style={styles.cardList}>
                 {['Easy', 'Medium', 'Hard'].map((diff) => (
                   <SkillProgressCard
@@ -214,7 +216,7 @@ export default function ProfileScreen() {
           </AnimatedEntry>
         )}
 
-        <Text style={styles.version}>
+        <Text style={[styles.version, { color: C.textLight }]}>
           Suzie's BakeBook v1.0.0{'\n'}
           Made with ❤️
         </Text>

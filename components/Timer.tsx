@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, StyleSheet, Pressable, TextInput } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 import { useTimerStore, TimerInstance } from '../lib/timerStore';
 import { generateId } from '../lib/helpers';
 
@@ -23,6 +24,7 @@ function formatDisplay(secs: number): string {
 }
 
 function TimerCard({ timer }: { timer: TimerInstance }) {
+  const { colors: C } = useTheme();
   const startTimer = useTimerStore((s) => s.startTimer);
   const pauseTimer = useTimerStore((s) => s.pauseTimer);
   const resetTimer = useTimerStore((s) => s.resetTimer);
@@ -36,16 +38,16 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
   const isDone = timer.remainingSeconds === 0 && timer.totalSeconds > 0;
 
   return (
-    <View style={styles.timerCard}>
+    <View style={[styles.timerCard, { backgroundColor: C.primary }]}>
       {/* Top row: label + action buttons */}
       <View style={styles.timerTopRow}>
-        <Text style={styles.timerLabel} numberOfLines={1}>
+        <Text style={[styles.timerLabel, { color: C.text }]} numberOfLines={1}>
           {timer.label}
         </Text>
         <View style={styles.timerButtons}>
           {/* Play / Pause */}
           <Pressable
-            style={styles.timerBtn}
+            style={[styles.timerBtn, { backgroundColor: C.white }]}
             onPress={() =>
               timer.isRunning ? pauseTimer(timer.id) : startTimer(timer.id)
             }
@@ -54,22 +56,22 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
             <Ionicons
               name={isDone ? 'checkmark' : timer.isRunning ? 'pause' : 'play'}
               size={18}
-              color={isDone ? Colors.success : Colors.primaryDark}
+              color={isDone ? Colors.success : C.primaryDark}
             />
           </Pressable>
           {/* Reset */}
           <Pressable
-            style={styles.timerBtn}
+            style={[styles.timerBtn, { backgroundColor: C.white }]}
             onPress={() => resetTimer(timer.id)}
           >
-            <Ionicons name="refresh" size={18} color={Colors.primaryDark} />
+            <Ionicons name="refresh" size={18} color={C.primaryDark} />
           </Pressable>
           {/* Remove */}
           <Pressable
-            style={styles.timerBtn}
+            style={[styles.timerBtn, { backgroundColor: C.white }]}
             onPress={() => removeTimer(timer.id)}
           >
-            <Ionicons name="close" size={18} color={Colors.primaryDark} />
+            <Ionicons name="close" size={18} color={C.primaryDark} />
           </Pressable>
         </View>
       </View>
@@ -119,6 +121,7 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
 }
 
 export function Timer({ defaultMinutes = 0, prepTime, bakeTime, recipeTitle }: TimerProps) {
+  const { colors: C } = useTheme();
   const timers = useTimerStore((s) => s.timers);
   const addTimer = useTimerStore((s) => s.addTimer);
   const [customMins, setCustomMins] = useState('');
@@ -141,11 +144,11 @@ export function Timer({ defaultMinutes = 0, prepTime, bakeTime, recipeTitle }: T
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: C.surfaceAlt }]}>
       {/* Suggested timers for this recipe */}
       {(prepTime || bakeTime) && (
         <View style={styles.suggestRow}>
-          <Text style={styles.suggestLabel}>Quick Start:</Text>
+          <Text style={[styles.suggestLabel, { color: C.text }]}>Quick Start:</Text>
           {prepTime ? (
             <Pressable
               style={styles.suggestBtn}

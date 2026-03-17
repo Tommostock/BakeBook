@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 import { useAllRecipes } from '../lib/recipes';
 
 export interface FilterOptions {
@@ -56,6 +57,7 @@ const INGREDIENT_OPTIONS = [
 ];
 
 export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetProps) {
+  const { colors: C } = useTheme();
   const [localFilters, setLocalFilters] = useState<FilterOptions>(filters);
   const allRecipes = useAllRecipes();
 
@@ -96,20 +98,20 @@ export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetP
       presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
-      <SafeAreaView style={styles.safe}>
-        <View style={styles.header}>
+      <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
+        <View style={[styles.header, { borderBottomColor: C.borderLight }]}>
           <Pressable onPress={onClose}>
-            <Text style={styles.cancelText}>Cancel</Text>
+            <Text style={[styles.cancelText, { color: C.textSecondary }]}>Cancel</Text>
           </Pressable>
-          <Text style={styles.title}>Filters</Text>
+          <Text style={[styles.title, { color: C.text }]}>Filters</Text>
           <Pressable onPress={handleApply}>
-            <Text style={styles.applyText}>Apply</Text>
+            <Text style={[styles.applyText, { color: C.primaryDark }]}>Apply</Text>
           </Pressable>
         </View>
 
         <ScrollView style={styles.content} contentContainerStyle={{ paddingBottom: 40 }}>
           {/* Max Time */}
-          <Text style={styles.sectionLabel}>Maximum Time</Text>
+          <Text style={[styles.sectionLabel, { color: C.text }]}>Maximum Time</Text>
           <View style={styles.pillRow}>
             {TIME_OPTIONS.map((opt) => {
               const isSelected = localFilters.maxTotalTime === opt.value;
@@ -130,7 +132,7 @@ export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetP
           {/* Dietary Tags */}
           {allDietaryTags.length > 0 && (
             <>
-              <Text style={styles.sectionLabel}>Dietary</Text>
+              <Text style={[styles.sectionLabel, { color: C.text }]}>Dietary</Text>
               <View style={styles.pillRow}>
                 {allDietaryTags.map((tag) => {
                   const isSelected = localFilters.dietaryTags.includes(tag);
@@ -154,7 +156,7 @@ export function FilterSheet({ visible, onClose, filters, onApply }: FilterSheetP
           )}
 
           {/* Ingredient Count */}
-          <Text style={styles.sectionLabel}>Number of Ingredients</Text>
+          <Text style={[styles.sectionLabel, { color: C.text }]}>Number of Ingredients</Text>
           <View style={styles.pillRow}>
             {INGREDIENT_OPTIONS.map((opt) => {
               const isSelected = localFilters.maxIngredients === opt.value;

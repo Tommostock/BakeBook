@@ -13,6 +13,7 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Colors, Fonts, Radius, Spacing } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 import { parseStepTimers, StepTimer } from '../lib/stepTimers';
 import { useTimerStore } from '../lib/timerStore';
 import { generateId } from '../lib/helpers';
@@ -34,6 +35,7 @@ function formatCountdown(secs: number): string {
 }
 
 export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeModeProps) {
+  const { colors: C } = useTheme();
   const [currentStep, setCurrentStep] = useState(0);
   const [completedSteps, setCompletedSteps] = useState<Set<number>>(new Set());
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -138,19 +140,19 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
 
   return (
     <Modal visible={visible} animationType="slide" onRequestClose={onClose}>
-      <SafeAreaView style={bm.safe}>
+      <SafeAreaView style={[bm.safe, { backgroundColor: C.background }]}>
         <LinearGradient
-          colors={[Colors.background, Colors.surfaceAlt]}
+          colors={[C.background, C.surfaceAlt] as [string, string]}
           style={bm.gradientBg}
         >
           {/* Header */}
           <View style={bm.header}>
-            <Pressable style={bm.closeBtn} onPress={onClose}>
-              <Ionicons name="close" size={24} color={Colors.text} />
+            <Pressable style={[bm.closeBtn, { backgroundColor: C.surfaceAlt }]} onPress={onClose}>
+              <Ionicons name="close" size={24} color={C.text} />
             </Pressable>
             <View style={bm.headerCenter}>
-              <Text style={bm.headerTitle} numberOfLines={1}>{recipeTitle}</Text>
-              <Text style={bm.headerSubtitle}>
+              <Text style={[bm.headerTitle, { color: C.text }]} numberOfLines={1}>{recipeTitle}</Text>
+              <Text style={[bm.headerSubtitle, { color: C.primaryDark }]}>
                 Step {currentStep + 1} of {steps.length}
               </Text>
             </View>
@@ -188,7 +190,7 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
               </View>
 
               {/* Step text — large and readable */}
-              <Text style={bm.stepText}>{steps[currentStep]}</Text>
+              <Text style={[bm.stepText, { color: C.text }]}>{steps[currentStep]}</Text>
 
               {/* Step timer section */}
               {currentStepTimers.length > 0 && (
@@ -243,16 +245,16 @@ export function BakeMode({ visible, onClose, steps, recipeTitle, tips }: BakeMod
 
               {/* Show tips on the last step */}
               {isLastStep && tips && (
-                <View style={bm.tipsBox}>
-                  <Text style={bm.tipsTitle}>Baker's Tips</Text>
-                  <Text style={bm.tipsText}>{tips}</Text>
+                <View style={[bm.tipsBox, { backgroundColor: C.white }]}>
+                  <Text style={[bm.tipsTitle, { color: C.text }]}>Baker's Tips</Text>
+                  <Text style={[bm.tipsText, { color: C.textSecondary }]}>{tips}</Text>
                 </View>
               )}
             </ScrollView>
           </Animated.View>
 
           {/* Navigation footer */}
-          <View style={bm.footer}>
+          <View style={[bm.footer, { borderTopColor: C.borderLight, backgroundColor: C.background }]}>
             <Pressable
               style={[bm.navBtn, bm.navBtnPrev, isFirstStep && bm.navBtnDisabled]}
               onPress={handlePrev}

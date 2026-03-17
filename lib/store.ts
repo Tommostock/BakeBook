@@ -11,6 +11,7 @@ interface AppState {
   userRecipes: Recipe[];
   preferredUnits: UnitSystem;
   hasSeenOnboarding: boolean;
+  isDarkMode: boolean;
   searchQuery: string;
   selectedCategory: string | null;
   selectedDifficulty: string | null;
@@ -26,6 +27,7 @@ interface AppState {
   deleteUserRecipe: (id: string) => void;
   setPreferredUnits: (units: UnitSystem) => void;
   setHasSeenOnboarding: (seen: boolean) => void;
+  toggleDarkMode: () => void;
   setSearchQuery: (query: string) => void;
   setSelectedCategory: (category: string | null) => void;
   setSelectedDifficulty: (difficulty: string | null) => void;
@@ -40,6 +42,7 @@ const STORAGE_KEYS = {
   userRecipes: '@bakebook_user_recipes',
   units: '@bakebook_units',
   onboarding: '@bakebook_onboarding',
+  darkMode: '@bakebook_dark_mode',
 };
 
 export const useAppStore = create<AppState>((set, get) => ({
@@ -50,6 +53,7 @@ export const useAppStore = create<AppState>((set, get) => ({
   userRecipes: [],
   preferredUnits: 'metric',
   hasSeenOnboarding: false,
+  isDarkMode: false,
   searchQuery: '',
   selectedCategory: null,
   selectedDifficulty: null,
@@ -153,13 +157,21 @@ export const useAppStore = create<AppState>((set, get) => ({
     AsyncStorage.setItem(STORAGE_KEYS.onboarding, JSON.stringify(seen));
   },
 
+  toggleDarkMode: () => {
+    set((state) => {
+      const newVal = !state.isDarkMode;
+      AsyncStorage.setItem(STORAGE_KEYS.darkMode, JSON.stringify(newVal));
+      return { isDarkMode: newVal };
+    });
+  },
+
   setSearchQuery: (query) => set({ searchQuery: query }),
   setSelectedCategory: (category) => set({ selectedCategory: category }),
   setSelectedDifficulty: (difficulty) => set({ selectedDifficulty: difficulty }),
 
   loadPersistedState: async () => {
     try {
-      const [favs, journal, notes, recent, userRecipes, units, onboarding] = await Promise.all([
+      const [favs, journal, notes, recent, userRecipes, units, onboarding, darkMode] = await Promise.all([
         AsyncStorage.getItem(STORAGE_KEYS.favorites),
         AsyncStorage.getItem(STORAGE_KEYS.journal),
         AsyncStorage.getItem(STORAGE_KEYS.notes),
@@ -167,6 +179,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         AsyncStorage.getItem(STORAGE_KEYS.userRecipes),
         AsyncStorage.getItem(STORAGE_KEYS.units),
         AsyncStorage.getItem(STORAGE_KEYS.onboarding),
+        AsyncStorage.getItem(STORAGE_KEYS.darkMode),
       ]);
       set({
         favorites: favs ? JSON.parse(favs) : [],
@@ -176,6 +189,7 @@ export const useAppStore = create<AppState>((set, get) => ({
         userRecipes: userRecipes ? JSON.parse(userRecipes) : [],
         preferredUnits: units ? JSON.parse(units) : 'metric',
         hasSeenOnboarding: onboarding ? JSON.parse(onboarding) : false,
+        isDarkMode: darkMode ? JSON.parse(darkMode) : false,
       });
     } catch (e) {
       console.warn('Failed to load persisted state:', e);

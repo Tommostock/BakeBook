@@ -20,6 +20,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Colors, Fonts, Radius, Spacing } from '../../constants/theme';
 import { StarRating } from '../../components/StarRating';
 import { useAppStore } from '../../lib/store';
+import { useTheme } from '../../lib/useTheme';
 import { useAllRecipes } from '../../lib/recipes';
 import { generateId } from '../../lib/helpers';
 import type { JournalEntry } from '../../types/recipe';
@@ -28,6 +29,7 @@ const MAX_PHOTOS = 6;
 
 export default function JournalScreen() {
   const router = useRouter();
+  const { colors: C, shadows: S } = useTheme();
   const params = useLocalSearchParams<{ recipeId?: string }>();
   const journalEntries = useAppStore((s) => s.journalEntries);
   const addJournalEntry = useAppStore((s) => s.addJournalEntry);
@@ -190,19 +192,19 @@ export default function JournalScreen() {
     const cardWidth = (screenWidth - Spacing.lg * 2 - Spacing.md) / 2;
     return (
       <Pressable
-        style={[styles.entryCard, { maxWidth: cardWidth }]}
+        style={[styles.entryCard, { maxWidth: cardWidth, backgroundColor: C.white }]}
         onPress={() => { setGalleryIndex(0); setViewingEntry(item); }}
       >
         <View style={styles.entryImageWrap}>
           {headerPhoto ? (
             <Image
               source={{ uri: headerPhoto }}
-              style={styles.entryImage}
+              style={[styles.entryImage, { backgroundColor: C.surfaceAlt }]}
               contentFit="cover"
             />
           ) : (
-            <View style={[styles.entryImage, styles.entryImagePlaceholder]}>
-              <Ionicons name="camera-outline" size={28} color={Colors.textLight} />
+            <View style={[styles.entryImage, styles.entryImagePlaceholder, { backgroundColor: C.surfaceAlt }]}>
+              <Ionicons name="camera-outline" size={28} color={C.textLight} />
             </View>
           )}
           {photoCount > 1 && (
@@ -213,8 +215,8 @@ export default function JournalScreen() {
           )}
         </View>
         <View style={styles.entryContent}>
-          <Text style={styles.entryTitle} numberOfLines={2}>{item.recipeTitle}</Text>
-          <Text style={styles.entryDate}>
+          <Text style={[styles.entryTitle, { color: C.text }]} numberOfLines={2}>{item.recipeTitle}</Text>
+          <Text style={[styles.entryDate, { color: C.textSecondary }]}>
             {new Date(item.dateBaked).toLocaleDateString('en-GB', {
               day: 'numeric', month: 'short', year: 'numeric',
             })}
@@ -226,10 +228,10 @@ export default function JournalScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Baking Journal</Text>
-        <Pressable style={styles.addBtn} onPress={() => setModalVisible(true)}>
+        <Text style={[styles.headerTitle, { color: C.text }]}>Baking Journal</Text>
+        <Pressable style={[styles.addBtn, { backgroundColor: C.primaryDark }]} onPress={() => setModalVisible(true)}>
           <Ionicons name="add" size={22} color={Colors.white} />
         </Pressable>
       </View>
@@ -244,16 +246,16 @@ export default function JournalScreen() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Ionicons name="book-outline" size={64} color={Colors.textLight} />
-            <Text style={styles.emptyTitle}>Your journal is empty</Text>
-            <Text style={styles.emptyText}>
+            <Ionicons name="book-outline" size={64} color={C.textLight} />
+            <Text style={[styles.emptyTitle, { color: C.text }]}>Your journal is empty</Text>
+            <Text style={[styles.emptyText, { color: C.textSecondary }]}>
               Record your bakes with photos, notes, and ratings
             </Text>
             <Pressable
-              style={styles.startBtn}
+              style={[styles.startBtn, { backgroundColor: C.primary }]}
               onPress={() => setModalVisible(true)}
             >
-              <Text style={styles.startBtnText}>Log Your First Bake</Text>
+              <Text style={[styles.startBtnText, { color: C.text }]}>Log Your First Bake</Text>
             </Pressable>
           </View>
         }
@@ -276,13 +278,13 @@ export default function JournalScreen() {
           const galleryPhotos = displayPhotos.length ? displayPhotos : recipe?.imageUrl ? [recipe.imageUrl] : [];
 
           return (
-            <SafeAreaView style={styles.modalSafe}>
+            <SafeAreaView style={[styles.modalSafe, { backgroundColor: C.background }]}>
               {/* Header */}
-              <View style={styles.detailHeader}>
+              <View style={[styles.detailHeader, { borderBottomColor: C.borderLight }]}>
                 <Pressable onPress={() => setViewingEntry(null)} style={styles.detailCloseBtn}>
-                  <Ionicons name="close" size={22} color={Colors.text} />
+                  <Ionicons name="close" size={22} color={C.text} />
                 </Pressable>
-                <Text style={styles.detailHeaderTitle} numberOfLines={1}>{viewingEntry.recipeTitle}</Text>
+                <Text style={[styles.detailHeaderTitle, { color: C.text }]} numberOfLines={1}>{viewingEntry.recipeTitle}</Text>
                 <Pressable
                   onPress={() => {
                     setViewingEntry(null);
@@ -290,7 +292,7 @@ export default function JournalScreen() {
                   }}
                   hitSlop={10}
                 >
-                  <Ionicons name="trash-outline" size={20} color={Colors.textLight} />
+                  <Ionicons name="trash-outline" size={20} color={C.textLight} />
                 </Pressable>
               </View>
 
@@ -321,11 +323,11 @@ export default function JournalScreen() {
                     </ScrollView>
                     {/* Dot indicators */}
                     {galleryPhotos.length > 1 && (
-                      <View style={styles.dotRow}>
+                      <View style={[styles.dotRow, { backgroundColor: C.background }]}>
                         {galleryPhotos.map((_, i) => (
                           <View
                             key={i}
-                            style={[styles.dot, i === galleryIndex && styles.dotActive]}
+                            style={[styles.dot, { backgroundColor: C.border }, i === galleryIndex && { width: 18, backgroundColor: C.primaryDark }]}
                           />
                         ))}
                       </View>
@@ -335,8 +337,8 @@ export default function JournalScreen() {
 
                 {/* Entry details */}
                 <View style={styles.detailContent}>
-                  <Text style={styles.detailRecipeTitle}>{viewingEntry.recipeTitle}</Text>
-                  <Text style={styles.detailDate}>
+                  <Text style={[styles.detailRecipeTitle, { color: C.text }]}>{viewingEntry.recipeTitle}</Text>
+                  <Text style={[styles.detailDate, { color: C.textSecondary }]}>
                     {new Date(viewingEntry.dateBaked).toLocaleDateString('en-GB', {
                       weekday: 'long', day: 'numeric', month: 'long', year: 'numeric',
                     })}
@@ -346,15 +348,15 @@ export default function JournalScreen() {
                   </View>
 
                   {viewingEntry.notes ? (
-                    <View style={styles.detailNotesBox}>
-                      <Text style={styles.detailNotesLabel}>Notes</Text>
-                      <Text style={styles.detailNotesText}>{viewingEntry.notes}</Text>
+                    <View style={[styles.detailNotesBox, { backgroundColor: C.surfaceAlt }]}>
+                      <Text style={[styles.detailNotesLabel, { color: C.textSecondary }]}>Notes</Text>
+                      <Text style={[styles.detailNotesText, { color: C.text }]}>{viewingEntry.notes}</Text>
                     </View>
                   ) : null}
 
                   {galleryPhotos.length > 1 && (
                     <View style={styles.detailPhotoGrid}>
-                      <Text style={styles.detailNotesLabel}>All Photos ({galleryPhotos.length})</Text>
+                      <Text style={[styles.detailNotesLabel, { color: C.textSecondary }]}>All Photos ({galleryPhotos.length})</Text>
                       <View style={styles.detailThumbnailRow}>
                         {galleryPhotos.map((uri, i) => (
                           <Pressable
@@ -391,23 +393,23 @@ export default function JournalScreen() {
         presentationStyle="pageSheet"
         onRequestClose={handleClose}
       >
-        <SafeAreaView style={styles.modalSafe}>
-          <View style={styles.modalHeader}>
+        <SafeAreaView style={[styles.modalSafe, { backgroundColor: C.background }]}>
+          <View style={[styles.modalHeader, { borderBottomColor: C.borderLight }]}>
             <Pressable onPress={handleClose}>
-              <Text style={styles.cancelText}>Cancel</Text>
+              <Text style={[styles.cancelText, { color: C.textSecondary }]}>Cancel</Text>
             </Pressable>
-            <Text style={styles.modalTitle}>New Journal Entry</Text>
+            <Text style={[styles.modalTitle, { color: C.text }]}>New Journal Entry</Text>
             <Pressable onPress={handleSave}>
-              <Text style={styles.saveText}>Save</Text>
+              <Text style={[styles.saveText, { color: C.primaryDark }]}>Save</Text>
             </Pressable>
           </View>
           <ScrollView style={styles.modalContent} contentContainerStyle={{ paddingBottom: 40 }}>
 
-            <Text style={styles.fieldLabel}>Which recipe did you bake?</Text>
+            <Text style={[styles.fieldLabel, { color: C.text }]}>Which recipe did you bake?</Text>
             <TextInput
-              style={styles.recipeSearchInput}
+              style={[styles.recipeSearchInput, { color: C.text, backgroundColor: C.surface, borderColor: C.borderLight }]}
               placeholder="Search recipes..."
-              placeholderTextColor={Colors.textLight}
+              placeholderTextColor={C.textLight}
               value={recipeSearch}
               onChangeText={setRecipeSearch}
             />
@@ -421,7 +423,7 @@ export default function JournalScreen() {
                   key={r.id}
                   style={[
                     styles.recipeOption,
-                    selectedRecipeId === r.id && styles.recipeOptionSelected,
+                    selectedRecipeId === r.id && { borderColor: C.primaryDark },
                   ]}
                   onPress={() => setSelectedRecipeId(r.id)}
                 >
@@ -437,7 +439,7 @@ export default function JournalScreen() {
               ))}
             </ScrollView>
 
-            <Text style={styles.fieldLabel}>How did it turn out?</Text>
+            <Text style={[styles.fieldLabel, { color: C.text }]}>How did it turn out?</Text>
             <StarRating rating={rating} onRate={(r) => { setRating(r); setRatingWarning(false); }} size={32} />
             {ratingWarning && (
               <Text style={styles.ratingWarning}>⭐ Please choose a rating before saving</Text>
@@ -445,7 +447,7 @@ export default function JournalScreen() {
 
             {/* Photos */}
             <View style={{ flexDirection: 'row', alignItems: 'center', marginTop: Spacing.lg, marginBottom: Spacing.md }}>
-              <Text style={[styles.fieldLabel, { marginBottom: 0, flex: 1 }]}>Photos</Text>
+              <Text style={[styles.fieldLabel, { marginBottom: 0, flex: 1, color: C.text }]}>Photos</Text>
               <Text style={styles.photoCountHint}>{photos.length} / {MAX_PHOTOS}</Text>
             </View>
             <View style={styles.photoGrid}>
@@ -469,11 +471,11 @@ export default function JournalScreen() {
               )}
             </View>
 
-            <Text style={[styles.fieldLabel, { marginTop: Spacing.lg }]}>Notes</Text>
+            <Text style={[styles.fieldLabel, { marginTop: Spacing.lg, color: C.text }]}>Notes</Text>
             <TextInput
-              style={styles.notesInput}
+              style={[styles.notesInput, { color: C.text, backgroundColor: C.surface, borderColor: C.borderLight }]}
               placeholder="How was your bake? Any changes you made?"
-              placeholderTextColor={Colors.textLight}
+              placeholderTextColor={C.textLight}
               value={notes}
               onChangeText={setNotes}
               multiline
@@ -525,18 +527,18 @@ export default function JournalScreen() {
         onRequestClose={() => setDeleteConfirmId(null)}
       >
         <Pressable style={styles.confirmOverlay} onPress={() => setDeleteConfirmId(null)}>
-          <View style={styles.confirmBox}>
-            <Ionicons name="warning-outline" size={36} color={Colors.primaryDark} />
-            <Text style={styles.confirmTitle}>Delete Entry?</Text>
-            <Text style={styles.confirmText}>
+          <View style={[styles.confirmBox, { backgroundColor: C.white }]}>
+            <Ionicons name="warning-outline" size={36} color={C.primaryDark} />
+            <Text style={[styles.confirmTitle, { color: C.text }]}>Delete Entry?</Text>
+            <Text style={[styles.confirmText, { color: C.textSecondary }]}>
               Are you sure you want to delete this journal entry? This cannot be undone.
             </Text>
             <View style={styles.confirmButtons}>
               <Pressable
-                style={styles.confirmCancelBtn}
+                style={[styles.confirmCancelBtn, { backgroundColor: C.surface, borderColor: C.borderLight }]}
                 onPress={() => setDeleteConfirmId(null)}
               >
-                <Text style={styles.confirmCancelText}>Cancel</Text>
+                <Text style={[styles.confirmCancelText, { color: C.text }]}>Cancel</Text>
               </Pressable>
               <Pressable
                 style={styles.confirmDeleteBtn}

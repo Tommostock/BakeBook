@@ -19,10 +19,12 @@ import { RecipeFormModal } from '../../components/RecipeFormModal';
 import { FilterSheet, FilterOptions, EMPTY_FILTERS, countActiveFilters } from '../../components/FilterSheet';
 import { CATEGORIES, CATEGORY_EMOJIS, searchRecipes, formatTime, DIFFICULTY_COLORS } from '../../lib/helpers';
 import { useAllRecipes } from '../../lib/recipes';
+import { useTheme } from '../../lib/useTheme';
 import type { Recipe } from '../../types/recipe';
 
 // Animated search result row (#19)
 function AnimatedRecipeRow({ item, index, onPress }: { item: Recipe; index: number; onPress: () => void }) {
+  const { colors: C, shadows: S } = useTheme();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(30)).current;
 
@@ -46,33 +48,33 @@ function AnimatedRecipeRow({ item, index, onPress }: { item: Recipe; index: numb
 
   return (
     <Animated.View style={{ opacity: fadeAnim, transform: [{ translateY: slideAnim }] }}>
-      <Pressable style={styles.recipeRow} onPress={onPress}>
+      <Pressable style={[styles.recipeRow, { backgroundColor: C.white }, S.soft]} onPress={onPress}>
         <Image
           source={{ uri: item.imageUrl }}
-          style={styles.recipeImage}
+          style={[styles.recipeImage, { backgroundColor: C.surfaceAlt }]}
           contentFit="cover"
           transition={200}
         />
         <View style={styles.recipeInfo}>
           <View style={styles.categoryRow2}>
-            <Text style={styles.recipeCategory}>{item.category}</Text>
+            <Text style={[styles.recipeCategory, { color: C.primaryDark }]}>{item.category}</Text>
             {item.isUserRecipe && (
-              <View style={styles.myRecipeBadge}>
-                <Text style={styles.myRecipeBadgeText}>MY RECIPE</Text>
+              <View style={[styles.myRecipeBadge, { backgroundColor: C.primaryDark + '20' }]}>
+                <Text style={[styles.myRecipeBadgeText, { color: C.primaryDark }]}>MY RECIPE</Text>
               </View>
             )}
           </View>
-          <Text style={styles.recipeTitle} numberOfLines={2}>
+          <Text style={[styles.recipeTitle, { color: C.text }]} numberOfLines={2}>
             {item.title}
           </Text>
           <View style={styles.recipeMeta}>
-            <Text style={styles.metaText}>⏱ {formatTime(item.totalTime)}</Text>
+            <Text style={[styles.metaText, { color: C.textSecondary }]}>⏱ {formatTime(item.totalTime)}</Text>
             <Text
               style={[styles.difficultyBadge, { backgroundColor: DIFFICULTY_COLORS[item.difficulty] + '20', color: DIFFICULTY_COLORS[item.difficulty] }]}
             >
               {item.difficulty}
             </Text>
-            <Text style={styles.metaText}>🍽 {item.servings}</Text>
+            <Text style={[styles.metaText, { color: C.textSecondary }]}>🍽 {item.servings}</Text>
           </View>
         </View>
       </Pressable>
@@ -84,6 +86,7 @@ export default function SearchScreen() {
   const router = useRouter();
   const params = useLocalSearchParams<{ category?: string }>();
   const allRecipes = useAllRecipes();
+  const { colors: C, shadows: S } = useTheme();
   const [query, setQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(
     params.category || null
@@ -142,32 +145,33 @@ export default function SearchScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
       <View style={styles.header}>
-        <Text style={styles.title}>Search Recipes</Text>
+        <Text style={[styles.title, { color: C.text }]}>Search Recipes</Text>
       </View>
 
       {/* Animated Search Bar (#17) */}
       <Animated.View
         style={[
           styles.searchContainer,
+          S.soft,
           {
             borderColor: searchBorderAnim.interpolate({
               inputRange: [0, 1],
-              outputRange: [Colors.borderLight, Colors.primaryDark],
+              outputRange: [C.borderLight, C.primaryDark],
             }),
             backgroundColor: searchBorderAnim.interpolate({
               inputRange: [0, 1],
-              outputRange: [Colors.surface, Colors.white],
+              outputRange: [C.surface, C.white],
             }),
           },
         ]}
       >
-        <Ionicons name="search" size={20} color={searchFocused ? Colors.primaryDark : Colors.textSecondary} />
+        <Ionicons name="search" size={20} color={searchFocused ? C.primaryDark : C.textSecondary} />
         <TextInput
-          style={styles.searchInput}
+          style={[styles.searchInput, { color: C.text }]}
           placeholder="Search by name, ingredient, category..."
-          placeholderTextColor={Colors.textLight}
+          placeholderTextColor={C.textLight}
           value={query}
           onChangeText={setQuery}
           onFocus={() => setSearchFocused(true)}
@@ -175,13 +179,13 @@ export default function SearchScreen() {
         />
         {query.length > 0 && (
           <Pressable onPress={() => setQuery('')}>
-            <Ionicons name="close-circle" size={20} color={Colors.textLight} />
+            <Ionicons name="close-circle" size={20} color={C.textLight} />
           </Pressable>
         )}
         <Pressable style={styles.filterBtn} onPress={() => setShowFilters(true)}>
-          <Ionicons name="options-outline" size={20} color={activeFilterCount > 0 ? Colors.primaryDark : Colors.textSecondary} />
+          <Ionicons name="options-outline" size={20} color={activeFilterCount > 0 ? C.primaryDark : C.textSecondary} />
           {activeFilterCount > 0 && (
-            <View style={styles.filterBadge}>
+            <View style={[styles.filterBadge, { backgroundColor: C.primaryDark }]}>
               <Text style={styles.filterBadgeText}>{activeFilterCount}</Text>
             </View>
           )}
@@ -217,17 +221,18 @@ export default function SearchScreen() {
               key={d}
               style={[
                 styles.difficultyPill,
+                { backgroundColor: C.white, borderColor: C.borderLight },
                 isSelected && !isAll && { backgroundColor: DIFFICULTY_COLORS[d] + '30' },
-                isSelected && isAll && styles.difficultyPillAllSelected,
+                isSelected && isAll && { backgroundColor: C.primary + '40', borderColor: C.primaryDark },
               ]}
               onPress={() => setSelectedDifficulty(isAll ? null : (selectedDifficulty === d ? null : d))}
             >
               <Text
                 style={[
                   styles.difficultyText,
-                  { color: isAll ? Colors.textSecondary : DIFFICULTY_COLORS[d] },
+                  { color: isAll ? C.textSecondary : DIFFICULTY_COLORS[d] },
                   isSelected && { fontFamily: Fonts.sansBold },
-                  isSelected && isAll && { color: Colors.primaryDark },
+                  isSelected && isAll && { color: C.primaryDark },
                 ]}
               >
                 {d}
@@ -238,7 +243,7 @@ export default function SearchScreen() {
       </View>
 
       {/* Results Count */}
-      <Text style={styles.resultCount}>
+      <Text style={[styles.resultCount, { color: C.textSecondary }]}>
         {results.length} recipe{results.length !== 1 ? 's' : ''} found
       </Text>
 

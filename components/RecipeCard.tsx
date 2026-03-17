@@ -11,6 +11,7 @@ import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { Colors, Fonts, Radius, Spacing, Shadows } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 import { formatTime } from '../lib/helpers';
 import type { Recipe } from '../types/recipe';
 
@@ -23,6 +24,7 @@ interface RecipeCardProps {
 
 export function RecipeCard({ recipe, variant = 'medium' }: RecipeCardProps) {
   const router = useRouter();
+  const { colors: C, shadows: S } = useTheme();
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
   const cardWidth =
@@ -54,7 +56,7 @@ export function RecipeCard({ recipe, variant = 'medium' }: RecipeCardProps) {
   return (
     <Animated.View style={[{ transform: [{ scale: scaleAnim }] }, { width: cardWidth }]}>
       <Pressable
-        style={styles.card}
+        style={[styles.card, { backgroundColor: C.white }, S.soft]}
         onPress={() => router.push(`/recipe/${recipe.id}`)}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
@@ -62,12 +64,11 @@ export function RecipeCard({ recipe, variant = 'medium' }: RecipeCardProps) {
         <View style={styles.imageContainer}>
           <Image
             source={{ uri: recipe.imageUrl }}
-            style={[styles.image, { height: imageHeight }]}
+            style={[styles.image, { height: imageHeight, backgroundColor: C.surfaceAlt }]}
             contentFit="cover"
             transition={300}
             placeholder={{ blurhash: 'LKO2?U%2Tw=w]~RBVZRi};RPxuwH' }}
           />
-          {/* Bottom gradient overlay for readability */}
           <LinearGradient
             colors={['transparent', 'rgba(0,0,0,0.3)']}
             style={styles.imageOverlay}
@@ -79,12 +80,12 @@ export function RecipeCard({ recipe, variant = 'medium' }: RecipeCardProps) {
           </View>
         )}
         <View style={styles.content}>
-          <Text style={styles.category}>{recipe.category}</Text>
-          <Text style={styles.title} numberOfLines={2}>
+          <Text style={[styles.category, { color: C.primaryDark }]}>{recipe.category}</Text>
+          <Text style={[styles.title, { color: C.text }]} numberOfLines={2}>
             {recipe.title}
           </Text>
           <View style={styles.meta}>
-            <Text style={styles.metaText}>⏱ {formatTime(recipe.totalTime)}</Text>
+            <Text style={[styles.metaText, { color: C.textSecondary }]}>⏱ {formatTime(recipe.totalTime)}</Text>
             <View style={[styles.difficultyDot, {
               backgroundColor: recipe.difficulty === 'Easy' ? '#4CAF50' : recipe.difficulty === 'Medium' ? '#FF9800' : '#E53935',
             }]} />

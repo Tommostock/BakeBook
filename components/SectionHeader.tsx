@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
 import { Colors, Fonts, Spacing } from '../constants/theme';
+import { useTheme } from '../lib/useTheme';
 
 interface SectionHeaderProps {
   title: string;
@@ -8,12 +9,13 @@ interface SectionHeaderProps {
 }
 
 export function SectionHeader({ title, onSeeAll }: SectionHeaderProps) {
+  const { colors: C } = useTheme();
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>{title}</Text>
+      <Text style={[styles.title, { color: C.text }]}>{title}</Text>
       {onSeeAll && (
         <Pressable onPress={onSeeAll}>
-          <Text style={styles.seeAll}>See All →</Text>
+          <Text style={[styles.seeAll, { color: C.primaryDark }]}>See All →</Text>
         </Pressable>
       )}
     </View>

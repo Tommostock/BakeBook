@@ -15,6 +15,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { Colors, Fonts, Radius, Spacing, Shadows } from '../../constants/theme';
 import { useAppStore } from '../../lib/store';
 import { useAllRecipes } from '../../lib/recipes';
+import { useTheme } from '../../lib/useTheme';
 import { formatTime, DIFFICULTY_COLORS } from '../../lib/helpers';
 import type { Recipe } from '../../types/recipe';
 
@@ -30,6 +31,7 @@ const DIFFICULTY_ORDER: Record<string, number> = { Easy: 0, Medium: 1, Hard: 2 }
 
 // Swipeable favourite card (#30)
 function SwipeableCard({ item, onRemove, onPress }: { item: Recipe; onRemove: () => void; onPress: () => void }) {
+  const { colors: C, shadows: S } = useTheme();
   const translateX = useRef(new Animated.Value(0)).current;
   const cardHeight = useRef(new Animated.Value(1)).current;
   const threshold = -80;
@@ -89,24 +91,24 @@ function SwipeableCard({ item, onRemove, onPress }: { item: Recipe; onRemove: ()
         {...panResponder.panHandlers}
         style={{ transform: [{ translateX }] }}
       >
-        <Pressable style={styles.card} onPress={onPress}>
+        <Pressable style={[styles.card, { backgroundColor: C.white }, S.soft]} onPress={onPress}>
           <Image
             source={{ uri: item.imageUrl }}
-            style={styles.image}
+            style={[styles.image, { backgroundColor: C.surfaceAlt }]}
             contentFit="cover"
             transition={200}
           />
           <View style={styles.info}>
-            <Text style={styles.category}>{item.category}</Text>
-            <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
+            <Text style={[styles.category, { color: C.primaryDark }]}>{item.category}</Text>
+            <Text style={[styles.title, { color: C.text }]} numberOfLines={2}>{item.title}</Text>
             <View style={styles.meta}>
-              <Text style={styles.metaText}>⏱ {formatTime(item.totalTime)}</Text>
+              <Text style={[styles.metaText, { color: C.textSecondary }]}>⏱ {formatTime(item.totalTime)}</Text>
               <Text style={[styles.difficulty, { color: DIFFICULTY_COLORS[item.difficulty] }]}>
                 {item.difficulty}
               </Text>
             </View>
           </View>
-          <Ionicons name="heart" size={22} color={Colors.primaryDark} style={styles.heartIcon} />
+          <Ionicons name="heart" size={22} color={C.primaryDark} style={styles.heartIcon} />
         </Pressable>
       </Animated.View>
     </Animated.View>
@@ -115,6 +117,7 @@ function SwipeableCard({ item, onRemove, onPress }: { item: Recipe; onRemove: ()
 
 export default function FavoritesScreen() {
   const router = useRouter();
+  const { colors: C, shadows: S } = useTheme();
   const favorites = useAppStore((s) => s.favorites);
   const toggleFavorite = useAppStore((s) => s.toggleFavorite);
   const allRecipes = useAllRecipes();
@@ -147,17 +150,17 @@ export default function FavoritesScreen() {
   );
 
   return (
-    <SafeAreaView style={styles.safe}>
+    <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Favourites</Text>
+        <Text style={[styles.headerTitle, { color: C.text }]}>My Favourites</Text>
         <View style={styles.headerRight}>
-          <Text style={styles.count}>{favoriteRecipes.length} saved</Text>
+          <Text style={[styles.count, { color: C.textSecondary }]}>{favoriteRecipes.length} saved</Text>
           {favoriteRecipes.length > 1 && (
             <Pressable
-              style={styles.sortBtn}
+              style={[styles.sortBtn, { backgroundColor: C.white }, S.soft]}
               onPress={() => setShowSort(!showSort)}
             >
-              <Ionicons name="swap-vertical" size={18} color={Colors.primaryDark} />
+              <Ionicons name="swap-vertical" size={18} color={C.primaryDark} />
             </Pressable>
           )}
         </View>
@@ -165,18 +168,18 @@ export default function FavoritesScreen() {
 
       {/* Sort options dropdown (#31) */}
       {showSort && (
-        <View style={styles.sortDropdown}>
+        <View style={[styles.sortDropdown, { backgroundColor: C.white }, S.medium]}>
           {SORT_OPTIONS.map((opt) => (
             <Pressable
               key={opt.key}
-              style={[styles.sortOption, sortMode === opt.key && styles.sortOptionActive]}
+              style={[styles.sortOption, { borderBottomColor: C.borderLight }, sortMode === opt.key && { backgroundColor: C.surfaceAlt }]}
               onPress={() => { setSortMode(opt.key); setShowSort(false); }}
             >
-              <Text style={[styles.sortOptionText, sortMode === opt.key && styles.sortOptionTextActive]}>
+              <Text style={[styles.sortOptionText, { color: C.text }, sortMode === opt.key && { color: C.primaryDark }]}>
                 {opt.label}
               </Text>
               {sortMode === opt.key && (
-                <Ionicons name="checkmark" size={16} color={Colors.primaryDark} />
+                <Ionicons name="checkmark" size={16} color={C.primaryDark} />
               )}
             </Pressable>
           ))}
@@ -191,13 +194,13 @@ export default function FavoritesScreen() {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.empty}>
-            <Ionicons name="heart-outline" size={64} color={Colors.textLight} />
-            <Text style={styles.emptyTitle}>No favourites yet</Text>
-            <Text style={styles.emptyText}>
+            <Ionicons name="heart-outline" size={64} color={C.textLight} />
+            <Text style={[styles.emptyTitle, { color: C.text }]}>No favourites yet</Text>
+            <Text style={[styles.emptyText, { color: C.textSecondary }]}>
               Tap the heart icon on any recipe to save it here
             </Text>
             <Pressable
-              style={styles.browseBtn}
+              style={[styles.browseBtn, { backgroundColor: C.primaryDark }]}
               onPress={() => router.push('/(tabs)/search')}
             >
               <Text style={styles.browseBtnText}>Browse Recipes</Text>
