@@ -35,13 +35,12 @@ Add ~22 new recipes across 4 groups, all placed into **existing categories** wit
 - **Jammy Dodgers** — Shortbread biscuits with a jammy centre
 - **Viennese Whirls** — Buttery piped biscuits sandwiched with jam and buttercream
 
-### 4. Baby Recipes (age 1-2) → `Cakes` category (IDs: cake-025 to cake-029)
-5 recipes — all **low/no refined sugar**, **soft textures**, tagged `['Baby-Friendly', 'Toddler']`:
+### 4. Baby Recipes (age 1-2) → `Cakes` category (IDs: cake-025 to cake-028)
+4 recipes — all **low/no refined sugar**, **soft textures**, tagged `['Baby-Friendly', 'Toddler']`:
 - **Banana Oat Mini Muffins** — Naturally sweetened with banana, no added sugar
 - **Sweet Potato & Apple Mini Cakes** — Vegetable-based soft cakes with apple purée
 - **Blueberry Yoghurt Baby Cake** — Soft sponge made with Greek yoghurt and blueberries
 - **Carrot & Apple Fingers** — Soft baked fingers perfect for little hands
-- **First Birthday Smash Cake** — Lightly sweetened vanilla sponge with cream cheese frosting
 
 ---
 
@@ -51,7 +50,7 @@ Add ~22 new recipes across 4 groups, all placed into **existing categories** wit
 - Append 23 new recipe objects to the end of the existing `recipes` array
 - All recipes follow the exact same `Recipe` interface
 - No existing recipe entries are touched
-- IDs follow established patterns: `cake-013` through `cake-029`, `cookie-012` through `cookie-017`
+- IDs follow established patterns: `cake-013` through `cake-028`, `cookie-012` through `cookie-017`
 
 ### 2. `/home/user/BakeBook/lib/seasonal.ts` (ONLY ADDITIONS — add IDs to seasonal arrays)
 - Add select new recipes to seasonal mappings where appropriate:
