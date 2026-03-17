@@ -81,6 +81,17 @@ function TimerCard({ timer }: { timer: TimerInstance }) {
         </Text>
       ) : null}
 
+      {/* Chain indicator */}
+      {timer.chainId && (
+        <View style={styles.chainBadge}>
+          <Ionicons name="link" size={11} color={Colors.primaryDark} />
+          <Text style={styles.chainBadgeText}>Bake-Along</Text>
+          {timer.nextTimerId && !isDone && (
+            <Text style={styles.chainNextText}>→ auto-starts next</Text>
+          )}
+        </View>
+      )}
+
       {/* Large countdown */}
       <Text
         style={[
@@ -346,5 +357,23 @@ const styles = StyleSheet.create({
   timerProgressFill: {
     height: '100%',
     borderRadius: 2,
+  },
+
+  /* Chain badge */
+  chainBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 4,
+  },
+  chainBadgeText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 10,
+    color: Colors.primaryDark,
+  },
+  chainNextText: {
+    fontFamily: Fonts.sans,
+    fontSize: 10,
+    color: Colors.textSecondary,
   },
 });

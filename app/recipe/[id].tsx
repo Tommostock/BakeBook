@@ -24,8 +24,18 @@ import { formatTime, DIFFICULTY_COLORS, generateId } from '../../lib/helpers';
 import { scaleAllIngredients } from '../../lib/ingredients';
 import { convertAllIngredients } from '../../lib/unitConversion';
 import { formatRecipeShareShort, formatRecipeShareFull } from '../../lib/shareUtils';
+import { parseStepTimers } from '../../lib/stepTimers';
+import { useTimerStore } from '../../lib/timerStore';
 import type { UnitSystem } from '../../lib/unitConversion';
 import type { RecipeNote, Ingredient } from '../../types/recipe';
+
+function formatChainTime(secs: number): string {
+  const h = Math.floor(secs / 3600);
+  const m = Math.floor((secs % 3600) / 60);
+  const s = secs % 60;
+  if (h > 0) return `${h}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
 
 export default function RecipeDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -58,6 +68,67 @@ export default function RecipeDetailScreen() {
   const [showShareSheet, setShowShareSheet] = useState(false);
 
   const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const addTimer = useTimerStore((s) => s.addTimer);
+  const startTimerAction = useTimerStore((s) => s.startTimer);
+  const removeChain = useTimerStore((s) => s.removeChain);
+  const allTimers = useTimerStore((s) => s.timers);
+
+  // Parse step timers for bake-along
+  const stepTimers = useMemo(
+    () => (recipe ? parseStepTimers(recipe.steps) : []),
+    [recipe]
+  );
+
+  // Check if a bake-along chain is already active for this recipe
+  const bakeAlongChainId = `bake-along-${id}`;
+  const chainTimers = useMemo(
+    () => allTimers.filter((t) => t.chainId === bakeAlongChainId),
+    [allTimers, bakeAlongChainId]
+  );
+  const isBakeAlongActive = chainTimers.length > 0;
+  const bakeAlongProgress = useMemo(() => {
+    if (chainTimers.length === 0) return { done: 0, total: 0, currentLabel: '' };
+    const done = chainTimers.filter((t) => t.remainingSeconds === 0 && t.totalSeconds > 0).length;
+    const current = chainTimers.find((t) => t.isRunning);
+    return { done, total: chainTimers.length, currentLabel: current?.label ?? '' };
+  }, [chainTimers]);
+
+  const handleStartBakeAlong = () => {
+    if (stepTimers.length === 0) return;
+    // Generate IDs for all timers first so we can set nextTimerId
+    const ids = stepTimers.map(() => generateId());
+    stepTimers.forEach((st, i) => {
+      addTimer({
+        id: ids[i],
+        label: `Step ${st.stepIndex + 1}: ${st.label}`,
+        totalSeconds: st.seconds,
+        remainingSeconds: st.seconds,
+        recipeTitle: recipe?.title,
+        nextTimerId: i < ids.length - 1 ? ids[i + 1] : undefined,
+        chainId: bakeAlongChainId,
+        stepIndex: st.stepIndex,
+      });
+    });
+    // Auto-start the first timer
+    startTimerAction(ids[0]);
+  };
+
+  const handleStopBakeAlong = () => {
+    removeChain(bakeAlongChainId);
+  };
+
+  const handleAddStepTimer = (stepIndex: number, label: string, seconds: number) => {
+    const timerId = generateId();
+    addTimer({
+      id: timerId,
+      label: `Step ${stepIndex + 1}: ${label}`,
+      totalSeconds: seconds,
+      remainingSeconds: seconds,
+      recipeTitle: recipe?.title,
+    });
+    startTimerAction(timerId);
+  };
 
   useEffect(() => {
     if (id) addRecentlyViewed(id);
@@ -351,18 +422,113 @@ export default function RecipeDetailScreen() {
               ]}
             />
           </View>
-          {recipe.steps.map((step, i) => (
-            <Pressable key={i} style={styles.stepRow} onPress={() => toggleStep(i)}>
-              <View style={[styles.stepNumber, checkedSteps.has(i) && styles.stepNumberDone]}>
-                {checkedSteps.has(i) ? (
-                  <Ionicons name="checkmark" size={14} color={Colors.white} />
-                ) : (
-                  <Text style={styles.stepNumberText}>{i + 1}</Text>
+
+          {/* Bake-Along Timers */}
+          {stepTimers.length > 0 && (
+            <View style={styles.bakeAlongContainer}>
+              {!isBakeAlongActive ? (
+                <Pressable style={styles.bakeAlongBtn} onPress={handleStartBakeAlong}>
+                  <Ionicons name="play-circle" size={20} color={Colors.white} />
+                  <Text style={styles.bakeAlongBtnText}>
+                    Start Bake-Along ({stepTimers.length} timer{stepTimers.length !== 1 ? 's' : ''})
+                  </Text>
+                </Pressable>
+              ) : (
+                <View style={styles.bakeAlongActiveCard}>
+                  <View style={styles.bakeAlongActiveHeader}>
+                    <View style={styles.bakeAlongActiveLeft}>
+                      <Ionicons name="timer" size={18} color={Colors.primaryDark} />
+                      <Text style={styles.bakeAlongActiveTitle}>Bake-Along Active</Text>
+                    </View>
+                    <Pressable style={styles.bakeAlongStopBtn} onPress={handleStopBakeAlong}>
+                      <Ionicons name="close" size={16} color={Colors.error} />
+                      <Text style={styles.bakeAlongStopText}>Stop</Text>
+                    </Pressable>
+                  </View>
+                  <Text style={styles.bakeAlongActiveInfo}>
+                    {bakeAlongProgress.done}/{bakeAlongProgress.total} complete
+                    {bakeAlongProgress.currentLabel ? ` — ${bakeAlongProgress.currentLabel}` : ''}
+                  </Text>
+                  {/* Chain progress dots */}
+                  <View style={styles.bakeAlongDots}>
+                    {chainTimers.map((ct, i) => {
+                      const isDone = ct.remainingSeconds === 0 && ct.totalSeconds > 0;
+                      const isActive = ct.isRunning;
+                      return (
+                        <View
+                          key={ct.id}
+                          style={[
+                            styles.bakeAlongDot,
+                            isDone && styles.bakeAlongDotDone,
+                            isActive && styles.bakeAlongDotActive,
+                          ]}
+                        />
+                      );
+                    })}
+                  </View>
+                </View>
+              )}
+              <Text style={styles.bakeAlongHint}>
+                Timers auto-chain: each starts when the previous finishes
+              </Text>
+            </View>
+          )}
+
+          {recipe.steps.map((step, i) => {
+            const timersForStep = stepTimers.filter((st) => st.stepIndex === i);
+            // Check if this step has an active chain timer
+            const chainTimer = chainTimers.find((ct) => ct.stepIndex === i);
+            const isChainStepDone = chainTimer && chainTimer.remainingSeconds === 0 && chainTimer.totalSeconds > 0;
+            const isChainStepRunning = chainTimer?.isRunning;
+
+            return (
+              <View key={i}>
+                <Pressable style={styles.stepRow} onPress={() => toggleStep(i)}>
+                  <View style={[
+                    styles.stepNumber,
+                    checkedSteps.has(i) && styles.stepNumberDone,
+                    isChainStepRunning && styles.stepNumberRunning,
+                    isChainStepDone && styles.stepNumberChainDone,
+                  ]}>
+                    {checkedSteps.has(i) ? (
+                      <Ionicons name="checkmark" size={14} color={Colors.white} />
+                    ) : isChainStepDone ? (
+                      <Ionicons name="checkmark" size={14} color={Colors.white} />
+                    ) : (
+                      <Text style={[styles.stepNumberText, isChainStepRunning && { color: Colors.white }]}>{i + 1}</Text>
+                    )}
+                  </View>
+                  <Text style={[styles.stepText, checkedSteps.has(i) && styles.stepTextDone]}>{step}</Text>
+                </Pressable>
+                {/* Inline timer buttons for this step */}
+                {timersForStep.length > 0 && !isBakeAlongActive && (
+                  <View style={styles.stepTimerRow}>
+                    {timersForStep.map((st, j) => (
+                      <Pressable
+                        key={j}
+                        style={styles.stepTimerBtn}
+                        onPress={() => handleAddStepTimer(st.stepIndex, st.label, st.seconds)}
+                      >
+                        <Ionicons name="timer-outline" size={13} color={Colors.primaryDark} />
+                        <Text style={styles.stepTimerBtnText}>{st.label}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                )}
+                {/* Show chain timer status inline */}
+                {chainTimer && isChainStepRunning && (
+                  <View style={styles.stepTimerRow}>
+                    <View style={styles.stepTimerActiveIndicator}>
+                      <Ionicons name="timer" size={13} color={Colors.primaryDark} />
+                      <Text style={styles.stepTimerActiveText}>
+                        {formatChainTime(chainTimer.remainingSeconds)} remaining
+                      </Text>
+                    </View>
+                  </View>
                 )}
               </View>
-              <Text style={[styles.stepText, checkedSteps.has(i) && styles.stepTextDone]}>{step}</Text>
-            </Pressable>
-          ))}
+            );
+          })}
 
           {/* Tips */}
           {recipe.tips && (
@@ -959,5 +1125,138 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.textSecondary,
     marginTop: 1,
+  },
+
+  /* ── Bake-Along Timers ── */
+  bakeAlongContainer: {
+    marginBottom: Spacing.md,
+  },
+  bakeAlongBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: Spacing.sm,
+    backgroundColor: Colors.primaryDark,
+    borderRadius: Radius.full,
+    paddingVertical: 12,
+    paddingHorizontal: Spacing.lg,
+  },
+  bakeAlongBtnText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 14,
+    color: Colors.white,
+  },
+  bakeAlongHint: {
+    fontFamily: Fonts.sans,
+    fontSize: 11,
+    color: Colors.textLight,
+    textAlign: 'center',
+    marginTop: 6,
+  },
+  bakeAlongActiveCard: {
+    backgroundColor: Colors.surfaceAlt,
+    borderRadius: Radius.md,
+    padding: Spacing.md,
+    borderWidth: 1,
+    borderColor: Colors.primaryDark + '40',
+  },
+  bakeAlongActiveHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  bakeAlongActiveLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  bakeAlongActiveTitle: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 14,
+    color: Colors.primaryDark,
+  },
+  bakeAlongStopBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: Radius.full,
+    backgroundColor: Colors.error + '15',
+  },
+  bakeAlongStopText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 12,
+    color: Colors.error,
+  },
+  bakeAlongActiveInfo: {
+    fontFamily: Fonts.sans,
+    fontSize: 13,
+    color: Colors.textSecondary,
+    marginTop: 6,
+  },
+  bakeAlongDots: {
+    flexDirection: 'row',
+    gap: 6,
+    marginTop: Spacing.sm,
+    flexWrap: 'wrap',
+  },
+  bakeAlongDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: Colors.borderLight,
+  },
+  bakeAlongDotDone: {
+    backgroundColor: Colors.success,
+  },
+  bakeAlongDotActive: {
+    backgroundColor: Colors.primaryDark,
+  },
+
+  /* ── Step timer inline buttons ── */
+  stepTimerRow: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 6,
+    marginLeft: 40,
+    marginTop: -8,
+    marginBottom: Spacing.md,
+  },
+  stepTimerBtn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: Colors.primaryDark + '15',
+    borderRadius: Radius.full,
+    borderWidth: 1,
+    borderColor: Colors.primaryDark + '30',
+  },
+  stepTimerBtnText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 11,
+    color: Colors.primaryDark,
+  },
+  stepTimerActiveIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    backgroundColor: Colors.primaryDark + '20',
+    borderRadius: Radius.full,
+  },
+  stepTimerActiveText: {
+    fontFamily: Fonts.sansSemiBold,
+    fontSize: 11,
+    color: Colors.primaryDark,
+  },
+  stepNumberRunning: {
+    backgroundColor: Colors.primaryDark,
+  },
+  stepNumberChainDone: {
+    backgroundColor: Colors.success,
   },
 });
