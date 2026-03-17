@@ -245,25 +245,25 @@ export default function RecipeDetailScreen() {
           />
           <View style={styles.heroOverlay} />
           <View style={styles.heroButtons}>
-            <Pressable style={styles.iconBtn} onPress={() => router.canGoBack() ? router.back() : router.replace('/')}>
+            <Pressable style={styles.iconBtn} onPress={() => router.canGoBack() ? router.back() : router.replace('/')} accessibilityRole="button" accessibilityLabel="Go back">
               <Ionicons name="arrow-back" size={22} color={Colors.white} />
             </Pressable>
             <View style={styles.heroRight}>
               {isOwn && (
                 <>
-                  <Pressable style={styles.iconBtn} onPress={() => setShowEditForm(true)}>
+                  <Pressable style={styles.iconBtn} onPress={() => setShowEditForm(true)} accessibilityRole="button" accessibilityLabel="Edit recipe">
                     <Ionicons name="create-outline" size={22} color={Colors.white} />
                   </Pressable>
-                  <Pressable style={styles.iconBtn} onPress={() => setShowDeleteConfirm(true)}>
+                  <Pressable style={styles.iconBtn} onPress={() => setShowDeleteConfirm(true)} accessibilityRole="button" accessibilityLabel="Delete recipe">
                     <Ionicons name="trash-outline" size={22} color={Colors.white} />
                   </Pressable>
                 </>
               )}
-              <Pressable style={styles.iconBtn} onPress={handleShare}>
+              <Pressable style={styles.iconBtn} onPress={handleShare} accessibilityRole="button" accessibilityLabel="Share recipe">
                 <Ionicons name="share-outline" size={22} color={Colors.white} />
               </Pressable>
               <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
-                <Pressable style={styles.iconBtn} onPress={() => handleToggleFavorite(recipe.id)}>
+                <Pressable style={styles.iconBtn} onPress={() => handleToggleFavorite(recipe.id)} accessibilityRole="button" accessibilityLabel={fav ? 'Remove from favourites' : 'Add to favourites'}>
                   <Ionicons
                     name={fav ? 'heart' : 'heart-outline'}
                     size={22}
@@ -429,7 +429,7 @@ export default function RecipeDetailScreen() {
               end={{ x: 1, y: 0 }}
               style={[
                 styles.progressFill,
-                { width: `${recipe.steps.length > 0 ? (checkedSteps.size / recipe.steps.length) * 100 : 0}%` as any },
+                { width: `${recipe.steps.length > 0 ? (checkedSteps.size / recipe.steps.length) * 100 : 0}%` as `${number}%` },
               ]}
             />
           </View>

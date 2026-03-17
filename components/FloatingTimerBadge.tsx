@@ -37,6 +37,8 @@ export function FloatingTimerBadge() {
           completedCount > 0 && styles.badgeDone,
         ]}
         onPress={() => setShowOverlay(true)}
+        accessibilityRole="button"
+        accessibilityLabel="View active timers"
       >
         <Ionicons name="timer-outline" size={16} color={C.white} />
         <Text style={styles.badgeText}>
@@ -100,6 +102,8 @@ export function FloatingTimerBadge() {
                         <Pressable
                           style={styles.timerActionBtn}
                           onPress={() => timer.isRunning ? pauseTimer(timer.id) : startTimer(timer.id)}
+                          accessibilityRole="button"
+                          accessibilityLabel={timer.isRunning ? 'Pause timer' : 'Start timer'}
                         >
                           <Ionicons
                             name={timer.isRunning ? 'pause' : 'play'}
@@ -112,12 +116,16 @@ export function FloatingTimerBadge() {
                         <Pressable
                           style={styles.timerActionBtn}
                           onPress={() => resetTimer(timer.id)}
+                          accessibilityRole="button"
+                          accessibilityLabel="Reset timer"
                         >
                           <Ionicons name="refresh" size={16} color={C.textSecondary} />
                         </Pressable>
                       )}
                       <Pressable
                         style={[styles.timerActionBtn, styles.timerActionBtnDelete]}
+                        accessibilityRole="button"
+                        accessibilityLabel="Delete timer"
                         onPress={() => {
                           if (timer.chainId) {
                             removeChain(timer.chainId);
@@ -136,6 +144,8 @@ export function FloatingTimerBadge() {
             {timers.length > 1 && (
               <Pressable
                 style={styles.clearAllBtn}
+                accessibilityRole="button"
+                accessibilityLabel="Clear all timers"
                 onPress={() => {
                   timers.forEach((t) => removeTimer(t.id));
                 }}

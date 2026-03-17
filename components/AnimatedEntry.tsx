@@ -45,14 +45,14 @@ export function AnimatedEntry({
     Animated.parallel(animations).start();
   }, []);
 
-  const translateStyle =
+  const transform: Animated.WithAnimatedValue<ViewStyle>['transform'] =
     slideFrom === 'bottom'
-      ? { translateY: slideAnim }
+      ? [{ translateY: slideAnim }]
       : slideFrom === 'left'
-      ? { translateX: Animated.multiply(slideAnim, -1) }
+      ? [{ translateX: Animated.multiply(slideAnim, -1) }]
       : slideFrom === 'right'
-      ? { translateX: slideAnim }
-      : {};
+      ? [{ translateX: slideAnim }]
+      : [];
 
   return (
     <Animated.View
@@ -60,7 +60,7 @@ export function AnimatedEntry({
         style,
         {
           opacity: fadeAnim,
-          transform: slideFrom !== 'none' ? [translateStyle as any] : [],
+          transform,
         },
       ]}
     >

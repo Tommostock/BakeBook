@@ -109,7 +109,7 @@ export default function ProfileScreen() {
                 <View
                   style={[
                     styles.levelProgressFill,
-                    { width: `${bakerLevel.progress * 100}%` as any },
+                    { width: `${bakerLevel.progress * 100}%` as `${number}%` },
                   ]}
                 />
               </View>

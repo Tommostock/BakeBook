@@ -50,7 +50,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
   const [steps, setSteps] = useState<string[]>(['']);
   const [tips, setTips] = useState('');
 
-  const fileInputRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Populate form when editing
   useEffect(() => {
@@ -119,7 +119,7 @@ export function RecipeFormModal({ visible, onClose, editingRecipe }: Props) {
     }
   };
 
-  const handleWebFileChange = async (e: any) => {
+  const handleWebFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       const dataUri = await fileToBase64(file);

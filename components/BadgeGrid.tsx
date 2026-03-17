@@ -64,7 +64,7 @@ function AnimatedBadge({ achievement, index }: { achievement: Achievement; index
           borderColor: glowAnim.interpolate({
             inputRange: [0, 1],
             outputRange: [C.primaryDark, C.primary] as [string, string],
-          }) as any,
+          }) as unknown as string,
         },
       ]}
     >

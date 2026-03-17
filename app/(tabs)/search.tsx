@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import React, { useCallback, useMemo, useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -135,14 +135,14 @@ export default function SearchScreen() {
     }
   }, [results]);
 
-  const renderRecipeRow = ({ item, index }: { item: Recipe; index: number }) => (
+  const renderRecipeRow = useCallback(({ item, index }: { item: Recipe; index: number }) => (
     <AnimatedRecipeRow
       key={`${item.id}-${resultsKey}`}
       item={item}
       index={index}
       onPress={() => router.push(`/recipe/${item.id}`)}
     />
-  );
+  ), [resultsKey, router]);
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
@@ -182,7 +182,7 @@ export default function SearchScreen() {
             <Ionicons name="close-circle" size={20} color={C.textLight} />
           </Pressable>
         )}
-        <Pressable style={styles.filterBtn} onPress={() => setShowFilters(true)}>
+        <Pressable style={styles.filterBtn} onPress={() => setShowFilters(true)} accessibilityRole="button" accessibilityLabel="Open filters">
           <Ionicons name="options-outline" size={20} color={activeFilterCount > 0 ? C.primaryDark : C.textSecondary} />
           {activeFilterCount > 0 && (
             <View style={[styles.filterBadge, { backgroundColor: C.primaryDark }]}>
@@ -267,6 +267,8 @@ export default function SearchScreen() {
       <Pressable
         style={styles.fab}
         onPress={() => setShowRecipeForm(true)}
+        accessibilityRole="button"
+        accessibilityLabel="Add new recipe"
       >
         <Ionicons name="add" size={28} color={C.white} />
       </Pressable>

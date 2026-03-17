@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -57,7 +57,7 @@ export default function JournalScreen() {
   const [lightboxUri, setLightboxUri] = useState<string | null>(null);
 
   // Web file input ref (mobile browsers don't support expo-image-picker reliably)
-  const fileInputRef = useRef<any>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Auto-open modal when navigated here from a recipe page
   const handledRecipeId = useRef('');
@@ -116,7 +116,7 @@ export default function JournalScreen() {
     }
   };
 
-  const handleWebFileChange = async (e: any) => {
+  const handleWebFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files: File[] = Array.from(e.target.files || []);
     const remaining = MAX_PHOTOS - photos.length;
     const selected = files.slice(0, remaining);
@@ -183,7 +183,7 @@ export default function JournalScreen() {
     }
   };
 
-  const renderEntry = ({ item }: { item: JournalEntry }) => {
+  const renderEntry = useCallback(({ item }: { item: JournalEntry }) => {
     const recipe = allRecipes.find((r) => r.id === item.recipeId);
     const displayPhotos = item.photos?.length ? item.photos : item.photoUri ? [item.photoUri] : [];
     const headerPhoto = displayPhotos[0] || recipe?.imageUrl;
@@ -225,13 +225,13 @@ export default function JournalScreen() {
         </View>
       </Pressable>
     );
-  };
+  }, [allRecipes, screenWidth, C]);
 
   return (
     <SafeAreaView style={[styles.safe, { backgroundColor: C.background }]}>
       <View style={styles.header}>
         <Text style={[styles.headerTitle, { color: C.text }]}>Baking Journal</Text>
-        <Pressable style={[styles.addBtn, { backgroundColor: C.primaryDark }]} onPress={() => setModalVisible(true)}>
+        <Pressable style={[styles.addBtn, { backgroundColor: C.primaryDark }]} onPress={() => setModalVisible(true)} accessibilityRole="button" accessibilityLabel="Add journal entry">
           <Ionicons name="add" size={22} color={C.white} />
         </Pressable>
       </View>
