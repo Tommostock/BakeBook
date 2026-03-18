@@ -129,7 +129,6 @@ export const RECIPE_TAGS: Record<string, { flavourTags: string[]; seasonTags: st
   'cookie-016': { flavourTags: ['Vanilla', 'Jam', 'Berry'], seasonTags: [] },
   'cookie-017': { flavourTags: ['Vanilla', 'Jam', 'Berry'], seasonTags: [] },
   'cake-025': { flavourTags: ['Banana', 'Cinnamon', 'Spiced', 'Vanilla', 'Coconut'], seasonTags: [] },
-  'cake-026': { flavourTags: ['Apple', 'Cinnamon', 'Ginger', 'Spiced', 'Coconut'], seasonTags: [] },
   'cake-027': { flavourTags: ['Berry', 'Banana', 'Vanilla', 'Coconut'], seasonTags: [] },
   'cake-028': { flavourTags: ['Apple', 'Cinnamon', 'Spiced', 'Raisin'], seasonTags: [] },
 };
